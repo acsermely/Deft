@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- Contacts: search, read, create, edit and delete contacts; grouped by first letter. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Contacts</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <header class="deft-topbar" id="detailBar" hidden>
+      <button class="deft-btn deft-btn-ghost" id="back" type="button" aria-label="Back"><deft-icon name="arrow-left" aria-hidden="true"></deft-icon></button>
+      <h1 class="deft-headline" id="detailTitle">Contact</h1>
+      <button class="deft-btn deft-btn-ghost" id="edit" type="button">Edit</button>
+    </header>
+    <main class="deft-scroll">
+      <section class="deft-page" id="listView" data-large-title aria-labelledby="listTitle">
+        <h1 id="listTitle" class="deft-largeTitle">Contacts</h1>
+        <input class="deft-input" id="q" type="search" placeholder="Search contacts" aria-label="Search contacts" autocomplete="off" />
+        <div class="deft-alert" id="err" data-tone="error" role="alert" hidden>
+          <deft-icon name="circle-alert" aria-hidden="true"></deft-icon>
+          <span class="deft-body">Something went wrong.</span>
+        </div>
+        <div id="list"></div>
+        <div id="empty"></div>
+      </section>
+      <section class="deft-page" id="detailView" hidden>
+        <div class="deft-alert" id="detailErr" data-tone="error" role="alert" hidden>
+          <deft-icon name="circle-alert" aria-hidden="true"></deft-icon>
+          <span class="deft-body">Something went wrong.</span>
+        </div>
+        <div id="detail"></div>
+      </section>
+    </main>
+    <button class="deft-fab" data-float id="add" data-primary type="button" aria-label="Add contact"><deft-icon name="user-plus" aria-hidden="true"></deft-icon></button>
+  </div>
+  <dialog class="deft-sheet" id="sheet" data-detents="large" aria-labelledby="formTitle">
+    <form id="form" class="deft-stack">
+      <h2 id="formTitle" class="deft-title3">New contact</h2>
+      <div class="deft-stack">
+        <label class="deft-subhead" for="fName">Name</label>
+        <input id="fName" class="deft-input" required autocomplete="name" />
+      </div>
+      <div class="deft-stack">
+        <label class="deft-subhead" for="fPhone">Phone</label>
+        <input id="fPhone" class="deft-input" type="tel" autocomplete="tel" />
+      </div>
+      <div class="deft-stack">
+        <label class="deft-subhead" for="fEmail">Email</label>
+        <input id="fEmail" class="deft-input" type="email" autocomplete="email" />
+      </div>
+      <div class="deft-stack">
+        <label class="deft-subhead" for="fOrg">Organization</label>
+        <input id="fOrg" class="deft-input" autocomplete="organization" />
+      </div>
+      <div class="deft-card-actions">
+        <button class="deft-btn deft-btn-ghost" type="button" id="cancel">Cancel</button>
+        <button class="deft-btn" data-primary type="submit">Save</button>
+      </div>
+      <div class="deft-stack" id="deleteRow" hidden>
+        <button class="deft-btn" data-tone="destructive" type="button" id="del"><deft-icon name="trash-2" aria-hidden="true"></deft-icon>Delete</button>
+      </div>
+    </form>
+  </dialog>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

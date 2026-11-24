@@ -1,0 +1,9 @@
+{
+  "name": "deft-lint",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "build": "bun build src/browser.js --outfile ../../android/app/src/main/assets/lint/deft-lint.js --target browser"
+  }
+}

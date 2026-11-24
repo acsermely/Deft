@@ -1,0 +1,13 @@
+{
+  "deft": 1,
+  "id": "wallpaper-clock",
+  "name": "Wallpaper Clock",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "wallpaper", "reason": "Show an analog clock as your home screen wallpaper" }
+  ],
+  "wallpaper": { "page": "./wallpaper/index.html" },
+  "network": []
+}

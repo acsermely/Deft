@@ -1,0 +1,11 @@
+{
+  "deft": 1,
+  "kind": "component",
+  "id": "notice",
+  "name": "Notice",
+  "version": "1.0.0",
+  "license": "MIT",
+  "capabilities": [],
+  "network": [],
+  "exports": ["notice"]
+}

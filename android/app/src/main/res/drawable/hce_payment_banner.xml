@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PARITY B4: banner in Android's Contactless payments list (260 x 96 dp). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="260dp"
+    android:height="96dp"
+    android:viewportWidth="260"
+    android:viewportHeight="96">
+    <path
+        android:fillColor="#1B4D3E"
+        android:pathData="M0,0h260v96h-260z" />
+    <path
+        android:fillColor="#F4F1EA"
+        android:pathData="M106,48 L122,64 L154,28 L146,28 L122,54 L112,44 Z" />
+</vector>

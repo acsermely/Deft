@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "wifi-analyzer",
+  "name": "Wi-Fi Analyzer",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "location", "reason": "Android needs your location to list Wi-Fi networks" },
+    { "id": "wifi.scan", "reason": "List the Wi-Fi networks in range and the one you use" },
+    { "id": "wifi.control", "reason": "Open the Wi-Fi settings screen" }
+  ],
+  "network": []
+}

@@ -1,0 +1,32 @@
+/* Notification History: a segmented switch, the list of notifications and their reply tools. */
+@layer deft.components {
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--deft-space-s);
+    padding: var(--deft-space-s) 0;
+  }
+  .actions .deft-segmented { align-self: stretch; }
+  .actions .deft-segmented > button { flex: 1; }
+  #status { margin-bottom: var(--deft-space-s); }
+  #rows { list-style: none; margin: 0; }
+  #rows:empty { display: none; }
+  #rows .deft-cell-body { gap: var(--deft-space-2xs); min-width: 0; }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--deft-space-xs);
+    color: var(--deft-label-2);
+  }
+  .text {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--deft-space-xs);
+    margin-top: var(--deft-space-2xs);
+  }
+  .tools .deft-input { flex: 1 1 10rem; min-width: 0; }
+}

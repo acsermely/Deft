@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- PARITY F8: a multicast lock keeps mDNS (service discovery) answers arriving on Wi-Fi. -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- PARITY G6: Wi-Fi scan and info (ACCESS_WIFI_STATE), network suggestions (CHANGE_WIFI_STATE). -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- PARITY G6: runtime on Android 13 and newer; not neverForLocation, because scans give locations. -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+    <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <!-- PARITY D3: the types an app may keep running with fgs.start. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- PARITY G5: "Allow all the time", asked from the special-access sheet for location.background only. -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <!-- PARITY G7: usage stats for usage.stats; the user turns it on in the system Usage access screen. -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+    <uses-feature android:name="android.hardware.nfc.hce" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+    <!-- PARITY G11: the live wallpaper (role wallpaper) is optional. -->
+    <uses-feature android:name="android.software.live_wallpaper" android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="*/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="*/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CALL" />
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.SETTINGS" />
+        </intent>
+        <!-- W7: the special-access screens SpecialAccessFlow checks with resolveActivity -->
+        <intent>
+            <action android:name="android.settings.ACCESSIBILITY_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.ACCESSIBILITY_DETAILS_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.USAGE_ACCESS_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.REQUEST_SCHEDULE_EXACT_ALARM" />
+        </intent>
+        <intent>
+            <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="org.chromium.intent.action.PAY" />
+        </intent>
+        <intent>
+            <action android:name="org.chromium.intent.action.IS_READY_TO_PAY" />
+        </intent>
+        <intent>
+            <action android:name="org.chromium.intent.action.UPDATE_PAYMENT_DETAILS" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".DeftApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Deft"
+        tools:targetApi="35">
+
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.home.MyAppsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.setup.SetupActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.workspace.WorkspaceLaunchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.consent.ConsentActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.host.WebViewHostActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode"
+            android:documentLaunchMode="intoExisting"
+            android:exported="false"
+            android:launchMode="standard"
+            android:supportsPictureInPicture="true" />
+
+        <activity
+            android:name=".ui.confirm.ConfirmActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.files.TreePickActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.files.MediaPickActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.intents.IntentResultActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <!-- PARITY E3: the sign-in redirect from the Custom Tab. Scheme is <applicationId>.auth (debug: .debug.auth).
+             It has no screen and finishes at once; it runs in its own task so the app's task is untouched. -->
+        <activity
+            android:name=".ui.auth.AuthRedirectActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="${applicationId}.auth"
+                    android:pathPrefix="/cb/" />
+            </intent-filter>
+        </activity>
+
+        <!-- PARITY G0: special-access grant sheet, opened from the dashboard app card. -->
+        <activity
+            android:name=".ui.special.SpecialGrantActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.keystore.KeystoreAuthActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.files.SaveAsActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.nfc.NfcReadActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.usb.UsbPermissionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".ui.bluetooth.BluetoothEnableActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <!-- PARITY E1: "Open with" from other apps. One picker; the aliases below are the fixed set of
+             filters (intent filters are static). All start disabled; HandlerAliases enables one only while
+             an installed app's manifest `handles` it. Keep the names in sync with ui/handlers/HandlerAlias. -->
+        <activity
+            android:name=".ui.handlers.HandlerPickerActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Deft.Dialog"
+            android:taskAffinity="" />
+
+        <activity-alias
+            android:name=".ui.handlers.ViewText"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewImage"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewAudio"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/*" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewVideo"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewPdf"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewCalendar"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/calendar" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewVcard"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/vcard" />
+                <data android:mimeType="text/x-vcard" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewJson"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/json" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.SendToMailto"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="mailto" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".ui.handlers.ViewWebDeft"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="web+deft" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Pre-rename scheme, kept so apps that declare web+fl still receive those links. -->
+        <activity-alias
+            android:name=".ui.handlers.ViewWebFl"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/handler_open_label"
+            android:targetActivity=".ui.handlers.HandlerPickerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="web+fl" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- PARITY G11: role components. No screen (translucent: it waits for the database before it
+             finishes, which Theme.NoDisplay does not allow); each alias below is disabled until a web app holds
+             the role's special grant (RoleComponents), so the launcher only qualifies for the Android role
+             while someone uses it. Keep the names in sync with roles/RoleComponent. -->
+        <activity
+            android:name=".ui.roles.RoleEntryActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- PARITY G11: role.browser. Meets ROLE_BROWSER (VIEW, BROWSABLE, any http/https link). -->
+        <activity-alias
+            android:name=".ui.roles.BrowserView"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.roles.RoleEntryActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- PARITY G11: role.assistant, for phones that start an activity for the assistant (ACTION_ASSIST). -->
+        <activity-alias
+            android:name=".ui.roles.AssistEntry"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:targetActivity=".ui.roles.RoleEntryActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".share.ShareToActivity"
+            android:exported="true"
+            android:label="@string/share_to_label">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".sms.SendToActivity"
+            android:exported="true"
+            android:label="@string/sms_compose_forward">
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".tiles.DeftTile1"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="Deft tile 1"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".tiles.DeftTile2"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="Deft tile 2"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".tiles.DeftTile3"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="Deft tile 3"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".bridge.NotifyActionReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".bridge.StepStore$MidnightReceiver"
+            android:exported="false" />
+
+        <service
+            android:name=".nfc.DeftHostApduService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE">
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/apduservice" />
+        </service>
+
+        <!-- PARITY B4: payment-category card emulation. Declared disabled; RoleComponents turns it on
+             only while a web app holds nfc.hce.payment (disabling it makes Android pick another payment app). -->
+        <service
+            android:name=".nfc.DeftPaymentApduService"
+            android:enabled="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE">
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/apduservice_payment" />
+        </service>
+
+        <service
+            android:name=".bridge.BridgeService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse|connectedDevice">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Keeps hosted web apps alive and delivers SMS, MMS, contact, telephony, alarm, and Bluetooth events to granted origins." />
+        </service>
+
+        <!-- PARITY D3: keeps an app's page running with its own notification after the user leaves it. -->
+        <service
+            android:name=".background.AppForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="location|mediaPlayback|microphone|connectedDevice|dataSync" />
+
+        <service
+            android:name=".telephony.DeftInCallService"
+            android:exported="true"
+            android:permission="android.permission.BIND_INCALL_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.InCallService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.telecom.IN_CALL_SERVICE_UI"
+                android:value="true" />
+        </service>
+
+        <!-- PARITY F7b: call screening for the web app holding calls.screen. Starts disabled; RoleComponents
+             turns it on only while a web app holds the grant (also what qualifies for ROLE_CALL_SCREENING). -->
+        <service
+            android:name=".telephony.DeftCallScreeningService"
+            android:enabled="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_SCREENING_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".sms.RespondViaMessageService"
+            android:exported="true"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".sms.SmsDeliverReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".sms.WapPushDeliverReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_WAP_PUSH">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".sms.MmsDownloadReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".alarms.AlarmReceiver"
+            android:exported="false" />
+
+        <!-- PARITY D6: UnifiedPush distributor broadcasts. Exported so the distributor app can
+             reach it; the connector drops any broadcast without the instance's secret token. -->
+        <receiver
+            android:name=".push.PushReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.connector.MESSAGE" />
+                <action android:name="org.unifiedpush.android.connector.UNREGISTERED" />
+                <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT" />
+                <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- PARITY G0: daily special-access review and its Keep / Remove buttons. -->
+        <receiver
+            android:name=".special.SpecialReviewReceiver"
+            android:exported="false" />
+
+        <!-- PARITY G5: proximity alerts for app geofences; only the launcher's own PendingIntent reaches it. -->
+        <receiver
+            android:name=".location.GeofenceReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".alarms.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- PARITY G10: the launcher's account type (accounts.own). Only the system may call it. -->
+        <service
+            android:name=".account.DeftAuthenticatorService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- PARITY G10: one sync adapter for every app's accounts; wakes the app with trigger sync. -->
+        <service
+            android:name=".account.DeftSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
+        <!-- PARITY G8: notification listener (notifications.listen). Only the system may bind it;
+             it does anything only after the user turns on Notification access for the launcher. -->
+        <service
+            android:name=".notifications.DeftNotificationListener"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- PARITY G9: accessibility service (accessibility). Only the system may bind it; it does
+             anything only after the user turns it on under Accessibility, and only for the one web
+             app holding the grant. -->
+        <service
+            android:name=".a11y.DeftAccessibilityService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service" />
+        </service>
+
+        <!-- PARITY G11: device.admin. Lock the screen only (xml/device_admin.xml). Only the system may send to it;
+             it does nothing until the user activates it from the special-access sheet, and removing the grant
+             deactivates it. -->
+        <receiver
+            android:name=".admin.DeftDeviceAdminReceiver"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- PARITY G11: wallpaper. Starts disabled; RoleComponents turns it on only while a web app holds the
+             grant, so Deft's live wallpaper is offered only then, and turning it off makes Android
+             show its default wallpaper. Only the system may bind it. -->
+        <service
+            android:name=".wallpaper.DeftWallpaperService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/wallpaper_label"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/wallpaper" />
+        </service>
+
+        <!-- PARITY G11: ime. Starts disabled; RoleComponents turns it on only while a web app holds the grant,
+             so Deft's keyboard is listed under keyboards only then, and turning it off makes Android
+             switch to another keyboard. Only the system may bind it. -->
+        <service
+            android:name=".ime.DeftInputMethodService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/ime_label"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
+        </service>
+
+        <!-- PARITY G11: role.assistant. All three start disabled; RoleComponents turns them on only while a web
+             app holds the grant, so Deft is listed as a digital assistant only then. Only the system
+             may bind the assistant services. The recognizer only hands speech on to another recognizer. -->
+        <service
+            android:name=".assist.DeftVoiceInteractionService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter>
+                <action android:name="android.service.voice.VoiceInteractionService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.voice_interaction"
+                android:resource="@xml/voice_interaction_service" />
+        </service>
+
+        <service
+            android:name=".assist.DeftAssistSessionService"
+            android:enabled="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION" />
+
+        <service
+            android:name=".assist.DeftRecognitionService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.speech.RecognitionService" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name=".account.DeftSyncStubProvider"
+            android:authorities="${applicationId}.sync"
+            android:exported="false"
+            android:syncable="true" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>

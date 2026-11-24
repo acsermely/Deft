@@ -1,0 +1,19 @@
+{
+  "deft": 1,
+  "id": "sms",
+  "name": "Messages",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "sms.read", "reason": "Show your SMS inbox and threads" },
+    { "id": "sms.write", "reason": "Mark messages read or delete them" },
+    { "id": "sms.send", "reason": "Send texts you compose in the app" },
+    { "id": "contacts.read", "reason": "Resolve names for phone numbers" },
+    { "id": "notifications.post", "reason": "Notify you of new messages" },
+    { "id": "files.pick", "reason": "Attach a file to an MMS" },
+    { "id": "background", "reason": "Notify you of new texts while the app is closed" }
+  ],
+  "background": { "module": "./bg.js", "triggers": ["sms"] },
+  "network": []
+}

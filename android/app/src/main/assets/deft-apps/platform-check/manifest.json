@@ -1,0 +1,26 @@
+{
+  "deft": 1,
+  "id": "platform-check",
+  "name": "Platform Check",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "haptics", "reason": "Test navigator.vibrate" },
+    { "id": "display", "reason": "Test keep-screen-on, orientation lock and print" },
+    { "id": "clipboard.read", "reason": "Test pasting after a tap" },
+    { "id": "files.write", "reason": "Test saving a CSV through the Save dialog" },
+    { "id": "intents.open", "reason": "Test sharing to other apps" },
+    { "id": "intents.start", "reason": "Test asking the camera for a photo" },
+    { "id": "share.receive", "reason": "Test reading the photo that comes back" },
+    { "id": "media.drm", "reason": "Test DRM media keys" },
+    { "id": "midi", "reason": "Test Web MIDI access" },
+    { "id": "torch", "reason": "Test the camera flashlight" },
+    { "id": "pip", "reason": "Test picture-in-picture" },
+    { "id": "speech.tts", "reason": "Test reading text aloud" },
+    { "id": "microphone", "reason": "Test speech to text" },
+    { "id": "speech.recognize", "reason": "Test speech to text" },
+    { "id": "audio.control", "reason": "Test raising the alarm volume" }
+  ],
+  "network": []
+}

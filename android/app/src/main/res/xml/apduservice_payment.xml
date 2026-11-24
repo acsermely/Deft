@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PARITY B4. Payment-category card emulation for the app holding nfc.hce.payment. The real AIDs
+     are registered at runtime (CardEmulation.registerAidsForService, category payment); this
+     placeholder keeps the group valid. requireDeviceUnlock: Android sends payment commands only
+     while the phone is unlocked (it is an attribute of the service, not of the AID group). -->
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:apduServiceBanner="@drawable/hce_payment_banner"
+    android:description="@string/hce_payment_description"
+    android:requireDeviceUnlock="true">
+    <aid-group android:category="payment" android:description="@string/hce_payment_description">
+        <aid-filter android:name="F0464C00000002" />
+    </aid-group>
+</host-apdu-service>

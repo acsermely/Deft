@@ -1,0 +1,15 @@
+{
+  "deft": 1,
+  "id": "screen-time",
+  "name": "Screen Time",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "apps.list", "reason": "List the apps on this phone so you can open one" },
+    { "id": "apps.launch", "reason": "Open an app from the list" },
+    { "id": "usage.read", "reason": "Show how long you used each app today" },
+    { "id": "device.id", "reason": "Show the device id this app gets" }
+  ],
+  "network": []
+}

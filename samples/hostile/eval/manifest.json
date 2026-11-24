@@ -1,0 +1,10 @@
+{
+  "deft": 1,
+  "id": "eval",
+  "name": "Hostile eval",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [],
+  "network": []
+}

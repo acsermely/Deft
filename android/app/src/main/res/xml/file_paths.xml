@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PARITY H6/A6: only Downloads (files.share / files.openWith), MMS PDUs, and files an app shares out. -->
+<paths>
+    <external-path name="download" path="Download/" />
+    <cache-path name="mms" path="mms/" />
+    <cache-path name="shareout" path="shareout/" />
+    <cache-path name="capture" path="capture/" />
+</paths>

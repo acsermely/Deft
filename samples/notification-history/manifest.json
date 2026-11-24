@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "notification-history",
+  "name": "Notification History",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "notifications.listen", "reason": "Keep a history of the notifications other apps show you, and let you reply or clear them here" },
+    { "id": "background", "reason": "Save notifications to the history while the app is closed" }
+  ],
+  "background": { "module": "./bg.js", "triggers": ["notification"] },
+  "network": []
+}

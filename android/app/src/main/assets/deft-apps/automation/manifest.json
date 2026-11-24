@@ -1,0 +1,12 @@
+{
+  "deft": 1,
+  "id": "automation",
+  "name": "Automation",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "accessibility", "reason": "Read the buttons on another app's screen and tap the one you choose" }
+  ],
+  "network": []
+}

@@ -1,0 +1,4 @@
+/* Stripe test checkout: room for Stripe's card form to load before it paints. */
+@layer deft.components {
+  .card { min-height: 7.5rem; }
+}

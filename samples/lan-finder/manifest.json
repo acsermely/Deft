@@ -1,0 +1,12 @@
+{
+  "deft": 1,
+  "id": "lan-finder",
+  "name": "LAN Finder",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "net.local", "reason": "Find devices and services on your Wi-Fi and open a connection to one" }
+  ],
+  "network": []
+}

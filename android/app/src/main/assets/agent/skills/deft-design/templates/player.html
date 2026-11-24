@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- Template: media player. Runtime classes and tokens only. Copy as index.html with a main.js (header comment, then import '/_deft/v1/motion.js';) and a manifest.json (example in references/recipes/bridge.md). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <title>Player</title>
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll deft-center">
+      <section class="deft-stack" aria-labelledby="track-title" data-deft-enter="scale">
+        <div class="deft-hero">
+          <div class="deft-hero-body">
+            <span class="deft-labelMono">Now playing</span>
+            <h1 id="track-title" class="deft-title1">Night Drive</h1>
+            <p class="deft-subhead">Artist name, Album</p>
+          </div>
+        </div>
+        <input class="deft-slider" type="range" min="0" max="100" value="40" aria-label="Position" />
+        <div class="deft-cluster">
+          <span class="deft-footnote deft-cell-value">1:12</span>
+          <span class="deft-footnote deft-cell-value">-2:48</span>
+        </div>
+        <div class="deft-cluster">
+          <button class="deft-btn deft-btn-ghost" type="button" aria-label="Previous"><deft-icon name="skip-back" aria-hidden="true"></deft-icon></button>
+          <button class="deft-fab" data-primary type="button" aria-label="Play"><deft-icon name="play" aria-hidden="true"></deft-icon></button>
+          <button class="deft-btn deft-btn-ghost" type="button" aria-label="Next"><deft-icon name="skip-forward" aria-hidden="true"></deft-icon></button>
+        </div>
+        <div class="deft-cluster">
+          <deft-icon name="volume-1" aria-hidden="true"></deft-icon>
+          <input class="deft-slider" type="range" min="0" max="100" value="70" aria-label="Volume" />
+          <deft-icon name="volume-2" aria-hidden="true"></deft-icon>
+        </div>
+        <div class="deft-cluster">
+          <button class="deft-chip" type="button" aria-pressed="true">Shuffle</button>
+          <button class="deft-chip" type="button" aria-pressed="false">Repeat</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

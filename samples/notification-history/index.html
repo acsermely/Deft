@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Notification History: notifications other apps show now, and a history of everything posted. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Notification History</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="title">
+        <h1 id="title" class="deft-largeTitle">Notification History</h1>
+        <div class="actions">
+          <div class="deft-segmented" role="group" aria-label="Show">
+            <button id="showNow" type="button" aria-pressed="true">Showing now</button>
+            <button id="showHistory" type="button" aria-pressed="false">History</button>
+          </div>
+          <button id="clear" class="deft-btn" data-tone="destructive" type="button"><deft-icon name="trash-2" aria-hidden="true"></deft-icon>Clear history</button>
+        </div>
+        <div id="status" class="deft-alert" data-tone="info" role="status">
+          <deft-icon name="info" aria-hidden="true"></deft-icon>
+          <span class="deft-body">Loading...</span>
+        </div>
+        <ul id="rows" class="deft-group"></ul>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

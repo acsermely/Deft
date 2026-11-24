@@ -1,0 +1,396 @@
+/* Components layer (deft.components). Tokens only (--deft-bg*, --deft-label*, --deft-fill*, --deft-separator, --deft-accent, --deft-error). Colour map: DESIGN-SYSTEM-PROPOSAL 8.1. Requires base.css and tokens.css. */
+@layer deft.components {
+  /* Buttons. Secondary (fill + label) is the default; the accent marks one primary per screen. */
+  .deft-btn, .deft-btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--deft-space-2xs);
+    min-block-size: var(--deft-tap); padding-inline: var(--deft-space-m);
+    border: 0; border-radius: var(--deft-radius-screen);
+    background: var(--deft-fill); color: var(--deft-label);
+    font: var(--deft-type-headline-weight) var(--deft-type-headline-size) / var(--deft-type-headline-leading) var(--deft-type-headline-family);
+    letter-spacing: var(--deft-type-headline-tracking); text-decoration: none; cursor: pointer;
+  }
+  .deft-btn[data-primary], .deft-btn-primary { background: var(--deft-accent); color: var(--deft-on-accent); }
+  .deft-btn-ghost, .deft-ghost { background: transparent; color: var(--deft-label); }
+  .deft-btn-outline { background: transparent; box-shadow: inset 0 0 0 var(--deft-hairline) var(--deft-label-3); }
+  .deft-btn-soft { background: var(--deft-fill-2); }
+  .deft-btn-link { background: transparent; color: var(--deft-label); padding-inline: 0; text-decoration: underline; text-underline-offset: 3px; }
+  .deft-btn-sm { min-block-size: 2.25rem; padding-inline: var(--deft-space-s); font-size: var(--deft-type-subhead-size); }
+  .deft-btn-lg { min-block-size: 3.5rem; padding-inline: var(--deft-space-l); font-size: var(--deft-type-body-size); }
+  .deft-btn:disabled, .deft-btn[aria-disabled=true] { opacity: .38; }
+  .deft-fab {
+    display: inline-grid; place-items: center; flex: none; inline-size: var(--deft-tap); block-size: var(--deft-tap);
+    border: 0; border-radius: var(--deft-radius-screen); background: var(--deft-fill-2); color: var(--deft-label); cursor: pointer;
+  }
+  .deft-fab[data-primary] { background: var(--deft-accent); color: var(--deft-on-accent); }
+  /* Create action floating bottom-trailing over the scrolling content. Give the scroll page bottom padding of at least calc(var(--deft-tap) + 2 * var(--deft-space-m)). */
+  .deft-fab[data-float] { position: fixed; z-index: 2; inset-block-end: calc(var(--deft-space-m) + env(safe-area-inset-bottom)); inset-inline-end: var(--deft-space-m); }
+  .deft-btn:not(:disabled):active, .deft-fab:active, .deft-cell[href]:active, .deft-row[href]:active,
+  [data-deft-press]:not(:disabled):active, .deft-stepper > button:not(:disabled):active { transform: scale(.96); }
+  .deft-btn-xs { font-size: var(--deft-type-caption-size); }
+  /* Destructive: still the secondary style; only the label and icon turn --deft-error (always with text, 8.1). */
+  .deft-btn[data-tone=destructive] { color: var(--deft-error); }
+
+  /* Switch: a real styled checkbox with role=switch. On = label track + bg knob; off = fill track. */
+  .deft-switch, .deft-toggle {
+    appearance: none; position: relative; flex: none; margin: 0;
+    inline-size: 51px; block-size: 31px; border-radius: var(--deft-radius-screen);
+    background: var(--deft-fill); cursor: pointer;
+    transition: background-color var(--deft-duration-m) var(--deft-ease);
+  }
+  .deft-switch::before, .deft-toggle::before {
+    content: ""; position: absolute; inset-block-start: 2px; inset-inline-start: 2px;
+    inline-size: 27px; block-size: 27px; border-radius: var(--deft-radius-screen); background: var(--deft-label);
+    transition: transform var(--deft-spring-snappy-duration) var(--deft-spring-snappy), background-color var(--deft-duration-m) var(--deft-ease);
+  }
+  .deft-switch:checked, .deft-toggle:checked { background: var(--deft-label); }
+  .deft-switch:checked::before, .deft-toggle:checked::before { background: var(--deft-bg); transform: translateX(20px); }
+  .deft-switch:disabled, .deft-toggle:disabled { opacity: .38; }
+  .deft-checkbox { accent-color: var(--deft-label); }
+
+  /* Segmented control and chips: selected is label text on a fill pill, never accent. */
+  .deft-segmented {
+    display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--deft-radius-screen);
+    box-shadow: inset 0 0 0 var(--deft-hairline) var(--deft-separator);
+  }
+  .deft-segmented > * {
+    appearance: none; border: 0; min-block-size: 2.25rem; padding-inline: var(--deft-space-s); border-radius: var(--deft-radius-screen);
+    background: transparent; color: var(--deft-label-2); cursor: pointer;
+    font: var(--deft-type-subhead-weight) var(--deft-type-subhead-size) / var(--deft-type-subhead-leading) var(--deft-type-subhead-family);
+  }
+  .deft-segmented > [aria-selected=true], .deft-segmented > [aria-pressed=true], .deft-segmented > [data-selected] { background: var(--deft-fill); color: var(--deft-label); }
+  .deft-chip {
+    display: inline-flex; align-items: center; gap: var(--deft-space-3xs); min-block-size: 2rem; padding-inline: var(--deft-space-s);
+    border: 0; border-radius: var(--deft-radius-screen); background: transparent; color: var(--deft-label-2); cursor: pointer;
+    box-shadow: inset 0 0 0 var(--deft-hairline) var(--deft-separator);
+    font: var(--deft-type-subhead-weight) var(--deft-type-subhead-size) / var(--deft-type-subhead-leading) var(--deft-type-subhead-family);
+  }
+  .deft-chip[aria-pressed=true], .deft-chip[aria-selected=true], .deft-chip[data-selected] { background: var(--deft-fill); color: var(--deft-label); box-shadow: none; }
+
+  /* Stepper: fill capsule with two round buttons around a Doto value. */
+  .deft-stepper { display: inline-flex; align-items: center; border-radius: var(--deft-radius-screen); background: var(--deft-fill); }
+  .deft-stepper > button {
+    appearance: none; display: grid; place-items: center; flex: none; padding: 0; border: 0; border-radius: var(--deft-radius-screen);
+    inline-size: var(--deft-tap); block-size: var(--deft-tap); background: transparent; color: var(--deft-label); cursor: pointer;
+  }
+  .deft-stepper > output {
+    min-inline-size: 3ch; text-align: center; color: var(--deft-label);
+    font-family: var(--deft-font-numeric); font-size: var(--deft-type-title3-size); font-variant-numeric: tabular-nums;
+  }
+
+  /* Slider and progress: fill is label; [data-live] switches the fill to accent (recording, live signal). */
+  .deft-slider {
+    appearance: none; inline-size: 100%; min-block-size: var(--deft-tap); margin: 0; background: transparent; cursor: pointer;
+    --_fill: var(--deft-label); --deft-value: 50%;
+  }
+  .deft-slider[data-live] { --_fill: var(--deft-accent); }
+  .deft-slider::-webkit-slider-runnable-track {
+    block-size: 4px; border-radius: var(--deft-radius-screen);
+    background: linear-gradient(to right, var(--_fill) var(--deft-value), var(--deft-fill-3) var(--deft-value));
+  }
+  .deft-slider::-webkit-slider-thumb {
+    appearance: none; inline-size: 28px; block-size: 28px; margin-top: -12px; border: 0; border-radius: var(--deft-radius-screen); background: var(--deft-label);
+  }
+  .deft-slider::-moz-range-track { block-size: 4px; border-radius: var(--deft-radius-screen); background: var(--deft-fill-3); }
+  .deft-slider::-moz-range-progress { block-size: 4px; border-radius: var(--deft-radius-screen); background: var(--_fill); }
+  .deft-slider::-moz-range-thumb { inline-size: 28px; block-size: 28px; border: 0; border-radius: var(--deft-radius-screen); background: var(--deft-label); }
+  .deft-progress {
+    position: relative; overflow: hidden; block-size: 6px; border-radius: var(--deft-radius-screen);
+    background: var(--deft-fill); --_bar: var(--deft-label);
+  }
+  .deft-progress[data-live] { --_bar: var(--deft-accent); }
+  .deft-progress::before {
+    content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: var(--deft-value, 0%);
+    border-radius: inherit; background: var(--_bar);
+    transition: inline-size var(--deft-spring-smooth-duration) var(--deft-spring-smooth);
+  }
+  .deft-progress[data-segments]::before { transition-timing-function: var(--deft-step-dot); }
+  .deft-progress[data-segments]::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to right, transparent 0 calc(100% / var(--deft-segs, 8) - 3px), var(--deft-bg) 0 calc(100% / var(--deft-segs, 8)));
+  }
+
+  /* Meter: a gauge or HUD bar. Set --deft-level (0 to 1) from JS; the child scales on the compositor, so it is cheap to update every frame. */
+  .deft-meter {
+    position: relative; overflow: hidden; block-size: 0.75rem; border-radius: var(--deft-radius-screen);
+    background: var(--deft-fill); --_bar: var(--deft-label);
+  }
+  .deft-meter[data-tone="success"] { --_bar: var(--deft-success); }
+  .deft-meter[data-tone="warning"] { --_bar: var(--deft-warning); }
+  .deft-meter[data-tone="error"] { --_bar: var(--deft-error); }
+  .deft-meter[data-live] { --_bar: var(--deft-accent); }
+  .deft-meter > * {
+    display: block; block-size: 100%; inline-size: 100%; border-radius: inherit; background: var(--_bar);
+    transform: scaleX(var(--deft-level, 0)); transform-origin: left center;
+    transition: transform var(--deft-spring-snappy-duration) var(--deft-spring-snappy);
+  }
+  .deft-meter:dir(rtl) > * { transform-origin: right center; }
+
+  /* Skeleton, badge, empty state. */
+  .deft-skeleton { position: relative; overflow: hidden; min-block-size: 1em; border-radius: var(--deft-radius-sm); background: var(--deft-fill); }
+  .deft-skeleton::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--deft-fill-2), transparent);
+    animation: deft-shimmer 1.6s var(--deft-ease) infinite;
+  }
+  .deft-badge {
+    display: inline-flex; align-items: center; gap: var(--deft-space-3xs); min-block-size: 1.25rem; padding-inline: var(--deft-space-2xs);
+    border-radius: var(--deft-radius-screen); background: var(--deft-fill); color: var(--deft-label);
+    font: 600 var(--deft-type-caption-size) / var(--deft-type-caption-leading) var(--deft-type-caption-family);
+  }
+  .deft-badge::before { content: ""; inline-size: .4rem; block-size: .4rem; border-radius: var(--deft-radius-screen); background: var(--deft-accent); }
+  .deft-badge:empty { min-block-size: 0; inline-size: .5rem; block-size: .5rem; padding: 0; background: var(--deft-accent); }
+  .deft-badge:empty::before { display: none; }
+  .deft-empty {
+    display: flex; flex-direction: column; align-items: center; gap: var(--deft-space-xs);
+    padding: var(--deft-space-l) var(--deft-space-m); text-align: center; color: var(--deft-label-2);
+  }
+  .deft-empty > :is(h2, h3) { margin: 0; color: var(--deft-label); }
+  .deft-empty > p { margin: 0; }
+  .deft-empty > .deft-icon { inline-size: 2.5rem; block-size: 2.5rem; color: var(--deft-label-2); }
+
+  /* Tile (glanceable number) and hero (media header with scrim). */
+  .deft-tile {
+    --deft-radius-outer: var(--deft-radius-lg); --deft-pad: var(--deft-space-s);
+    display: flex; flex-direction: column; gap: var(--deft-space-3xs); min-inline-size: 0; overflow: hidden;
+    padding: var(--deft-pad); border-radius: var(--deft-radius-outer); background: var(--deft-bg-grouped); color: var(--deft-label);
+  }
+  .deft-tile-value {
+    margin: 0; color: var(--deft-label); font-family: var(--deft-font-numeric); font-weight: var(--deft-font-numeric-weight); font-variant-numeric: tabular-nums;
+    font-size: clamp(2.25rem, 1.9rem + 1.6vw, 3.25rem); line-height: 1;
+  }
+  .deft-tile > svg { inline-size: 100%; block-size: 2rem; fill: none; stroke: var(--deft-label-2); stroke-width: var(--deft-icon-stroke); }
+  .deft-labelMono { color: var(--deft-label-2); }
+  /* Mono text (ids, paths, logs): footnote size, Geist Mono. Add data-wrap for pre-wrap. */
+  .deft-mono { font-family: var(--deft-font-mono); font-size: var(--deft-type-footnote-size); line-height: var(--deft-type-footnote-leading); color: var(--deft-label); }
+  .deft-mono[data-wrap] { white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* Media grid: square tiles of photos or videos. Tile radius is concentric with the grid's outer radius and gap. */
+  .deft-media-grid {
+    --deft-radius-outer: var(--deft-radius-sm); --deft-pad: var(--deft-space-3xs);
+    display: grid; grid-template-columns: repeat(var(--deft-cols, 3), minmax(0, 1fr)); gap: var(--deft-pad);
+  }
+  .deft-media-grid > * { position: relative; overflow: hidden; margin: 0; min-inline-size: 0; aspect-ratio: 1; border-radius: var(--deft-radius-inner); background: var(--deft-fill); }
+  .deft-media-grid img, .deft-media-grid video { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .deft-media-grid figcaption { position: absolute; inset: auto 0 0; padding: var(--deft-space-3xs); background: linear-gradient(to top, var(--deft-bg), transparent); }
+  .deft-hero {
+    position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+    min-block-size: 12rem; border-radius: var(--deft-radius-xl); background: var(--deft-bg-grouped); color: var(--deft-label);
+  }
+  .deft-hero > img, .deft-hero > video { position: absolute; inset: 0; z-index: -2; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .deft-hero::after {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--deft-bg) 8%, transparent 70%);
+  }
+  .deft-hero > .deft-hero-body { display: flex; flex-direction: column; gap: var(--deft-space-3xs); padding: var(--deft-space-m); }
+
+  /* Page, bars and tab bar. Glass only on bars; content stays opaque. */
+  .deft-page {
+    display: flex; flex-direction: column; gap: var(--deft-space-s); min-block-size: 100%;
+    padding: var(--deft-space-s) var(--deft-space-m) var(--deft-space-l); background: var(--deft-bg); color: var(--deft-label);
+  }
+  .deft-page > :first-child { margin: 0; }
+  @supports (animation-timeline: scroll()) {
+    .deft-page[data-large-title] > :first-child { animation: deft-title-collapse linear both; animation-timeline: scroll(nearest); animation-range: 0 3rem; }
+  }
+  .deft-bar, .deft-toolbar, .deft-appbar, .deft-topbar {
+    position: sticky; inset-block-start: 0; z-index: 2; display: flex; align-items: center; gap: var(--deft-space-s);
+    padding: var(--deft-space-s) var(--deft-space-m); color: var(--deft-label);
+    background: var(--deft-material-bar); -webkit-backdrop-filter: var(--deft-material-blur); backdrop-filter: var(--deft-material-blur);
+    box-shadow: var(--deft-material-rim);
+  }
+  .deft-appbar, .deft-topbar { padding-block-start: calc(var(--deft-space-s) + env(safe-area-inset-top)); }
+  .deft-tabbar {
+    position: sticky; inset-block-end: calc(var(--deft-space-s) + env(safe-area-inset-bottom)); z-index: 2;
+    display: flex; align-items: stretch; gap: 2px; width: max-content; max-inline-size: calc(100% - 2 * var(--deft-space-s));
+    margin-inline: auto; padding: 4px; border-radius: var(--deft-radius-screen);
+    background: var(--deft-material-bar); -webkit-backdrop-filter: var(--deft-material-blur); backdrop-filter: var(--deft-material-blur);
+    box-shadow: var(--deft-material-rim);
+  }
+  .deft-tabbar > * {
+    appearance: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    min-inline-size: 3.5rem; padding: var(--deft-space-3xs) var(--deft-space-s); border: 0; border-radius: var(--deft-radius-screen);
+    background: transparent; color: var(--deft-label-3); text-decoration: none;
+    font: var(--deft-type-caption-weight) var(--deft-type-caption-size) / var(--deft-type-caption-leading) var(--deft-type-caption-family);
+  }
+  .deft-tabbar > [aria-current], .deft-tabbar > [aria-selected=true] { color: var(--deft-label); }
+  .deft-tabbar > [aria-current]::after, .deft-tabbar > [aria-selected=true]::after {
+    content: ""; inline-size: 4px; block-size: 4px; border-radius: var(--deft-radius-screen); background: var(--deft-accent);
+  }
+
+  /* Grouped inset list. 4px group padding gives cells the concentric inner radius. */
+  .deft-group {
+    --deft-radius-outer: var(--deft-radius-lg); --deft-pad: 4px;
+    display: flex; flex-direction: column; overflow: hidden; padding: var(--deft-pad);
+    border-radius: var(--deft-radius-outer); background: var(--deft-bg-grouped);
+  }
+  .deft-cell, .deft-row {
+    position: relative; display: flex; align-items: center; gap: var(--deft-space-s);
+    min-block-size: var(--deft-tap); padding: var(--deft-space-xs) var(--deft-space-s);
+    border-radius: var(--deft-radius-inner); color: var(--deft-label); text-decoration: none;
+  }
+  button.deft-cell { inline-size: 100%; border: 0; background: none; font: inherit; text-align: start; }
+  .deft-cell:has(> .deft-tile-icon) { --_cell-lead: calc(2rem + var(--deft-space-s)); }
+  .deft-cell + .deft-cell::before, .deft-row + .deft-row::before {
+    content: ""; position: absolute; inset-block-start: 0; inset-inline: calc(var(--deft-space-s) + var(--_cell-lead, 0px)) var(--deft-space-s);
+    block-size: var(--deft-hairline); background: var(--deft-separator);
+  }
+  .deft-cell-body { display: flex; flex: 1; flex-direction: column; gap: 1px; min-inline-size: 0; }
+  .deft-cell-title { overflow: hidden; color: var(--deft-label); text-overflow: ellipsis; white-space: nowrap; }
+  .deft-cell-sub { color: var(--deft-label-2); }
+  .deft-cell-value { color: var(--deft-label-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .deft-tile-icon {
+    display: grid; place-items: center; flex: none; inline-size: 2rem; block-size: 2rem;
+    border-radius: var(--deft-radius-sm); background: var(--deft-fill); color: var(--deft-label);
+  }
+  .deft-icon { flex: none; inline-size: 1.25rem; block-size: 1.25rem; fill: none; stroke: currentColor; stroke-width: var(--deft-icon-stroke); stroke-linecap: round; stroke-linejoin: round; }
+  .deft-tile-icon > .deft-icon { inline-size: 1.125rem; block-size: 1.125rem; }
+  .deft-chevron { color: var(--deft-label-3); }
+
+  /* Sheets, dialogs, popovers, toasts. */
+  dialog, .deft-dialog {
+    border: 0; padding: var(--deft-space-m); border-radius: var(--deft-radius-xl);
+    background: var(--deft-bg-elevated); color: var(--deft-label); max-inline-size: min(32rem, 100% - 2rem);
+  }
+  dialog::backdrop { background: color-mix(in oklch, var(--deft-bg) 60%, transparent); }
+  dialog.deft-sheet {
+    inline-size: 100%; max-inline-size: 100%; margin: auto 0 0;
+    padding-block-start: var(--deft-space-xs); border-radius: var(--deft-radius-xl) var(--deft-radius-xl) var(--deft-radius-xs) var(--deft-radius-xs);
+    background: var(--deft-material-bar); -webkit-backdrop-filter: var(--deft-material-blur); backdrop-filter: var(--deft-material-blur);
+    box-shadow: var(--deft-material-rim);
+  }
+  dialog.deft-sheet::before {
+    content: ""; display: block; inline-size: 2.25rem; block-size: 5px; margin: 0 auto var(--deft-space-s);
+    border-radius: var(--deft-radius-screen); background: var(--deft-label-4);
+  }
+  /* Full-screen modal (call screen, camera, onboarding takeover): dialog.deft-dialog.deft-fullscreen, open with showModal(). Centred stack, safe-area padding. */
+  dialog.deft-fullscreen {
+    inset: 0; inline-size: 100%; block-size: 100%; max-inline-size: none; max-block-size: none; margin: 0; box-sizing: border-box;
+    padding: calc(var(--deft-space-l) + env(safe-area-inset-top)) var(--deft-space-l) calc(var(--deft-space-l) + env(safe-area-inset-bottom));
+    border-radius: 0; background: var(--deft-bg);
+  }
+  dialog.deft-fullscreen > .deft-stack { min-block-size: 100%; justify-content: center; text-align: center; }
+  dialog.deft-fullscreen .deft-cluster { justify-content: center; }
+  /* Keypad: 3 columns of round digit keys (Geist, not Doto). Buttons are direct children; add a data-key label if you want. */
+  .deft-keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); justify-items: center; gap: var(--deft-space-xs); padding-block: var(--deft-space-s); }
+  .deft-keypad > button {
+    appearance: none; display: grid; place-items: center; inline-size: min(100%, calc(var(--deft-tap) * 1.5)); aspect-ratio: 1; padding: 0;
+    border: 0; border-radius: var(--deft-radius-full); background: var(--deft-fill); color: var(--deft-label); cursor: pointer;
+    font: var(--deft-type-title2-weight) var(--deft-type-title2-size) / 1 var(--deft-type-title2-family); font-variant-numeric: tabular-nums;
+  }
+  .deft-keypad > button:active { transform: scale(.94); }
+  [popover], .deft-menu { border: 0; border-radius: var(--deft-radius-lg); background: var(--deft-bg-elevated); color: var(--deft-label); padding: var(--deft-space-2xs); box-shadow: var(--deft-material-rim); }
+  .deft-menu { display: flex; flex-direction: column; gap: 2px; }
+  .deft-menu > * { display: flex; align-items: center; justify-content: flex-start; gap: var(--deft-space-xs); min-block-size: var(--deft-tap); padding-inline: var(--deft-space-s); border: 0; border-radius: var(--deft-radius-inner); background: transparent; color: var(--deft-label); text-align: start; }
+  .deft-toast { margin: auto; padding: var(--deft-space-s) var(--deft-space-m); border-radius: var(--deft-radius-lg); background: var(--deft-bg-elevated); color: var(--deft-label); box-shadow: var(--deft-material-rim); }
+
+  /* Press feedback: a currentColor state layer clipped to the control's own radius (base.css drops the square WebView highlight). In at once, fades on release. */
+  :is(.deft-btn, .deft-fab, .deft-chip, .deft-segmented > *, .deft-tabbar > *, .deft-tab, .deft-menu > *, .deft-stepper > button, .deft-keypad > button, .deft-cell[href], .deft-row[href], button.deft-cell, [data-deft-press]) {
+    background-image: linear-gradient(var(--deft-press-layer), var(--deft-press-layer));
+    transition: transform var(--deft-spring-snappy-duration) var(--deft-spring-snappy), background-color var(--deft-duration-s) var(--deft-ease), --deft-press-layer var(--deft-duration-l) var(--deft-ease);
+  }
+  :is(.deft-btn, .deft-fab, .deft-chip, .deft-segmented > *, .deft-tabbar > *, .deft-tab, .deft-menu > *, .deft-stepper > button, .deft-keypad > button, .deft-cell[href], .deft-row[href], button.deft-cell, [data-deft-press]):not(:disabled, [aria-disabled=true]):active { --deft-press-layer: var(--deft-press); transition-duration: var(--deft-spring-snappy-duration), 0s, 0s; }
+
+  /* Cards, alerts and status. Status colour is only ever an icon tint next to text (8.1). */
+  .deft-card { --deft-radius-outer: var(--deft-radius-lg); --deft-pad: var(--deft-space-s); display: flex; flex-direction: column; gap: var(--deft-space-xs); padding: var(--deft-pad); border-radius: var(--deft-radius-outer); background: var(--deft-bg-grouped); color: var(--deft-label); }
+  .deft-card-body { display: flex; flex-direction: column; gap: var(--deft-space-xs); padding: var(--deft-space-m); }
+  .deft-card-actions { display: flex; flex-wrap: wrap; gap: var(--deft-space-xs); }
+  .deft-alert {
+    display: flex; align-items: flex-start; gap: var(--deft-space-xs); padding: var(--deft-space-s) var(--deft-space-m);
+    border-radius: var(--deft-radius-md); background: var(--deft-fill); color: var(--deft-label); --_tone: var(--deft-label);
+  }
+  .deft-alert > .deft-icon { color: var(--_tone); }
+  .deft-alert[data-tone=error] { --_tone: var(--deft-error); }
+  .deft-alert[data-tone=warning] { --_tone: var(--deft-warning); }
+  .deft-alert[data-tone=success] { --_tone: var(--deft-success); }
+  .deft-alert[data-tone=info] { --_tone: var(--deft-label-2); }
+
+  /* Inputs, tabs, lists. */
+  .deft-input, .deft-select, .deft-textarea {
+    inline-size: 100%; min-block-size: var(--deft-tap); padding: var(--deft-space-xs) var(--deft-space-s);
+    border: 0; border-radius: var(--deft-radius-md); background: var(--deft-fill); color: var(--deft-label);
+    font: var(--deft-type-body-weight) var(--deft-type-body-size) / var(--deft-type-body-leading) var(--deft-type-body-family);
+  }
+  .deft-input::placeholder, .deft-textarea::placeholder { color: var(--deft-label-3); }
+  .deft-textarea { min-block-size: calc(var(--deft-tap) * 2); resize: vertical; }
+  .deft-tabs { display: flex; gap: var(--deft-space-xs); overflow-x: auto; }
+  .deft-tab {
+    appearance: none; min-block-size: var(--deft-tap); padding-inline: var(--deft-space-2xs); border: 0; border-radius: var(--deft-radius-sm); background: transparent;
+    color: var(--deft-label-3); font: var(--deft-type-subhead-weight) var(--deft-type-subhead-size) / var(--deft-type-subhead-leading) var(--deft-type-subhead-family);
+  }
+  .deft-tab[aria-selected=true], .deft-tab[aria-current] { color: var(--deft-label); box-shadow: inset 0 -2px 0 var(--deft-label); }
+  .deft-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .deft-list > * { padding-block: var(--deft-space-s); }
+  .deft-list > * + * { box-shadow: inset 0 var(--deft-hairline) 0 var(--deft-separator); }
+  details { padding: var(--deft-space-s); border-radius: var(--deft-radius-lg); background: var(--deft-bg-grouped); }
+  summary { display: flex; align-items: center; min-block-size: var(--deft-tap); cursor: pointer; }
+
+  /* Links and focus. */
+  a { color: var(--deft-label); text-decoration: underline; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--deft-label); outline-offset: 2px; }
+  @supports (corner-shape: squircle) {
+    .deft-group, .deft-card, .deft-tile, .deft-hero, .deft-alert, .deft-toast, .deft-menu, dialog, [popover] { corner-shape: squircle; }
+  }
+
+  /* Motion: springs, view transitions, sheet and dialog enter/exit. Reduced motion: base.css. */
+  .deft-sheet:not(dialog):not(.hidden) > form,
+  .deft-sheet:not(dialog):not(.hidden) > div { animation: deft-sheet-in var(--deft-duration-l) var(--deft-ease-enter); }
+  .deft-morph { view-transition-name: deft-morph; }
+  ::view-transition-old(root) { animation: deft-fade-out var(--deft-duration-s) var(--deft-ease-exit) both; }
+  ::view-transition-new(root) { animation: deft-rise-in var(--deft-duration-l) var(--deft-ease-enter) both; }
+  ::view-transition-group(deft-morph) { animation-duration: var(--deft-duration-l); animation-timing-function: var(--deft-ease-enter); }
+  dialog.deft-dialog, dialog.deft-sheet {
+    transition: opacity var(--deft-duration-s) var(--deft-ease-exit), transform var(--deft-duration-s) var(--deft-ease-exit), overlay var(--deft-duration-s) allow-discrete, display var(--deft-duration-s) allow-discrete;
+  }
+  dialog.deft-dialog { transform: translateY(12px) scale(.96); opacity: 0; }
+  dialog.deft-sheet { transform: translateY(100%); }
+  dialog.deft-dialog[open], dialog.deft-sheet[open] {
+    opacity: 1; transform: none;
+    transition: opacity var(--deft-duration-l) var(--deft-ease-enter), transform var(--deft-duration-l) var(--deft-ease-enter), overlay var(--deft-duration-l) allow-discrete, display var(--deft-duration-l) allow-discrete;
+  }
+  dialog.deft-dialog::backdrop, dialog.deft-sheet::backdrop { opacity: 0; transition: opacity var(--deft-duration-s) var(--deft-ease-exit), overlay var(--deft-duration-s) allow-discrete, display var(--deft-duration-s) allow-discrete; }
+  dialog.deft-dialog[open]::backdrop, dialog.deft-sheet[open]::backdrop { opacity: 1; transition: opacity var(--deft-duration-l) var(--deft-ease-enter), overlay var(--deft-duration-l) allow-discrete, display var(--deft-duration-l) allow-discrete; }
+  @starting-style {
+    dialog.deft-dialog[open] { opacity: 0; transform: translateY(12px) scale(.96); }
+    dialog.deft-sheet[open] { transform: translateY(100%); }
+    dialog.deft-dialog[open]::backdrop, dialog.deft-sheet[open]::backdrop { opacity: 0; }
+    .deft-toast:popover-open, [popover]:popover-open { opacity: 0; transform: translateY(8px); }
+  }
+  [popover], .deft-toast { opacity: 0; transform: translateY(8px); transition: opacity var(--deft-duration-s) var(--deft-ease-exit), transform var(--deft-duration-s) var(--deft-ease-exit), overlay var(--deft-duration-s) allow-discrete, display var(--deft-duration-s) allow-discrete; }
+  .deft-toast:popover-open, [popover]:popover-open { opacity: 1; transform: none; transition: opacity var(--deft-duration-m) var(--deft-ease-enter), transform var(--deft-duration-m) var(--deft-ease-enter), overlay var(--deft-duration-m) allow-discrete, display var(--deft-duration-m) allow-discrete; }
+  @keyframes deft-sheet-in { from { transform: translateY(100%); } }
+  @keyframes deft-fade-out { to { opacity: 0; } }
+  @keyframes deft-rise-in { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes deft-shimmer { to { transform: translateX(100%); } }
+  @keyframes deft-title-collapse { to { opacity: 0; transform: translateY(-.5rem); } }
+
+  /* motion.js: enter gating, sheet detents (glass at medium, opaque at large), grab zone, <deft-icon>, <deft-number>. */
+  .deft-motion [data-deft-enter]:not(.deft-in)>* { opacity: 0; }
+  dialog.deft-sheet[data-detents] { block-size: var(--deft-sheet-h, 60dvh); max-block-size: 100dvh; }
+  dialog.deft-sheet[data-detent=large] { background: var(--deft-bg-elevated); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .deft-grab { position: absolute; inset: 0 0 auto; block-size: 2.5rem; touch-action: none; }
+  deft-icon { display: inline-flex; inline-size: 1.25rem; block-size: 1.25rem; }
+  deft-icon > svg { inline-size: 100%; block-size: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+  deft-number, deft-number[value] { display: inline-flex; font-family: var(--deft-font-numeric); font-weight: var(--deft-font-numeric-weight); font-variant-numeric: tabular-nums; }
+  .deft-toast[data-tone=error]::before { content: "!"; color: var(--deft-error); font-weight: 700; margin-inline-end: .5em; }
+
+  /* Widgets: <deft-widget app size> spans its size in .deft-widgets (4 columns, rows of 7 pads). Frames fill it; the placeholder is quiet. */
+  .deft-widgets { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: calc(var(--deft-pad) * 7); gap: var(--deft-pad); }
+  deft-widget { --deft-w: 1; --deft-h: 1; position: relative; display: block; min-inline-size: 0; min-block-size: calc(var(--deft-h) * var(--deft-pad) * 7); overflow: hidden; border-radius: var(--deft-radius-lg); background: var(--deft-bg-grouped); grid-column: span var(--deft-w); grid-row: span var(--deft-h); }
+  /* Outside .deft-widgets (a canvas that forgot the wrapper) it still takes its cells: w of the parent's 4 columns, h rows of 7 pads. */
+  deft-widget:not(.deft-widgets > *) { inline-size: calc((100% - 3 * var(--deft-pad)) / 4 * var(--deft-w) + (var(--deft-w) - 1) * var(--deft-pad)); block-size: calc(var(--deft-h) * var(--deft-pad) * 7 + (var(--deft-h) - 1) * var(--deft-pad)); }
+  deft-widget[size="2x1"] { --deft-w: 2; } deft-widget[size="2x2"] { --deft-w: 2; --deft-h: 2; }
+  deft-widget[size="4x1"] { --deft-w: 4; } deft-widget[size="4x2"] { --deft-w: 4; --deft-h: 2; }
+  /* A widget page's body: transparent, so the host's deft-widget card (--deft-bg-grouped) shows through the frame. */
+  .deft-widget-body, .deft-in-widget, .deft-in-widget body { background: transparent; }
+  deft-widget > iframe { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; border: 0; }
+  .deft-widget-quiet { display: grid; place-items: center; block-size: 100%; margin: 0; padding: var(--deft-space-xs); text-align: center; font-size: var(--deft-type-footnote-size); color: var(--deft-label-2); }
+  .deft-widget-setup { align-content: center; gap: var(--deft-space-xs); text-decoration: none; cursor: pointer; background: var(--deft-fill); color: var(--deft-label); }
+  .deft-widget-setup > b { font-weight: 600; color: var(--deft-accent); }
+
+  /* Accessibility fallbacks (3.3). deft.components wins over deft.theme. */
+  @media (prefers-reduced-transparency: reduce) {
+    :root { --deft-material-bar: var(--deft-material-bar-reduced); --deft-material-blur: none; }
+  }
+  @media (prefers-contrast: more) {
+    :root { --deft-material-bar: var(--deft-material-bar-reduced); --deft-material-blur: none; --deft-separator: var(--deft-label-3); }
+  }
+}

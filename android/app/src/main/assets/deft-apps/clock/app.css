@@ -1,0 +1,8 @@
+/* Clock: layout glue only. Colour, type and motion come from the runtime. */
+@layer deft.components {
+  .deft-page { padding-block-end: calc(var(--deft-tap) + 3 * var(--deft-space-m)); }
+  #list:empty { display: none; }
+  #empty:empty { display: none; }
+  #err[hidden] { display: none; }
+  .deft-sheet form { padding-block-end: var(--deft-space-s); }
+}

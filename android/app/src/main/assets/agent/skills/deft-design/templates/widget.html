@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!-- Template: home widget (one live value: a public feed, or a phone value such as steps). Copy as widget.html, and templates/widget-main.js as main.js beside it (the app's index.html loads that same main.js; lint FL602). manifest: "widget": {"page": "./widget.html", "sizes": ["1x1", "2x1", "2x2", "4x1", "4x2"]}; "network": ["https://<feed-host>"] only for a web feed. Recipe: references/recipes/widgets.md. Tokens and runtime classes only. Keep class="deft-widget-body" on body: it is transparent, so the home card shows. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <title>Widget</title>
+</head>
+<body class="deft-widget-body">
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <!-- 1x1 shows only the value and the buttons; data-show lists the sizes that show a tagged element. -->
+      <section class="deft-page" aria-labelledby="w-label">
+        <h1 id="w-label" class="deft-labelMono" data-show="2x1 2x2 4x1 4x2">Label</h1>
+        <p class="deft-tile-value" id="value" aria-live="polite">--</p>
+        <p class="deft-footnote" id="updated" data-show="2x1 2x2 4x1 4x2">Not loaded yet</p>
+        <button class="deft-btn" type="button" id="retry" hidden>Retry</button>
+        <button class="deft-btn-soft" type="button" id="open">Open app</button>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

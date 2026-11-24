@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "gallery",
+  "name": "Gallery",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "media.read", "reason": "Show the photos on this phone in a grid" },
+    { "id": "share.receive", "reason": "Show pictures you open with Gallery from other apps" }
+  ],
+  "network": [],
+  "handles": { "mimeTypes": ["image/*"] }
+}

@@ -1,0 +1,36 @@
+/* Run Tracker: distance, a route drawing and the start, stop and clear buttons. */
+@layer deft.components {
+  .run {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--deft-space-s);
+    padding: var(--deft-space-m) 0;
+  }
+  .distance { align-items: baseline; }
+  .map {
+    width: 100%;
+    max-width: 22.5rem;
+    aspect-ratio: 1;
+    border-radius: var(--deft-radius-lg);
+    background: var(--deft-fill);
+  }
+  .track {
+    fill: none;
+    stroke: var(--deft-label);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .here { fill: var(--deft-label); }
+  .map[data-live] .here { fill: var(--deft-accent); }
+  .controls { justify-content: center; }
+  .hint {
+    max-width: 32em;
+    margin: 0;
+    text-align: center;
+    color: var(--deft-label-2);
+  }
+  #log { padding: var(--deft-space-s); }
+  #log:empty { display: none; }
+}

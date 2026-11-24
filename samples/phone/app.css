@@ -1,0 +1,14 @@
+/* Phone: dialer and call-screen layout glue only. Colour, type and motion come from the runtime. */
+@layer deft.components {
+  #err { margin: var(--deft-space-s) var(--deft-space-m) 0; }
+  #err[hidden] { display: none; }
+  #recents:empty { display: none; }
+  .dial {
+    text-align: center;
+    min-block-size: var(--deft-tap);
+    padding-block: var(--deft-space-s);
+    letter-spacing: 0.04em;
+  }
+  .actions { justify-content: center; padding-block: var(--deft-space-s); }
+  #sim { margin-block-end: var(--deft-space-s); }
+}

@@ -1,0 +1,13 @@
+{
+  "deft": 1,
+  "id": "calendar",
+  "name": "Calendar",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "calendar.read", "reason": "Show your calendars and events" },
+    { "id": "calendar.write", "reason": "Create and edit events" }
+  ],
+  "network": []
+}

@@ -1,0 +1,12 @@
+{
+  "deft": 1,
+  "id": "vault",
+  "name": "Vault",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "keystore", "reason": "Lock a secret with a key that needs your fingerprint" }
+  ],
+  "network": []
+}

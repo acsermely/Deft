@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "run-tracker",
+  "name": "Run Tracker",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "foreground", "reason": "Keep recording your run with the screen off" },
+    { "id": "location", "reason": "Know where you are while you run" },
+    { "id": "location.background", "reason": "Keep recording your route after you leave the app or lock the phone" }
+  ],
+  "network": []
+}

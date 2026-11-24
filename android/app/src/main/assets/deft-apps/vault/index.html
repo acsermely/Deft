@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- Vault: a secret locked with a key that needs your fingerprint. Only the ciphertext is kept here. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Vault</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="vault-title">
+        <h1 id="vault-title" class="deft-largeTitle">Vault</h1>
+        <div class="deft-stack">
+          <div class="deft-stack">
+            <label class="deft-subhead" for="secret">Secret text</label>
+            <input id="secret" class="deft-input" type="text" autocomplete="off" />
+          </div>
+          <div class="deft-cluster">
+            <button id="save" class="deft-btn" data-primary type="button">Save with fingerprint</button>
+            <button id="reveal" class="deft-btn" type="button">Reveal with fingerprint</button>
+            <button id="forget" class="deft-btn" type="button">Delete key</button>
+          </div>
+        </div>
+        <p id="shown" class="deft-body"></p>
+        <p id="log" class="deft-footnote" role="status"></p>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

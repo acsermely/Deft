@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Wallpaper Clock: clock preview and how to set the live wallpaper (PARITY G11). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Wallpaper Clock</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="clock-title">
+        <h1 id="clock-title" class="deft-largeTitle">Wallpaper Clock</h1>
+        <canvas id="preview" class="preview" role="img" aria-label="Clock preview"></canvas>
+        <div class="deft-stack">
+          <p class="deft-body">
+            To use this clock as your wallpaper, open the launcher settings, find Wallpaper Clock and tap
+            Review next to "Be your wallpaper". Then set the live wallpaper on Android's preview screen.
+          </p>
+          <p class="deft-footnote">
+            The wallpaper runs only while your home or lock screen is visible. Tap the home screen to see a ripple.
+            To stop it, remove the permission on the app's card; then choose your own picture again in Android
+            Settings under Wallpaper.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* Load order: base.css, tokens.css, components.css, theme.css (see docs/design/DESIGN-SYSTEM-PROPOSAL.md 3.9). */
+@layer deft.reset, deft.theme, deft.base, deft.layout, deft.components, deft.utilities;
+/* Press state layer (components.css). Registered so it can fade out on release. */
+@property --deft-press-layer { syntax: "<color>"; inherits: false; initial-value: transparent; }
+
+@layer deft.reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  /* No square blue WebView tap flash; controls draw their own rounded press state. */
+  html { text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; }
+  [hidden] { display: none !important; }
+  img, svg, video { display: block; max-width: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+  }
+}
+
+@layer deft.base {
+  :root {
+    --deft-space-3xs: clamp(.25rem, .22rem + .15vw, .35rem);
+    --deft-space-2xs: clamp(.35rem, .3rem + .2vw, .5rem);
+    --deft-space-xs: clamp(.5rem, .45rem + .25vw, .7rem);
+    --deft-space-s: clamp(.75rem, .65rem + .4vw, 1rem);
+    --deft-space-m: clamp(1rem, .85rem + .6vw, 1.35rem);
+    --deft-space-l: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+    --deft-space-xl: clamp(2.1rem, 1.6rem + 1.6vw, 3rem);
+    --deft-space-2xl: clamp(3rem, 2.2rem + 2.4vw, 4.5rem);
+    --deft-text-xs: clamp(.75rem, .72rem + .12vw, .82rem);
+    --deft-text-s: clamp(.875rem, .84rem + .16vw, .95rem);
+    --deft-text-m: clamp(1rem, .96rem + .2vw, 1.125rem);
+    --deft-text-l: clamp(1.25rem, 1.1rem + .7vw, 1.6rem);
+    --deft-text-xl: clamp(1.6rem, 1.25rem + 1.2vw, 2.25rem);
+    --deft-text-2xl: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+    --deft-tap: 48px;
+    --deft-duration-xs: 100ms;
+    --deft-duration-s: 120ms;
+    --deft-duration-m: 220ms;
+    --deft-duration-l: 320ms;
+    --deft-ease: cubic-bezier(.2, 0, 0, 1);
+    --deft-ease-enter: cubic-bezier(.05, .7, .1, 1);
+    --deft-ease-exit: cubic-bezier(.3, 0, .8, .15);
+    --deft-line: var(--deft-separator);
+    --deft-focus: var(--deft-label);
+    --deft-press: color-mix(in srgb, currentColor 12%, transparent);
+  }
+  body {
+    background: var(--deft-color-base-100);
+    color: var(--deft-color-base-content);
+    font-family: var(--deft-font-ui, system-ui, sans-serif);
+    font-size: calc(var(--deft-text-m) * var(--deft-density, 1));
+    line-height: 1.45;
+  }
+  h1 { font-size: calc(var(--deft-text-2xl) * var(--deft-density, 1)); }
+  h2 { font-size: calc(var(--deft-text-xl) * var(--deft-density, 1)); }
+  h3 { font-size: calc(var(--deft-text-l) * var(--deft-density, 1)); }
+  h4, h5, h6 { font-size: calc(var(--deft-text-m) * var(--deft-density, 1)); }
+  h1, h2, h3, h4, h5, h6, p { margin: 0 0 var(--deft-space-s); }
+  a { color: var(--deft-label); text-decoration: underline; }
+  ::selection { background: var(--deft-color-primary); color: var(--deft-color-primary-content); }
+  :focus-visible { outline: 2px solid var(--deft-focus); outline-offset: 2px; }
+  /* Unstyled buttons and links still answer a press: they dim, like iOS text buttons. Styled ones use data-deft-press. */
+  :where(a, button):not([class]) { transition: opacity var(--deft-duration-m) var(--deft-ease); }
+  :where(a, button):not([class], :disabled):active { opacity: .6; transition-duration: 0s; }
+  button, input, select, textarea { font: inherit; color: inherit; background: var(--deft-color-base-100); }
+  button, input, select, textarea, nav a { min-height: var(--deft-tap); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: var(--deft-space-xs); text-align: start; border-bottom: var(--deft-border, 1px) solid var(--deft-line); }
+}
+
+@layer deft.layout {
+  .deft-stack { display: flex; flex-direction: column; gap: calc(var(--deft-gap, var(--deft-space-m)) * var(--deft-density, 1)); }
+  .deft-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--deft-gap, var(--deft-space-s)) * var(--deft-density, 1)); }
+  .deft-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--deft-min, 12rem)), 1fr)); gap: calc(var(--deft-gap, var(--deft-space-m)) * var(--deft-density, 1)); }
+  .deft-sidebar { display: flex; flex-wrap: wrap; gap: calc(var(--deft-gap, var(--deft-space-m)) * var(--deft-density, 1)); }
+  .deft-sidebar > :first-child { flex-basis: var(--deft-side, 14rem); flex-grow: 1; }
+  .deft-sidebar > :last-child { flex-basis: 0; flex-grow: 999; min-inline-size: var(--deft-min, 50%); }
+  .deft-switcher { display: flex; flex-wrap: wrap; gap: calc(var(--deft-gap, var(--deft-space-m)) * var(--deft-density, 1)); }
+  .deft-switcher > * { flex-grow: 1; flex-basis: calc((var(--deft-min, 24rem) - 100%) * 999); }
+  .deft-center { box-sizing: content-box; margin-inline: auto; max-inline-size: var(--deft-measure, 40rem); padding-inline: var(--deft-space-m); }
+  .deft-cover { display: flex; flex-direction: column; min-block-size: 100dvh; }
+  .deft-cover > * { margin-block: calc(var(--deft-gap, var(--deft-space-s)) * var(--deft-density, 1)); }
+  .deft-cover > :nth-child(2) { margin-block: auto; }
+  .deft-scroll { overflow: auto; min-block-size: 0; scroll-snap-type: var(--deft-snap, none); }
+  .deft-scroll > * { scroll-snap-align: var(--deft-snap-align, start); }
+  .deft-app > .deft-scroll { flex: 1 1 auto; }
+}
+
+@layer deft.utilities {
+  .deft-safe-top { padding-top: env(safe-area-inset-top); }
+  .deft-safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .deft-safe-inline { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .deft-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .deft-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .deft-app { display: flex; flex-direction: column; min-height: 100dvh; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+  .hidden { display: none !important; }
+}

@@ -1,0 +1,16 @@
+{
+  "deft": 1,
+  "id": "three-tps",
+  "name": "Three TPS",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "bluetooth.ble.central", "reason": "Link with a nearby phone for the duel" },
+    { "id": "bluetooth.ble.peripheral", "reason": "Advertise so a nearby phone can join" }
+  ],
+  "network": [],
+  "dependencies": {
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js": "sha256-PmkKx9GAsKrfCJG+o57sZD4p4tPnXJmxholRhmX2m6Y="
+  }
+}

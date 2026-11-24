@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- Podcast: a looping sample episode that keeps playing with the screen off (PARITY D4). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Podcast</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="podcast-title">
+        <h1 id="podcast-title" class="deft-largeTitle">Podcast</h1>
+        <div class="deft-stack" data-deft-enter="scale">
+          <div class="deft-hero">
+            <img class="cover" src="./cover.png" alt="" width="128" height="128" />
+            <div class="deft-hero-body">
+              <span class="deft-labelMono">Now playing</span>
+              <h2 id="title" class="deft-title2"></h2>
+              <p id="status" class="deft-subhead">Stopped</p>
+            </div>
+          </div>
+          <div class="deft-cluster">
+            <button id="prev" class="deft-btn deft-btn-ghost" type="button" aria-label="Previous"><deft-icon name="skip-back" aria-hidden="true"></deft-icon></button>
+            <button id="play" class="deft-fab" data-primary type="button" aria-label="Play"><deft-icon name="play" aria-hidden="true"></deft-icon></button>
+            <button id="next" class="deft-btn deft-btn-ghost" type="button" aria-label="Next"><deft-icon name="skip-forward" aria-hidden="true"></deft-icon></button>
+          </div>
+          <div class="deft-cluster">
+            <button id="stop" class="deft-btn deft-btn-ghost" type="button">Stop</button>
+          </div>
+          <p class="deft-footnote">Press Play, then lock the phone: the lock screen shows play and pause, and headphone buttons work too.</p>
+        </div>
+        <p id="log" class="deft-footnote"></p>
+      </section>
+    </main>
+  </div>
+  <audio id="audio" src="./episode.wav" loop preload="auto"></audio>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

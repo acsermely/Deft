@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>bridge-test</title>
+</head>
+<body>
+  <p>bridge-test</p>
+  <script>
+    window.__deftTest = {
+      done: false,
+      hasBridge: !!window.deftBridge,
+      hasPort: typeof jsBridge !== 'undefined',
+      ping: null,
+      invokeCode: '',
+      error: ''
+    };
+    (async function () {
+      try {
+        if (!window.deftBridge) {
+          window.__deftTest.error = 'no-bridge';
+          return;
+        }
+        await deftBridge.ready;
+        window.__deftTest.hasBridge = true;
+        window.__deftTest.ping = await deftBridge.ping();
+        try {
+          await deftBridge.invoke('contacts.list', {});
+          window.__deftTest.invokeCode = 'ok';
+        } catch (e) {
+          window.__deftTest.invokeCode = e.code || String(e.message || e);
+        }
+      } catch (e) {
+        window.__deftTest.error = e.code || String(e.message || e);
+      } finally {
+        window.__deftTest.done = true;
+      }
+    })();
+  </script>
+</body>
+</html>

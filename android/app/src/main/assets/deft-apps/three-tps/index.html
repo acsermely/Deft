@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Fireball Duel: HUD, joystick, buttons and lobby overlay. main.js draws the scene. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Three TPS — Fireball Duel</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/_deft/v1/base.css">
+<link rel="stylesheet" href="/_deft/v1/tokens.css">
+<link rel="stylesheet" href="/_deft/v1/components.css">
+<link rel="stylesheet" href="/_deft/v1/theme.css">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<div id="ui">
+  <div id="hud">
+    <div class="lbl deft-footnote">You <span id="phpTxt"></span></div><div class="deft-meter" id="php" data-tone="success" aria-hidden="true"><div></div></div>
+    <div class="lbl deft-footnote">Enemy <span id="ehpTxt"></span></div><div class="deft-meter" id="ehp" data-tone="error" aria-hidden="true"><div></div></div>
+    <div class="lbl deft-footnote">Shield</div><div class="deft-meter" id="stam" aria-hidden="true"><div></div></div>
+  </div>
+  <div id="bt" class="deft-mono"></div>
+  <div id="stick"><div id="knob"></div></div>
+  <div id="shield" role="img" aria-label="Shield"><deft-icon name="shield" aria-hidden="true"></deft-icon></div>
+  <div id="fire" role="img" aria-label="Fireball"><deft-icon name="flame" aria-hidden="true"></deft-icon></div>
+  <div id="msg" class="deft-title2" aria-live="polite"></div>
+  <div id="cal">
+    <h1 class="deft-largeTitle" id="title">Fireball Duel</h1>
+    <div class="deft-stack" id="lobby">
+      <p class="deft-footnote" id="status">Loading libraries…</p>
+      <section class="deft-stack" id="hostJoin">
+        <h2 class="deft-labelMono" id="menuTitle">Choose mode</h2>
+        <div class="deft-group">
+          <button class="deft-cell" id="btnAi" type="button" data-deft-press>
+            <span class="deft-tile-icon"><deft-icon name="user" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Practice</span><span class="deft-footnote deft-cell-sub">Duel an AI knight</span></span>
+          </button>
+          <button class="deft-cell" id="btnHost" type="button" data-deft-press>
+            <span class="deft-tile-icon"><deft-icon name="radio" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Host BLE Duel</span><span class="deft-footnote deft-cell-sub">Advertise and wait for a guest</span></span>
+          </button>
+          <button class="deft-cell" id="btnJoin" type="button" data-deft-press>
+            <span class="deft-tile-icon"><deft-icon name="search" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Join BLE Duel</span><span class="deft-footnote deft-cell-sub">Scan for a nearby host</span></span>
+          </button>
+        </div>
+      </section>
+      <div class="deft-group" id="scanList"></div>
+      <button class="deft-btn deft-btn-lg" data-primary id="startBtn" type="button" hidden>Tap to calibrate and start</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="main.js"></script>
+</body>
+</html>

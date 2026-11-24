@@ -1,0 +1,63 @@
+/* Mesh: nearby chat log, nickname and composer. Tokens and runtime components only. */
+@layer deft.components {
+  .deft-topbar {
+    flex-wrap: wrap;
+  }
+  .deft-topbar .deft-title2 {
+    flex: 1;
+  }
+  .deft-badge[data-off] {
+    background: var(--deft-fill);
+    color: var(--deft-label-2);
+  }
+  .nick-row,
+  .nick-err {
+    padding-inline: var(--deft-space-s);
+  }
+  .nick-row {
+    padding-block: var(--deft-space-2xs);
+  }
+  .deft-msgs {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--deft-space-2xs);
+    padding: var(--deft-space-s);
+  }
+  .bubble {
+    max-width: 82%;
+    padding: var(--deft-space-2xs) var(--deft-space-s);
+    border-radius: var(--deft-radius-lg);
+    background: var(--deft-fill);
+    color: var(--deft-label);
+    align-self: flex-start;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .bubble.me {
+    align-self: flex-end;
+    background: var(--deft-label);
+    color: var(--deft-bg);
+  }
+  .bubble-meta {
+    color: var(--deft-label-2);
+  }
+  .bubble.me .bubble-meta {
+    color: inherit;
+    opacity: 0.7;
+  }
+  .composer {
+    display: flex;
+    align-items: center;
+    gap: var(--deft-space-2xs);
+    padding: var(--deft-space-xs) var(--deft-space-s);
+  }
+  .composer .deft-input {
+    flex: 1;
+    min-width: 0;
+  }
+  #log > .deft-empty {
+    margin: auto;
+  }
+}

@@ -1,0 +1,9 @@
+/* Wallpaper Clock: the preview is a square; colours come from the theme tokens in clock.js. */
+@layer deft.components {
+  .preview {
+    display: block;
+    width: min(100%, 20rem);
+    aspect-ratio: 1;
+    margin: var(--deft-space-s) auto;
+  }
+}

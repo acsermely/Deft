@@ -1,0 +1,15 @@
+# Cloudflare Pages (SvelteKit adapter-cloudflare).
+# Landing is prerendered HTML; /freedom-launcher.apk is an SSR function that
+# streams the APK from R2 (Pages static assets cap files at 25 MB).
+#
+#   cd web && npm run deploy
+#   ./scripts/publish-apk.sh
+
+name = "freedom-launcher"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+compatibility_date = "2026-09-09"
+compatibility_flags = ["nodejs_compat", "nodejs_als"]
+
+[[r2_buckets]]
+binding = "APK"
+bucket_name = "freedom-launcher-apk"

@@ -1,0 +1,5 @@
+api_base = "https://openrouter.ai/api/v1"
+model = "z-ai/glm-5.3-flash:nitro"
+max_tokens = 16384
+context_window = 128000
+web_read = false

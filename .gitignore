@@ -1,0 +1,29 @@
+.DS_Store
+*.iml
+.idea/
+.gradle/
+**/build/
+local.properties
+captures/
+*.apk
+# The landing page's APK download route is a folder named like an APK.
+!web/src/routes/freedom-launcher.apk/
+*.ap_
+*.aab
+*.dex
+*.class
+.cxx/
+*.log
+.kotlin/
+node_modules/
+.wrangler/
+.dev.vars
+scripts/.venv-mesh/
+.env
+agent-pull/
+android/app/src/main/assets/bridge/deft-bridge.js
+# PARITY G14: the Stripe sample's test key stays local (samples and the bundled copy).
+samples/stripe-checkout/config.json
+android/app/src/main/assets/deft-apps/stripe-checkout/config.json
+# Local preview servers (absolute paths on one machine).
+.claude/launch.json

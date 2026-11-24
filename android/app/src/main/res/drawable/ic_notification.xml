@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deft mark: 3x3 ash dots centred on the icon; the bottom-right one is the larger ember send button with an ink chevron. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="60" android:viewportHeight="60">
+    <group android:translateX="6" android:translateY="6" android:scaleX="1" android:scaleY="1">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M2,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M38,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M2,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M38,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M2,42 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,42 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z" />
+        <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M32,42 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z M38.792,38.545 A1.555,1.555 0 0,1 40.99,36.346 L45.545,40.901 A1.555,1.555 0 0,1 45.545,43.099 L40.99,47.654 A1.555,1.555 0 0,1 38.792,45.455 L42.247,42 Z" />
+    </group>
+</vector>

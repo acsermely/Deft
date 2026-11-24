@@ -1,0 +1,6 @@
+/* Vault: the revealed secret keeps its line breaks; an empty reveal takes no space. */
+@layer deft.components {
+  #shown { white-space: pre-wrap; }
+  #shown:empty { display: none; }
+  #log { white-space: pre-wrap; }
+}

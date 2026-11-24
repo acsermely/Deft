@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- Design Gallery: every token and component (DESIGN-SYSTEM-PROPOSAL 3.8). The visual test target for screenshots. Tokens only; no inline styles. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Design Gallery</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app ds">
+    <header class="deft-topbar"><h1 class="deft-title2 ds-title">Design Gallery</h1></header>
+    <p class="deft-caption ds-readout" id="readout"></p>
+
+    <main class="deft-scroll ds-main">
+
+      <section class="ds-section" aria-labelledby="h-accent">
+        <h2 id="h-accent" class="deft-headline">Accent</h2>
+        <div class="ds-grid" id="accent"></div>
+        <p class="deft-footnote ds-note">The accent marks the primary action and one active indicator per screen.</p>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-labels">
+        <h2 id="h-labels" class="deft-headline">Labels and links</h2>
+        <p class="deft-body ds-label-1">Label (--deft-label)</p>
+        <p class="deft-body ds-label-2">Label 2 (--deft-label-2)</p>
+        <p class="deft-body ds-label-3">Label 3 (--deft-label-3)</p>
+        <p class="deft-body ds-label-4">Label 4 (--deft-label-4)</p>
+        <p class="deft-body"><a href="#links">A link is label-coloured and underlined</a></p>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-surfaces">
+        <h2 id="h-surfaces" class="deft-headline">Surfaces, fills and separator</h2>
+        <div class="ds-grid" id="surfaces"></div>
+        <div class="ds-grid" id="fills"></div>
+        <hr class="ds-sep" />
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-status">
+        <h2 id="h-status" class="deft-headline">Status</h2>
+        <div id="status" class="ds-stack"></div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-type">
+        <h2 id="h-type" class="deft-headline">Type scale</h2>
+        <div id="type"></div>
+        <p class="deft-labelMono">labelMono: uppercase micro-label</p>
+        <p class="deft-tile-value" aria-label="12:48">12:48</p>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-shape">
+        <h2 id="h-shape" class="deft-headline">Radii, padding and springs</h2>
+        <div class="ds-radii" id="radii"></div>
+        <p class="deft-caption" id="pad"></p>
+        <ul class="deft-list" id="springs"></ul>
+        <div class="ds-track"><span class="ds-dot" id="spring-dot"></span></div>
+        <button class="deft-btn" type="button" id="spring-demo">Tap: snappy</button>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-buttons">
+        <h2 id="h-buttons" class="deft-headline">Buttons</h2>
+        <div class="deft-cluster">
+          <button class="deft-btn" data-primary type="button">Primary</button>
+          <button class="deft-btn" type="button">Secondary</button>
+          <button class="deft-btn deft-btn-ghost" type="button">Ghost</button>
+          <button class="deft-btn deft-btn-outline" type="button">Outline</button>
+          <button class="deft-btn deft-btn-soft" type="button">Soft</button>
+          <button class="deft-btn deft-btn-link" type="button">Link button</button>
+        </div>
+        <div class="deft-cluster">
+          <button class="deft-btn deft-btn-sm" type="button">Small</button>
+          <button class="deft-btn deft-btn-lg" data-primary type="button">Large</button>
+          <button class="deft-btn" type="button" disabled>Disabled</button>
+          <button class="deft-fab" data-primary type="button" aria-label="Add">
+            <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-switch">
+        <h2 id="h-switch" class="deft-headline">Switch, segmented, chips, stepper</h2>
+        <div class="deft-cluster">
+          <label class="deft-body ds-inline">Wi-Fi <input class="deft-switch" type="checkbox" role="switch" checked /></label>
+          <label class="deft-body ds-inline">Bluetooth <input class="deft-switch" type="checkbox" role="switch" /></label>
+          <label class="deft-body ds-inline">Disabled <input class="deft-switch" type="checkbox" role="switch" disabled /></label>
+        </div>
+        <div class="deft-segmented" role="tablist" data-group>
+          <button type="button" role="tab" aria-selected="true">Day</button>
+          <button type="button" role="tab" aria-selected="false">Week</button>
+          <button type="button" role="tab" aria-selected="false">Month</button>
+        </div>
+        <div class="deft-cluster" data-group>
+          <button class="deft-chip" type="button" aria-pressed="true">Selected</button>
+          <button class="deft-chip" type="button" aria-pressed="false">Idle</button>
+          <button class="deft-chip" type="button" aria-pressed="false">Another</button>
+        </div>
+        <div class="deft-stepper">
+          <button type="button" data-step="-1" aria-label="Decrease">
+            <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+          </button>
+          <output id="stepper-value" class="deft-tile-value">3</output>
+          <button type="button" data-step="1" aria-label="Increase">
+            <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-progress">
+        <h2 id="h-progress" class="deft-headline">Slider and progress</h2>
+        <input class="deft-slider" type="range" min="0" max="100" value="40" aria-label="Volume" data-slider />
+        <input class="deft-slider" type="range" min="0" max="100" value="70" aria-label="Recording level" data-slider data-live />
+        <div class="deft-progress" data-value="60" role="progressbar" aria-label="Storage"></div>
+        <div class="deft-progress" data-value="62" data-live role="progressbar" aria-label="Recording"></div>
+        <div class="deft-progress" data-segments data-value="50" data-segs="8" role="progressbar" aria-label="Setup steps"></div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-badges">
+        <h2 id="h-badges" class="deft-headline">Badges, skeleton and empty state</h2>
+        <div class="deft-cluster">
+          <span class="deft-badge">Unread</span>
+          <span class="deft-badge" aria-label="new item"></span>
+          <span class="deft-badge">Synced</span>
+        </div>
+        <div class="deft-skeleton ds-skel"></div>
+        <div class="deft-empty">
+          <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M4 10h16" /></svg>
+          <h3 class="deft-title3">Nothing here yet</h3>
+          <p class="deft-subhead">Add an event and it will show up on this day.</p>
+          <button class="deft-btn" data-primary type="button">Add event</button>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-tiles">
+        <h2 id="h-tiles" class="deft-headline">Tiles and hero</h2>
+        <div class="ds-grid">
+          <div class="deft-tile">
+            <span class="deft-labelMono">Steps today</span>
+            <span class="deft-tile-value">8412</span>
+            <svg viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="M0 26 L20 20 L40 22 L60 12 L80 16 L100 4" /></svg>
+          </div>
+          <div class="deft-tile">
+            <span class="deft-labelMono">Battery</span>
+            <span class="deft-tile-value">98</span>
+            <span class="deft-footnote">Charging</span>
+          </div>
+        </div>
+        <div class="deft-hero">
+          <div class="deft-hero-body">
+            <span class="deft-labelMono">Featured</span>
+            <h3 class="deft-title2">Hero with scrim</h3>
+            <p class="deft-subhead">Text sits on the bottom scrim, never on a bare image.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-alerts">
+        <h2 id="h-alerts" class="deft-headline">Alerts</h2>
+        <div class="deft-alert" data-tone="error" role="alert">
+          <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M9 9l6 6M15 9l-6 6" /></svg>
+          <span class="deft-body">Error: the request failed</span>
+        </div>
+        <div class="deft-alert" data-tone="warning">
+          <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z" /><path d="M12 10v4M12 17v.5" /></svg>
+          <span class="deft-body">Warning: storage is nearly full</span>
+        </div>
+        <div class="deft-alert" data-tone="success">
+          <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8 12.5l3 3 5-6" /></svg>
+          <span class="deft-body">Success: changes saved</span>
+        </div>
+        <div class="deft-alert" data-tone="info">
+          <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8v.5" /></svg>
+          <span class="deft-body">Info: sync runs in the background</span>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-inputs">
+        <h2 id="h-inputs" class="deft-headline">Inputs and tabs</h2>
+        <input class="deft-input" type="text" placeholder="Placeholder" aria-label="Text input" />
+        <select class="deft-select" aria-label="Select"><option>One</option><option>Two</option></select>
+        <textarea class="deft-textarea" rows="2" aria-label="Notes">Some text</textarea>
+        <div class="deft-tabs" role="tablist">
+          <button class="deft-tab" type="button" role="tab" aria-selected="true">Today</button>
+          <button class="deft-tab" type="button" role="tab" aria-selected="false">Week</button>
+          <button class="deft-tab" type="button" role="tab" aria-selected="false">Month</button>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-cells">
+        <h2 id="h-cells" class="deft-headline">Grouped list, page and tab bar</h2>
+        <div class="deft-group">
+          <a class="deft-cell" href="#cells">
+            <span class="deft-tile-icon"><svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12a7 7 0 0 1 14 0" /><path d="M8 15a4 4 0 0 1 8 0" /></svg></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Wi-Fi</span><span class="deft-footnote deft-cell-sub">Home network</span></span>
+            <span class="deft-subhead deft-cell-value">On</span>
+            <svg class="deft-icon deft-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </a>
+          <div class="deft-cell">
+            <span class="deft-tile-icon"><svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" /></svg></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Notifications</span></span>
+            <input class="deft-switch" type="checkbox" role="switch" checked aria-label="Notifications" />
+          </div>
+          <div class="deft-cell">
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Storage</span><span class="deft-footnote deft-cell-sub">Plain row, no icon</span></span>
+            <span class="deft-subhead deft-cell-value">12 GB</span>
+          </div>
+        </div>
+        <div class="ds-frame">
+          <div class="deft-page" data-large-title>
+            <h1 class="deft-largeTitle">Page</h1>
+            <div class="deft-group">
+              <div class="deft-cell"><span class="deft-cell-body"><span class="deft-body deft-cell-title">Inside a page</span></span></div>
+            </div>
+            <nav class="deft-tabbar" aria-label="Demo tab bar">
+              <a href="#home" aria-current="page">
+                <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8H4z" /></svg>
+                <span>Home</span>
+              </a>
+              <a href="#search">
+                <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" /><path d="M16 16l4 4" /></svg>
+                <span>Search</span>
+              </a>
+              <a href="#settings">
+                <svg class="deft-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg>
+                <span>Settings</span>
+              </a>
+            </nav>
+          </div>
+        </div>
+        <div class="ds-frame">
+          <header class="deft-bar"><span class="deft-headline">Glass bar</span><span class="deft-footnote">material-bar</span></header>
+          <div class="ds-filler"><p class="deft-body">Content under the bar stays opaque.</p></div>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-overlays">
+        <h2 id="h-overlays" class="deft-headline">Dialog, sheet and toast</h2>
+        <div class="deft-cluster">
+          <button class="deft-btn" type="button" id="open-dialog">Open dialog</button>
+          <button class="deft-btn" type="button" id="open-sheet">Open sheet</button>
+          <button class="deft-btn" type="button" id="open-toast" popovertarget="toast" popovertargetaction="show">Show toast</button>
+        </div>
+        <div class="deft-toast" id="toast" popover>Saved</div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-card">
+        <h2 id="h-card" class="deft-headline">Card, links and focus</h2>
+        <div class="deft-card">
+          <p class="deft-headline">Card title</p>
+          <p class="deft-subhead">Card body on a grouped surface. Radius is outer, padding is --deft-pad.</p>
+          <div class="deft-card-actions">
+            <button class="deft-btn" data-primary type="button">Action</button>
+            <button class="deft-btn deft-btn-ghost" type="button">Cancel</button>
+          </div>
+        </div>
+        <p class="deft-footnote ds-note">Focus any control with the keyboard to see the 2px label ring.</p>
+      </section>
+
+      <dialog id="dialog" class="deft-dialog" aria-labelledby="dialog-title">
+        <h2 class="deft-title3" id="dialog-title">Dialog</h2>
+        <p class="deft-subhead">Glass-free, elevated surface.</p>
+        <div class="deft-card-actions">
+          <button class="deft-btn deft-btn-ghost" type="button" data-close>Close</button>
+        </div>
+      </dialog>
+
+      <dialog id="sheet" class="deft-sheet" aria-labelledby="sheet-title">
+        <h2 class="deft-title3" id="sheet-title">Sheet</h2>
+        <p class="deft-subhead">Glass with a grabber. Opaque content.</p>
+        <div class="deft-card-actions">
+          <button class="deft-btn" data-primary type="button" data-close>Done</button>
+        </div>
+      </dialog>
+      <section class="ds-section" aria-labelledby="h-motion">
+        <h2 id="h-motion" class="deft-headline">Motion</h2>
+        <p class="deft-footnote ds-note">Enter stagger: the group rises in once it scrolls into view.</p>
+        <div class="deft-group" data-deft-enter="rise">
+          <a class="deft-cell" href="#rise-1"><span class="deft-cell-body"><span class="deft-cell-title">Rise</span><span class="deft-cell-sub">First row</span></span></a>
+          <a class="deft-cell" href="#rise-2"><span class="deft-cell-body"><span class="deft-cell-title">Stagger</span><span class="deft-cell-sub">Second row, 45 ms later</span></span></a>
+          <a class="deft-cell" href="#rise-3"><span class="deft-cell-body"><span class="deft-cell-title">Press me</span><span class="deft-cell-sub">Scales down and fires a light haptic</span></span></a>
+        </div>
+        <div class="deft-group ds-gap-top" data-deft-enter="scale">
+          <span class="deft-cell"><span class="deft-cell-title">Scale enter</span></span>
+          <span class="deft-cell"><span class="deft-cell-title">Second item</span></span>
+        </div>
+        <p class="deft-footnote ds-note">Haptics. Each button calls deft.haptic(kind) through the native bridge (no permission).</p>
+        <div class="ds-grid" id="haptics">
+          <button class="deft-btn deft-btn-soft" type="button" data-haptic="light">light</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-haptic="medium">medium</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-haptic="selection">selection</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-haptic="success">success</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-haptic="warning">warning</button>
+        </div>
+        <p class="deft-footnote ds-note">Detent sheet: drag the grabber. Fast downward fling dismisses.</p>
+        <div class="ds-row"><button class="deft-btn" data-primary type="button" id="open-detent">Open detent sheet</button></div>
+        <dialog id="detent" class="deft-sheet" data-detents="medium large" aria-labelledby="detent-title">
+          <h2 class="deft-title3" id="detent-title">Detents</h2>
+          <p class="deft-subhead">Medium is glass. Large is opaque.</p>
+          <p class="deft-body">Drag up to expand and down to collapse.</p>
+          <div class="deft-card-actions"><button class="deft-btn" type="button" data-close>Done</button></div>
+        </dialog>
+        <p class="deft-footnote ds-note">Numbers: deft-number flips each changed digit in steps.</p>
+        <div class="ds-row">
+          <deft-number id="num" class="deft-title1" value="128"></deft-number>
+          <button class="deft-btn deft-btn-soft" type="button" data-num="-1">-1</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-num="1">+1</button>
+        </div>
+        <p class="deft-footnote ds-note">Large title collapses on scroll (scroll-driven, no JS).</p>
+        <div class="ds-box"><div class="deft-page" data-large-title><h2 class="deft-title1">Large title</h2><p class="deft-body">Scroll this box to collapse the title.</p><p class="deft-body">Filler row.</p><p class="deft-body">Filler row.</p><p class="deft-body">Filler row.</p><p class="deft-body">Filler row.</p></div></div>
+        <p class="deft-footnote ds-note">Morph: data-deft-morph pairs the two views across a navigation (View Transition).</p>
+        <div class="ds-row">
+          <div class="deft-card" id="morph-a" data-deft-morph="hero"><span class="deft-headline">Compact</span></div>
+          <div class="deft-card" id="morph-b" data-deft-morph="hero" hidden><span class="deft-title2">Expanded</span></div>
+          <button class="deft-btn" type="button" id="morph-go">Morph</button>
+        </div>
+        <p class="deft-footnote ds-note">Toasts queue, one at a time, and take a tone.</p>
+        <div class="ds-row">
+          <button class="deft-btn deft-btn-soft" type="button" data-toast="Saved" data-tone="success">Success toast</button>
+          <button class="deft-btn deft-btn-soft" type="button" data-toast="Could not connect" data-tone="error">Error toast</button>
+        </div>
+      </section>
+
+      <section class="ds-section" aria-labelledby="h-icons">
+        <h2 id="h-icons" class="deft-headline">Icons</h2>
+        <p class="deft-footnote ds-note">Lucide (ISC) sprite, stroke currentColor, width from --deft-icon-stroke.</p>
+        <div class="ds-icons" id="icons"></div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

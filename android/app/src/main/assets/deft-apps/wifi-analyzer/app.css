@@ -1,0 +1,4 @@
+/* Wi-Fi Analyzer: the networks group stays hidden until a scan fills it. */
+@layer deft.components {
+  #networks:empty { display: none; }
+}

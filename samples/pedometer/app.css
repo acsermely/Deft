@@ -1,0 +1,5 @@
+/* Pedometer: two tiles side by side, and the log keeps its line breaks. Everything else is the runtime. */
+@layer deft.components {
+  .deft-grid { grid-template-columns: 1fr 1fr; }
+  #log { white-space: pre-wrap; }
+}

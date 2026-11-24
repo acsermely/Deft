@@ -1,0 +1,18 @@
+// The sprite's icon names, shared by icons.js (builds the sprite) and deft-lint (checks <deft-icon name>). No node imports: lint bundles it for the browser.
+export const ICONS = [
+  "chevron-left", "chevron-right", "chevron-up", "chevron-down", "chevrons-up-down",
+  "arrow-left", "arrow-right", "arrow-up", "arrow-down", "arrow-up-down", "plus", "minus", "x", "check", "check-check",
+  "search", "settings", "sliders-horizontal", "filter", "menu", "list", "layout-grid", "ellipsis", "ellipsis-vertical",
+  "phone", "phone-call", "phone-missed", "phone-incoming", "phone-outgoing", "message-circle", "message-square", "mail",
+  "calendar", "calendar-days", "clock", "timer", "alarm-clock", "history", "camera", "image", "images", "video",
+  "play", "pause", "square", "skip-back", "skip-forward", "rewind", "fast-forward", "volume-1", "volume-2", "volume-x",
+  "mic", "mic-off", "music", "headphones", "heart", "star", "bookmark", "tag", "gift", "trash-2", "pencil", "copy",
+  "clipboard", "scissors", "share-2", "download", "upload", "external-link", "link", "undo", "redo", "rotate-cw",
+  "refresh-cw", "wifi", "wifi-off", "bluetooth", "battery", "battery-charging", "battery-low", "battery-full",
+  "bell", "bell-off", "user", "user-round", "users", "user-plus", "house", "map-pin", "map", "navigation", "compass",
+  "globe", "lock", "lock-open", "unlock", "eye", "eye-off", "alert-triangle", "circle-alert", "circle-check",
+  "circle-x", "info", "sun", "moon", "flashlight", "cloud", "cloud-off", "folder", "file", "file-text", "log-out",
+  "smartphone", "cpu", "activity", "gauge", "route", "wallet", "credit-card", "shopping-bag", "zoom-in", "zoom-out",
+  "maximize", "thermometer", "droplet", "umbrella", "wind", "bolt", "sparkles", "delete", "arrow-big-up",
+  "shield", "flame", "radio",
+];

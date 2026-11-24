@@ -1,0 +1,12 @@
+{
+  "name": "deft-design",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build.js",
+    "check": "bun build.js --check",
+    "test": "bun test",
+    "icons": "bun icons.js",
+    "icons:check": "bun icons.js --check"
+  }
+}

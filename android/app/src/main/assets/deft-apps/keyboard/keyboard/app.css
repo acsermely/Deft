@@ -1,0 +1,10 @@
+/* Simple Keyboard keys: four equal rows that fill the keyboard window. Keys are runtime buttons. */
+@layer deft.components {
+  html, body { margin: 0; height: 100%; overflow: hidden; user-select: none; -webkit-user-select: none; }
+  .keys { display: flex; flex-direction: column; height: 100%; padding: 4px; box-sizing: border-box; gap: 4px; }
+  .row { display: flex; flex: 1; min-height: 0; gap: 4px; }
+  .key { flex: 1; min-width: 0; min-height: 0; padding: 0; touch-action: manipulation; }
+  .key.wide { flex: 1.5; }
+  .key.space { flex: 4; }
+  .key.on { background: var(--deft-label); color: var(--deft-bg); }
+}

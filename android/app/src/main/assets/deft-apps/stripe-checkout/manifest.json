@@ -1,0 +1,13 @@
+{
+  "deft": 1,
+  "id": "stripe-checkout",
+  "name": "Stripe test checkout",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "web.embed", "reason": "Show Stripe's card form and its 3-D Secure check (test mode only)" }
+  ],
+  "network": ["https://api.stripe.com"],
+  "embeds": ["https://js.stripe.com", "https://*.js.stripe.com", "https://hooks.stripe.com"]
+}

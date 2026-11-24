@@ -1,0 +1,4733 @@
+{
+  "errorIds": [
+    "FL001",
+    "FL003",
+    "FL100",
+    "FL105",
+    "FL113",
+    "FL201",
+    "FL202",
+    "FL601",
+    "FL603",
+    "FL610",
+    "FL622"
+  ],
+  "findings": [
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 29,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 37,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 46,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 54,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 63,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 74,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 83,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 95,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 104,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 119,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 128,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 141,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 150,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 1,
+      "col": 159,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "calendar",
+      "path": "app.css",
+      "line": 2,
+      "col": 94,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "calendar",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "calendar",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "calendar",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 13,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 14,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 34,
+      "col": 12,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 67,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 68,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 72,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 75,
+      "col": 11,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 80,
+      "col": 11,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 103,
+      "col": 57,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 105,
+      "col": 31,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 112,
+      "col": 21,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 128,
+      "col": 27,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 129,
+      "col": 20,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "calendar",
+      "path": "main.js",
+      "line": 137,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 2,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 3,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 4,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 5,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 7,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "clock",
+      "path": "app.css",
+      "line": 14,
+      "col": 3,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "clock",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "clock",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "clock",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "clock",
+      "path": "index.html",
+      "line": 8,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "clock",
+      "path": "index.html",
+      "line": 9,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 1,
+      "col": 30,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 9,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 10,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 19,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 24,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 42,
+      "col": 25,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 56,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "main.js",
+      "line": 68,
+      "col": 3,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "clock",
+      "path": "manifest.json",
+      "line": 1,
+      "col": 1,
+      "id": "FL203",
+      "severity": "warn",
+      "message": "capability notifications.post is declared but unused"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 2,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 3,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 4,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 5,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 7,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 14,
+      "col": 3,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 16,
+      "col": 44,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "app.css",
+      "line": 16,
+      "col": 86,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "contacts",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "contacts",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "contacts",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "contacts",
+      "path": "index.html",
+      "line": 8,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "contacts",
+      "path": "index.html",
+      "line": 9,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "contacts",
+      "path": "index.html",
+      "line": 15,
+      "col": 33,
+      "id": "FL622",
+      "severity": "error",
+      "message": "input without a label"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 1,
+      "col": 30,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 12,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 13,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 41,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 64,
+      "col": 211,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 64,
+      "col": 224,
+      "id": "FL202",
+      "severity": "error",
+      "message": "capability intents.open is used but not declared"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 64,
+      "col": 386,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 64,
+      "col": 399,
+      "id": "FL202",
+      "severity": "error",
+      "message": "capability intents.open is used but not declared"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 92,
+      "col": 27,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 124,
+      "col": 23,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 125,
+      "col": 16,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "main.js",
+      "line": 133,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "contacts",
+      "path": "manifest.json",
+      "line": 1,
+      "col": 1,
+      "id": "FL203",
+      "severity": "warn",
+      "message": "capability share.receive is declared but unused"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 2,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 3,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 4,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 5,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 7,
+      "col": 3,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "files",
+      "path": "app.css",
+      "line": 14,
+      "col": 3,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "files",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "files",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "files",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "files",
+      "path": "index.html",
+      "line": 8,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "files",
+      "path": "index.html",
+      "line": 9,
+      "col": 31,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 1,
+      "col": 30,
+      "id": "FL003",
+      "severity": "error",
+      "message": "path must not contain \"..\" or \"_deft/\""
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 14,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 15,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 33,
+      "col": 307,
+      "id": "FL501",
+      "severity": "warn",
+      "message": "!= ; use !=="
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 38,
+      "col": 15,
+      "id": "FL501",
+      "severity": "warn",
+      "message": "== ; use ==="
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 42,
+      "col": 25,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 64,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 73,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 77,
+      "col": 27,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 78,
+      "col": 28,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 80,
+      "col": 16,
+      "id": "FL105",
+      "severity": "error",
+      "message": "prompt() is not allowed; use dialog()"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 84,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 90,
+      "col": 16,
+      "id": "FL105",
+      "severity": "error",
+      "message": "prompt() is not allowed; use dialog()"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 94,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "files",
+      "path": "main.js",
+      "line": 101,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 29,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 37,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 46,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 54,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 63,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 74,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 83,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 95,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 104,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 119,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 128,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 141,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 150,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 1,
+      "col": 159,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 2,
+      "col": 90,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "mesh",
+      "path": "app.css",
+      "line": 3,
+      "col": 16,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "mesh",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "mesh",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "mesh",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "mesh",
+      "path": "index.html",
+      "line": 17,
+      "col": 33,
+      "id": "FL622",
+      "severity": "error",
+      "message": "input without a label"
+    },
+    {
+      "app": "mesh",
+      "path": "index.html",
+      "line": 21,
+      "col": 7,
+      "id": "FL622",
+      "severity": "error",
+      "message": "input without a label"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 20,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 21,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 53,
+      "col": 25,
+      "id": "FL403",
+      "severity": "warn",
+      "message": "JSON.parse outside try; use store()"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 67,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 68,
+      "col": 25,
+      "id": "FL403",
+      "severity": "warn",
+      "message": "JSON.parse outside try; use store()"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 70,
+      "col": 15,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 85,
+      "col": 22,
+      "id": "FL403",
+      "severity": "warn",
+      "message": "JSON.parse outside try; use store()"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 86,
+      "col": 21,
+      "id": "FL501",
+      "severity": "warn",
+      "message": "== ; use ==="
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 90,
+      "col": 39,
+      "id": "FL501",
+      "severity": "warn",
+      "message": "!= ; use !=="
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 101,
+      "col": 17,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 109,
+      "col": 17,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 121,
+      "col": 53,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 132,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 133,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 134,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 152,
+      "col": 26,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 159,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 160,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 170,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 175,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 188,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 189,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 191,
+      "col": 23,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 206,
+      "col": 51,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 226,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 232,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 235,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 238,
+      "col": 23,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 242,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 248,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "main.js",
+      "line": 256,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "mesh",
+      "path": "manifest.json",
+      "line": 1,
+      "col": 1,
+      "id": "FL203",
+      "severity": "warn",
+      "message": "capability bluetooth.serial is declared but unused"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 29,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 37,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 46,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 54,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 63,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 74,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 83,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 95,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 104,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 119,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 128,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 141,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 150,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 1,
+      "col": 159,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 2,
+      "col": 90,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "phone",
+      "path": "app.css",
+      "line": 3,
+      "col": 32,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "phone",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "phone",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "phone",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 9,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 10,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 29,
+      "col": 10,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 41,
+      "col": 28,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 41,
+      "col": 41,
+      "id": "FL202",
+      "severity": "error",
+      "message": "capability contacts.read is used but not declared"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 51,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 52,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 57,
+      "col": 35,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 59,
+      "col": 15,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 62,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 68,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 78,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 86,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 96,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 98,
+      "col": 33,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 99,
+      "col": 33,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 101,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 104,
+      "col": 31,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 110,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 114,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 114,
+      "col": 20,
+      "id": "FL201",
+      "severity": "error",
+      "message": "unknown bridge event \"telephony.ended\""
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 115,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "phone",
+      "path": "main.js",
+      "line": 115,
+      "col": 20,
+      "id": "FL201",
+      "severity": "error",
+      "message": "unknown bridge event \"telephony.state\""
+    },
+    {
+      "app": "phone",
+      "path": "manifest.json",
+      "line": 1,
+      "col": 1,
+      "id": "FL203",
+      "severity": "warn",
+      "message": "capability calllog.write is declared but unused"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 29,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 37,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 46,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 54,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 63,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 74,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 83,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 95,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 104,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 119,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 128,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 141,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 150,
+      "id": "FL614",
+      "severity": "warn",
+      "message": "redefines a --fl-* token; define a private token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 1,
+      "col": 159,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "sms",
+      "path": "app.css",
+      "line": 2,
+      "col": 94,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 6,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 37,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 39,
+      "col": 63,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 61,
+      "col": 17,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 78,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 87,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 92,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 104,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 117,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 125,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 137,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 144,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 155,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 157,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 173,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 186,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 191,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 202,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 209,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 269,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 272,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 287,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 290,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 296,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 301,
+      "col": 3,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 329,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 335,
+      "col": 3,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 349,
+      "col": 3,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "sms",
+      "path": "chrome.css",
+      "line": 354,
+      "col": 25,
+      "id": "FL606",
+      "severity": "warn",
+      "message": "!important"
+    },
+    {
+      "app": "sms",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "sms",
+      "path": "index.html",
+      "line": 6,
+      "col": 3,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "sms",
+      "path": "index.html",
+      "line": 13,
+      "col": 33,
+      "id": "FL622",
+      "severity": "error",
+      "message": "input without a label"
+    },
+    {
+      "app": "sms",
+      "path": "index.html",
+      "line": 27,
+      "col": 7,
+      "id": "FL622",
+      "severity": "error",
+      "message": "textarea without a label"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 12,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 13,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 51,
+      "col": 28,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 62,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 63,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 67,
+      "col": 32,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 69,
+      "col": 35,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 79,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 92,
+      "col": 13,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 95,
+      "col": 11,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 101,
+      "col": 11,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 117,
+      "col": 14,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 119,
+      "col": 35,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 132,
+      "col": 11,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 139,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 142,
+      "col": 15,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 172,
+      "col": 12,
+      "id": "FL113",
+      "severity": "error",
+      "message": "access to host internal __fl*"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 213,
+      "col": 25,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 216,
+      "col": 32,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 216,
+      "col": 45,
+      "id": "FL202",
+      "severity": "error",
+      "message": "capability files.read is used but not declared"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 235,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 236,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "main.js",
+      "line": 237,
+      "col": 7,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "sms",
+      "path": "manifest.json",
+      "line": 1,
+      "col": 1,
+      "id": "FL203",
+      "severity": "warn",
+      "message": "capability notifications.post is declared but unused"
+    },
+    {
+      "app": "three-tps",
+      "path": "index.html",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "three-tps",
+      "path": "index.html",
+      "line": 5,
+      "col": 1,
+      "id": "FL601",
+      "severity": "error",
+      "message": "viewport disables zoom"
+    },
+    {
+      "app": "three-tps",
+      "path": "index.html",
+      "line": 8,
+      "col": 1,
+      "id": "FL603",
+      "severity": "error",
+      "message": "base.css and theme.css must come before app CSS"
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 1,
+      "col": 1,
+      "id": "FL502",
+      "severity": "warn",
+      "message": "main.js is longer than 80 lines"
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 11,
+      "col": 24,
+      "id": "FL001",
+      "severity": "error",
+      "message": "bare or remote import specifier"
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 26,
+      "col": 12,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 27,
+      "col": 19,
+      "id": "FL200",
+      "severity": "warn",
+      "message": "direct deftBridge; use call() from bridge.js"
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 255,
+      "col": 47,
+      "id": "FL501",
+      "severity": "warn",
+      "message": "!= ; use !=="
+    },
+    {
+      "app": "three-tps",
+      "path": "main.js",
+      "line": 292,
+      "col": 12,
+      "id": "FL100",
+      "severity": "error",
+      "message": "innerHTML is not allowed"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 1,
+      "col": 1,
+      "id": "FL503",
+      "severity": "warn",
+      "message": "missing header comment"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 1,
+      "col": 43,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 1,
+      "col": 54,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 1,
+      "col": 59,
+      "id": "FL611",
+      "severity": "warn",
+      "message": "font-family literal; use var(--deft-font-ui)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 3,
+      "col": 133,
+      "id": "FL605",
+      "severity": "warn",
+      "message": "fixed or sticky position without a safe-area inset"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 7,
+      "col": 29,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 7,
+      "col": 51,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 7,
+      "col": 56,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 10,
+      "col": 21,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 11,
+      "col": 21,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 12,
+      "col": 22,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 13,
+      "col": 6,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 14,
+      "col": 55,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 15,
+      "col": 111,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 15,
+      "col": 140,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 16,
+      "col": 67,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 16,
+      "col": 96,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 17,
+      "col": 109,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 17,
+      "col": 138,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 17,
+      "col": 255,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 19,
+      "col": 113,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 19,
+      "col": 142,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 19,
+      "col": 260,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 20,
+      "col": 65,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 21,
+      "col": 8,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 22,
+      "col": 43,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 23,
+      "col": 13,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 23,
+      "col": 46,
+      "id": "FL613",
+      "severity": "warn",
+      "message": "border-radius literal; use var(--deft-radius-*)"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 23,
+      "col": 76,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 23,
+      "col": 87,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 19,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 33,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 58,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 72,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 97,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 25,
+      "col": 111,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 26,
+      "col": 5,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 28,
+      "col": 7,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 29,
+      "col": 25,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 30,
+      "col": 12,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 32,
+      "col": 44,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 32,
+      "col": 83,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 32,
+      "col": 94,
+      "id": "FL610",
+      "severity": "error",
+      "message": "color literal; use a var(--fl-*) token"
+    },
+    {
+      "app": "three-tps",
+      "path": "styles.css",
+      "line": 33,
+      "col": 9,
+      "id": "FL612",
+      "severity": "info",
+      "message": "px font size; use a type class (.deft-body, .deft-footnote...) or rem"
+    }
+  ]
+}

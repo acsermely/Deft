@@ -1,0 +1,43 @@
+/* Messages: conversation list, thread and compose. Tokens and runtime components only. */
+@layer deft.components {
+  .inbox-page {
+    padding-bottom: calc(var(--deft-tap) + 3 * var(--deft-space-m));
+  }
+  .deft-msgs {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--deft-space-2xs);
+    padding: var(--deft-space-s);
+  }
+  .bubble {
+    max-width: 82%;
+    padding: var(--deft-space-2xs) var(--deft-space-s);
+    border-radius: var(--deft-radius-lg);
+    background: var(--deft-fill);
+    color: var(--deft-label);
+    align-self: flex-start;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .bubble.me {
+    align-self: flex-end;
+    background: var(--deft-label);
+    color: var(--deft-bg);
+  }
+  .composer {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--deft-space-2xs);
+    padding: var(--deft-space-xs) var(--deft-space-s);
+  }
+  .composer .deft-textarea {
+    flex: 1;
+    min-width: 0;
+    max-height: 7.5rem;
+  }
+  .chat-err {
+    margin-inline: var(--deft-space-s);
+  }
+}

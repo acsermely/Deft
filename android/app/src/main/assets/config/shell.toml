@@ -1,0 +1,6 @@
+dock_radius = 28
+dock_alpha = 0.35
+search_center = true
+wallpaper = "#0a0a14"
+type_scale = 1.0
+recents_count = 4

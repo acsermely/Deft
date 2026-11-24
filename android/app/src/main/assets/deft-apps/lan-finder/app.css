@@ -1,0 +1,5 @@
+/* LAN Finder: empty lists take no space; the raw response keeps its line breaks. */
+@layer deft.components {
+  #found:empty, #body:empty, #log:empty { display: none; }
+  #body, #log { white-space: pre-wrap; }
+}

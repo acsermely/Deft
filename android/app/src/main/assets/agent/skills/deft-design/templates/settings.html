@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- Template: grouped settings. Runtime classes and tokens only. Copy as index.html with a main.js (header comment, then import '/_deft/v1/motion.js';) and a manifest.json (example in references/recipes/bridge.md). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Settings</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="settings-title">
+        <h1 id="settings-title" class="deft-largeTitle">Settings</h1>
+
+        <h2 class="deft-labelMono">Connections</h2>
+        <div class="deft-group" data-deft-enter="rise">
+          <a class="deft-cell" href="#wifi">
+            <span class="deft-tile-icon"><deft-icon name="wifi" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Wi-Fi</span><span class="deft-footnote deft-cell-sub">Home network</span></span>
+            <span class="deft-subhead deft-cell-value">On</span>
+            <deft-icon class="deft-chevron" name="chevron-right" aria-hidden="true"></deft-icon>
+          </a>
+          <a class="deft-cell" href="#bluetooth">
+            <span class="deft-tile-icon"><deft-icon name="bluetooth" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Bluetooth</span></span>
+            <span class="deft-subhead deft-cell-value">Off</span>
+            <deft-icon class="deft-chevron" name="chevron-right" aria-hidden="true"></deft-icon>
+          </a>
+        </div>
+
+        <h2 class="deft-labelMono">Notifications</h2>
+        <div class="deft-group" data-deft-enter="rise">
+          <label class="deft-cell">
+            <span class="deft-tile-icon"><deft-icon name="bell" aria-hidden="true"></deft-icon></span>
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Allow notifications</span></span>
+            <input class="deft-switch" type="checkbox" role="switch" checked aria-label="Allow notifications" />
+          </label>
+          <label class="deft-cell">
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Show previews</span><span class="deft-footnote deft-cell-sub">On the lock screen</span></span>
+            <input class="deft-switch" type="checkbox" role="switch" aria-label="Show previews" />
+          </label>
+        </div>
+
+        <h2 class="deft-labelMono">Storage</h2>
+        <div class="deft-group" data-deft-enter="rise">
+          <div class="deft-cell">
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Used</span></span>
+            <span class="deft-subhead deft-cell-value">12 GB</span>
+          </div>
+        </div>
+        <p class="deft-footnote">Values you change apply at once. Nothing here needs a restart.</p>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

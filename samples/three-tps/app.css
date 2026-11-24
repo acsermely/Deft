@@ -1,0 +1,142 @@
+/* Fireball Duel: HUD, joystick, fire and shield buttons, and the lobby overlay. The scene is not styled here. */
+@layer deft.components {
+  body {
+    overflow: hidden;
+    background: var(--deft-bg);
+    color: var(--deft-label);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  canvas {
+    display: block;
+    touch-action: none;
+  }
+
+  /* HUD: bars sit under the safe area, above the scene */
+  #ui {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  #hud {
+    position: absolute;
+    top: calc(var(--deft-space-xs) + env(safe-area-inset-top, 0px));
+    left: calc(var(--deft-space-s) + env(safe-area-inset-left, 0px));
+    right: calc(var(--deft-space-s) + env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: var(--deft-space-3xs);
+  }
+  /* Health bars are .deft-meter: green for you, red for the enemy, neutral for the shield. */
+  #hud .deft-meter {
+    block-size: 14px;
+    border: 1px solid var(--deft-separator);
+  }
+  #bt {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: calc(var(--deft-space-s) + env(safe-area-inset-left, 0px));
+    color: var(--deft-label-2);
+  }
+  #msg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 42%;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  /* Controls: a joystick on the left, fire and shield on the right */
+  #stick {
+    position: absolute;
+    left: calc(var(--deft-space-m) + env(safe-area-inset-left, 0px));
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    width: 130px;
+    height: 130px;
+    border-radius: var(--deft-radius-full);
+    background: var(--deft-fill);
+    border: 2px solid var(--deft-separator);
+    pointer-events: auto;
+  }
+  #knob {
+    position: absolute;
+    left: 40px;
+    top: 40px;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--deft-radius-full);
+    background: var(--deft-fill-3);
+  }
+  #fire,
+  #shield {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--deft-radius-full);
+    background: var(--deft-fill-2);
+    border: 2px solid var(--deft-label-2);
+    color: var(--deft-label);
+    pointer-events: auto;
+  }
+  #fire {
+    right: calc(24px + env(safe-area-inset-right, 0px));
+    bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+    width: 84px;
+    height: 84px;
+  }
+  #shield {
+    right: calc(120px + env(safe-area-inset-right, 0px));
+    bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+    width: 70px;
+    height: 70px;
+  }
+  #fire deft-icon,
+  #shield deft-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  #fire.cd {
+    opacity: 0.35;
+  }
+
+  /* Lobby overlay: covers the scene until a mode is picked and started */
+  #cal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: calc(var(--deft-space-m) + env(safe-area-inset-top, 0px)) calc(var(--deft-space-m) + env(safe-area-inset-right, 0px))
+      calc(var(--deft-space-m) + env(safe-area-inset-bottom, 0px)) calc(var(--deft-space-m) + env(safe-area-inset-left, 0px));
+    background: var(--deft-bg);
+    overflow-y: auto;
+    pointer-events: auto;
+  }
+  #cal > #title {
+    text-align: center;
+  }
+  #lobby {
+    width: min(100%, 22rem);
+  }
+  #status {
+    text-align: center;
+    color: var(--deft-label-2);
+  }
+  #hostJoin,
+  #scanList,
+  #startBtn {
+    width: 100%;
+  }
+  #scanList:empty {
+    display: none;
+  }
+  #cal .deft-cell-sub {
+    color: var(--deft-label-2);
+  }
+}

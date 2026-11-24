@@ -1,0 +1,11 @@
+{
+  "deft": 1,
+  "kind": "component",
+  "id": "empty",
+  "name": "Empty state",
+  "version": "1.0.0",
+  "license": "MIT",
+  "capabilities": [],
+  "network": [],
+  "exports": ["empty"]
+}

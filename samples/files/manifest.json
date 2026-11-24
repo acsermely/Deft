@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "files",
+  "name": "Files",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "files.pick", "reason": "Choose a folder the app may browse" },
+    { "id": "files.read", "reason": "List and read files in the chosen folder" },
+    { "id": "files.write", "reason": "Create, rename, or delete files you pick" }
+  ],
+  "network": []
+}

@@ -1,0 +1,43 @@
+/* Design Gallery layout only. Tokens only: no literal colours, radii or fonts. Components come from components.css. */
+@layer deft.components {
+  .ds { background: var(--deft-bg); color: var(--deft-label); min-block-size: 100dvh; }
+  .ds-title { margin: 0; }
+  .ds-gap-top { margin-block-start: var(--deft-space-m); }
+  .ds-readout { margin: 0; padding: calc(var(--deft-space-s) + env(safe-area-inset-top)) var(--deft-pad) var(--deft-pad); color: var(--deft-label-2); }
+  .ds-main { display: flex; flex-direction: column; gap: var(--deft-space-l); padding: var(--deft-pad); }
+  .ds-section { display: flex; flex-direction: column; align-items: flex-start; gap: var(--deft-space-s); }
+  .ds-section > * { align-self: stretch; }
+  .ds-section > .deft-cluster, .ds-section > .deft-segmented, .ds-section > .deft-chip, .ds-section > .deft-stepper, .ds-section > .deft-btn, .ds-section > .deft-fab { align-self: flex-start; }
+  .ds-section > .deft-cluster { align-self: stretch; }
+  .ds-note { margin: 0; color: var(--deft-label-2); }
+  .ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: var(--deft-space-xs); }
+  .ds-swatch { display: flex; align-items: flex-end; min-block-size: 4.5rem; padding: var(--deft-space-xs); border-radius: var(--deft-radius-md); color: var(--deft-label); box-shadow: inset 0 0 0 var(--deft-hairline) var(--deft-separator); }
+  .ds-swatch-accent { background: var(--deft-accent); color: var(--deft-on-accent); }
+  .ds-swatch-on-accent { background: var(--deft-on-accent); color: var(--deft-accent); }
+  .ds-cap { font-family: var(--deft-font-mono); font-size: var(--deft-type-label-mono-size); text-transform: uppercase; letter-spacing: var(--deft-type-label-mono-tracking); }
+  .ds-label-1 { color: var(--deft-label); margin: 0; }
+  .ds-label-2 { color: var(--deft-label-2); margin: 0; }
+  .ds-label-3 { color: var(--deft-label-3); margin: 0; }
+  .ds-label-4 { color: var(--deft-label-4); margin: 0; }
+  .ds-sep { inline-size: 100%; margin: 0; border: 0; block-size: var(--deft-hairline); background: var(--deft-separator); }
+  .ds-stack { display: flex; flex-direction: column; gap: var(--deft-space-xs); }
+  .ds-inline { display: inline-flex; align-items: center; gap: var(--deft-space-xs); }
+  .ds-radii { display: flex; flex-wrap: wrap; gap: var(--deft-space-xs); }
+  .ds-radii > div { display: grid; place-items: center; inline-size: 4.5rem; block-size: 4.5rem; background: var(--deft-fill); color: var(--deft-label); font-family: var(--deft-font-mono); font-size: var(--deft-type-label-mono-size); }
+  .ds-track { position: relative; block-size: var(--deft-tap); border-radius: var(--deft-radius-screen); background: var(--deft-fill); }
+  .ds-dot { position: absolute; inset-block: 6px; inset-inline-start: 6px; inline-size: 36px; border-radius: var(--deft-radius-screen); background: var(--deft-label); transition: transform var(--deft-spring-snappy-duration) var(--deft-spring-snappy); }
+  .ds-frame { position: relative; block-size: 16rem; overflow: auto; border-radius: var(--deft-radius-lg); background: var(--deft-bg-grouped); }
+  .ds-frame .deft-page { min-block-size: 0; background: transparent; }
+  .ds-frame .deft-tabbar { position: absolute; inset-block-end: var(--deft-space-s); inset-inline: 0; margin-inline: auto; }
+  .ds-filler { padding: var(--deft-space-m); padding-block-start: 5rem; }
+  .ds-skel { inline-size: 100%; block-size: 2.5rem; }
+  #toast { color: var(--deft-label); }
+  .ds-status-list { margin: 0; padding: 0; list-style: none; }
+
+  /* Motion and icon demos (DESIGN-SYSTEM-PROPOSAL 3.6, 3.7). */
+  .ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--deft-space-s); margin-block: var(--deft-space-s); }
+  .ds-box { max-block-size: 11rem; overflow: auto; padding: var(--deft-space-s); border-radius: var(--deft-radius-lg); background: var(--deft-fill); }
+  .ds-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.25rem, 1fr)); gap: var(--deft-space-s); }
+  .ds-icons > div { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--deft-label-2); font-size: .6875rem; overflow-wrap: anywhere; text-align: center; }
+  .ds-icons deft-icon { inline-size: 1.75rem; block-size: 1.75rem; color: var(--deft-label); }
+}

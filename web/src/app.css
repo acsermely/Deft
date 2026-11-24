@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+	themes: deft --default;
+}
+
+/* Deft brand tokens (brand book: claude.ai/artifact/3aFn884YcDngAz2tXBrEaW).
+   Ember is the send button: at most one ember element per screen, never text on light. */
+@plugin "daisyui/theme" {
+	name: "deft";
+	default: true;
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-base-100: #14120f; /* ink */
+	--color-base-200: #1e1b17; /* surface */
+	--color-base-300: #2e2a25; /* line */
+	--color-base-content: #f2eadf; /* bone */
+	--color-primary: #f2eadf; /* bone: the main call to action */
+	--color-primary-content: #14120f;
+	--color-secondary: #2e2a25;
+	--color-secondary-content: #f2eadf;
+	--color-accent: #e8622c; /* ember */
+	--color-accent-content: #14120f; /* on-ember: 5.53:1 */
+	--color-neutral: #5a5a5e; /* ash */
+	--color-neutral-content: #f2eadf;
+	--color-info: #a8a29e;
+	--color-info-content: #14120f;
+	--color-success: #a8a29e;
+	--color-success-content: #14120f;
+	--color-warning: #f0784a;
+	--color-warning-content: #14120f;
+	--color-error: #f0784a;
+	--color-error-content: #14120f;
+
+	--radius-selector: 624.9375rem;
+	--radius-field: 0.875rem; /* 14 */
+	--radius-box: 1.25rem; /* 20 */
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
+@theme {
+	--font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "Geist Mono", ui-monospace, monospace;
+	--font-dot: "Doto", "Geist Mono", ui-monospace, monospace;
+
+	--color-ink: #14120f;
+	--color-bone: #f2eadf;
+	--color-ember: #e8622c;
+	--color-ember-text: #f0784a;
+	--color-ash: #5a5a5e;
+	--color-ink-muted: #a8a29e;
+	--color-line: #2e2a25;
+	--color-line-strong: #8a847c;
+}
+
+@font-face {
+	font-family: "Geist";
+	src: url("/fonts/geist.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Geist Mono";
+	src: url("/fonts/geist-mono.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Doto";
+	src: url("/fonts/doto.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	min-height: 100dvh;
+	background: var(--color-ink);
+	-webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-ember);
+	outline-offset: 2px;
+}
+
+@utility micro {
+	font-family: var(--font-mono);
+	font-size: 11px;
+	line-height: 16px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+@utility display {
+	font-weight: 620;
+	letter-spacing: -0.035em;
+}
+
+/* The brand's dot grid. Ash on ink is decorative only (2.72:1). */
+@utility dot-grid {
+	background-image: radial-gradient(circle, var(--color-ash) 1.6px, transparent 2px);
+	background-size: 24px 24px;
+	background-position: 12px 12px;
+}
+
+/* Halftone text: the dot grid as a letter fill, for display sizes only. */
+@utility dot-text {
+	background-image: radial-gradient(circle, var(--color-bone) 1.5px, transparent 1.9px);
+	background-size: 4.5px 4.5px;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}

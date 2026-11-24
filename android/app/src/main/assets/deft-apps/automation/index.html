@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Automation: reads the buttons of the app in front and taps the one you choose. Needs accessibility. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Automation</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="title">
+        <h1 id="title" class="deft-largeTitle">Automation</h1>
+        <p class="deft-body help">Tap "Read screen", then switch to another app within 5 seconds. Come back here to see its buttons. Pick one, tap "Tap it", and switch to that app again.</p>
+        <div class="deft-cluster actions">
+          <button id="read" class="deft-btn" data-primary type="button">Read screen</button>
+          <button id="tap" class="deft-btn" type="button">Tap it</button>
+          <button id="back" class="deft-btn" type="button">Back</button>
+        </div>
+        <label class="deft-stack target">
+          <span class="deft-subhead">Button text</span>
+          <input id="target" class="deft-input" type="text" maxlength="200" placeholder="Tap a row below or type" />
+        </label>
+        <div id="status" class="deft-alert" data-tone="info" role="status">
+          <deft-icon name="info" aria-hidden="true"></deft-icon>
+          <span class="deft-body">Loading...</span>
+        </div>
+        <p id="last" class="deft-caption"></p>
+        <div id="rows" class="deft-group"></div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

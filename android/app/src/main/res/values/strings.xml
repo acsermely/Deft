@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Deft</string>
+    <!-- PARITY G9: shown in Android's Accessibility settings. -->
+    <string name="a11y_service_description">Lets one Deft app you choose read the screen and tap, type and scroll for you. You choose the app on its card in the launcher settings. Nothing happens until you do.</string>
+    <string name="a11y_service_summary">Lets one app you choose read the screen and act for you</string>
+    <string name="fgs_channel">Hosting</string>
+    <string name="fgs_title">Deft is hosting web apps</string>
+    <string name="fgs_text">A foreground service is required so installed web apps can receive events. This is not disguised.</string>
+    <string name="sms_channel">Incoming SMS</string>
+    <string name="sms_compose_forward">Open SMS web app</string>
+    <string name="share_to_label">Share to web app</string>
+    <string name="handler_open_label">Open in web app</string>
+    <string name="notify_channel">Web app notifications</string>
+    <string name="agent_channel">Agent</string>
+    <string name="agent_notify_title">Agent</string>
+    <string name="agent_notify_done">Finished</string>
+    <string name="agent_notify_pending">Needs your approval</string>
+    <string name="agent_notify_failed">Failed</string>
+    <string name="gms_honesty">If Google Play Services is installed on this device, its telemetry is outside what Deft can see or control.</string>
+    <string name="bt_radio_in_use">Bluetooth radio in use by %1$s</string>
+    <string name="bt_radio_in_use_generic">Bluetooth radio in use</string>
+    <string name="bt_device_in_use">Bluetooth device in use by %1$s</string>
+    <string name="bt_device_in_use_generic">Bluetooth device in use</string>
+    <string name="bt_radio_using">Using scan / advertise</string>
+    <string name="bt_radio_held">Held by %1$s</string>
+    <string name="bt_radio_other_app">another app</string>
+    <string name="hce_description">Deft web app card</string>
+    <!-- PARITY B4: shown in Android's Contactless payments list. -->
+    <string name="hce_payment_description">Deft app payments</string>
+    <!-- PARITY G11: shown in Android's live wallpaper picker. -->
+    <string name="wallpaper_label">Deft app wallpaper</string>
+    <string name="wallpaper_description">Shows the wallpaper page of the one Deft app you chose on its card in the launcher settings. Black until you choose one.</string>
+    <!-- PARITY G11: shown in Android's keyboard settings and picker. -->
+    <string name="ime_label">Deft app keyboard</string>
+    <string name="accounts_label">Deft apps</string>
+    <!-- Point-of-use consent: asks again later. -->
+    <string name="consent_not_now">Not now</string>
+    <!-- Point-of-use consent: a final no, until the user changes it on the dashboard. -->
+    <string name="consent_dont_ask_again">Don\'t ask again</string>
+    <!-- Debug builds only: dashboard action on an installed app. -->
+    <string name="debug_reset_grants">Reset this app\'s permission decisions</string>
+</resources>

@@ -1,0 +1,24 @@
+/* Contacts: layout glue only. Colour, type and motion come from the runtime. */
+@layer deft.components {
+  .deft-page { padding-block-end: calc(var(--deft-tap) + 3 * var(--deft-space-m)); }
+  #list:empty { display: none; }
+  #detailBar h1 { flex: 1; margin: 0; text-align: center; }
+  #err[hidden], #detailErr[hidden] { display: none; }
+  #list .deft-stack { margin-block-end: var(--deft-space-m); }
+  #list .deft-stack > h2 { padding-inline: var(--deft-space-s); }
+  .initials {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    flex-shrink: 0;
+    border-radius: var(--deft-radius-full);
+    background: var(--deft-fill);
+    color: var(--deft-label);
+  }
+  .initials-lg { inline-size: 4.5rem; block-size: 4.5rem; margin-inline: auto; }
+  .detail-head { align-items: center; padding-block: var(--deft-space-m); }
+  .detail-head .deft-cluster { justify-content: center; }
+  #detailView .deft-cluster { justify-content: center; }
+  #form .deft-stack > .deft-btn { inline-size: 100%; }
+}

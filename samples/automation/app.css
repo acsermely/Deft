@@ -1,0 +1,10 @@
+/* Automation: a screen-reading helper. Buttons and rows come from the runtime; this is layout only. */
+@layer deft.components {
+  .help { margin: 0 0 var(--deft-space-s); color: var(--deft-label-2); }
+  .actions { padding-bottom: var(--deft-space-s); }
+  .target { gap: var(--deft-space-3xs); margin-bottom: var(--deft-space-s); }
+  #status { margin-bottom: var(--deft-space-2xs); }
+  #last { margin: 0 0 var(--deft-space-s); color: var(--deft-label-2); }
+  #rows:empty { display: none; }
+  .where { color: var(--deft-label-2); font-variant-numeric: tabular-nums; }
+}

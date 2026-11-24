@@ -1,0 +1,5 @@
+/* Screen Time: long device ids and package names wrap instead of overflowing. */
+@layer deft.components {
+  #status, .deft-cell-sub { overflow-wrap: anywhere; }
+  #rows:empty { display: none; }
+}

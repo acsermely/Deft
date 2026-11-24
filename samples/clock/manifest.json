@@ -1,0 +1,13 @@
+{
+  "deft": 1,
+  "id": "clock",
+  "name": "Clock",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "alarms", "reason": "Schedule reminders that fire when the app is closed" },
+    { "id": "notifications.post", "reason": "Show a notification when a reminder fires" }
+  ],
+  "network": []
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PARITY B3. The real AIDs are registered at runtime for the app holding nfc.hce
+     (CardEmulation.registerAidsForService); this placeholder keeps the group valid. -->
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/hce_description"
+    android:requireDeviceUnlock="false">
+    <aid-group android:category="other" android:description="@string/hce_description">
+        <aid-filter android:name="F0464C00000001" />
+    </aid-group>
+</host-apdu-service>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PARITY G11: role.assistant. Android's assistant role needs a session service and a recognizer.
+     Class names are the code package, not the application id (debug builds add .debug). -->
+<voice-interaction-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:recognitionService="app.deft.assist.DeftRecognitionService"
+    android:sessionService="app.deft.assist.DeftAssistSessionService"
+    android:supportsAssist="true"
+    android:supportsLaunchVoiceAssistFromKeyguard="false"
+    android:supportsLocalInteraction="false" />

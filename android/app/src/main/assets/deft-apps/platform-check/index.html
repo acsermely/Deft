@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- Platform Check: one button per platform test. Results go to the log below and to the console. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Platform Check</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <section class="deft-page" data-large-title aria-labelledby="title">
+        <h1 id="title" class="deft-largeTitle">Platform Check</h1>
+        <div class="tests">
+          <label class="deft-btn">A1 file <input id="a1" type="file" multiple hidden /></label>
+          <button id="a2" class="deft-btn" type="button">A2 download</button>
+          <button id="a3" class="deft-btn" type="button">A3 vibrate</button>
+          <button id="a4f" class="deft-btn" type="button">A4 fullscreen</button>
+          <button id="a4o" class="deft-btn" type="button">A4 landscape</button>
+          <button id="a5" class="deft-btn" type="button">A5 wake lock</button>
+          <button id="a6" class="deft-btn" type="button">A6 share</button>
+          <button id="a7" class="deft-btn" type="button">A7 paste</button>
+          <button id="a8" class="deft-btn" type="button">A8 print</button>
+          <button id="a9d" class="deft-btn" type="button">A9 DRM</button>
+          <button id="a9m" class="deft-btn" type="button">A9 MIDI</button>
+          <button id="f9" class="deft-btn" type="button">F9 secure</button>
+          <button id="f4" class="deft-btn" type="button">F4 torch</button>
+          <button id="d5" class="deft-btn" type="button">D5 pip</button>
+          <button id="f3s" class="deft-btn" type="button">F3 speak</button>
+          <button id="f3l" class="deft-btn" type="button">F3 listen</button>
+          <button id="f5v" class="deft-btn" type="button">F5 alarm vol</button>
+          <button id="e2" class="deft-btn" type="button">E2 photo</button>
+        </div>
+        <pre id="log" class="deft-mono" data-wrap></pre>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

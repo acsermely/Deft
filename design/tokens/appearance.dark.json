@@ -1,0 +1,19 @@
+{
+  "$description": "Dark appearance: dark surfaces, white labels, alpha steps. Status tuned for dark surfaces.",
+  "bg": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.16, 0, 0] } },
+  "bgGrouped": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.21, 0, 0] } },
+  "bgElevated": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.26, 0, 0] } },
+  "label": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0] } },
+  "label2": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.62 } },
+  "label3": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.32 } },
+  "label4": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.18 } },
+  "fill": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.12 } },
+  "fill2": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.16 } },
+  "fill3": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.24 } },
+  "fill4": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.32 } },
+  "separator": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [1, 0, 0], "alpha": 0.14 } },
+  "error": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.70, 0.19, 50] } },
+  "warning": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.82, 0.16, 85] } },
+  "success": { "$type": "color", "$value": { "colorSpace": "oklch", "components": [0.75, 0.17, 150] } },
+  "info": { "$type": "color", "$value": "{label2}" }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Template: form and compose. Runtime classes and tokens only. Copy as index.html with a main.js (header comment, then import '/_deft/v1/motion.js';) and a manifest.json (example in references/recipes/bridge.md). -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <title>New message</title>
+</head>
+<body>
+  <div class="deft-app">
+    <header class="deft-topbar">
+      <button class="deft-btn deft-btn-ghost" type="button" aria-label="Cancel"><deft-icon name="x" aria-hidden="true"></deft-icon></button>
+      <h1 class="deft-headline">New message</h1>
+      <button class="deft-btn" data-primary type="button">Send</button>
+    </header>
+    <main class="deft-scroll deft-center">
+      <form class="deft-stack" data-deft-enter="rise">
+        <div class="deft-alert" data-tone="error" role="alert">
+          <deft-icon name="circle-alert" aria-hidden="true"></deft-icon>
+          <span class="deft-body">Add at least one recipient.</span>
+        </div>
+        <div class="deft-stack">
+          <label class="deft-subhead" for="to">To</label>
+          <input id="to" class="deft-input" type="email" autocomplete="email" placeholder="name@example.com" required />
+        </div>
+        <div class="deft-stack">
+          <label class="deft-subhead" for="subject">Subject</label>
+          <input id="subject" class="deft-input" type="text" placeholder="Subject" />
+        </div>
+        <div class="deft-stack">
+          <label class="deft-subhead" for="body">Message</label>
+          <textarea id="body" class="deft-textarea" rows="5">Hi, the plan is attached.</textarea>
+        </div>
+        <div class="deft-segmented" role="tablist" aria-label="Priority">
+          <button type="button" role="tab" aria-selected="true">Normal</button>
+          <button type="button" role="tab" aria-selected="false">High</button>
+          <button type="button" role="tab" aria-selected="false">Low</button>
+        </div>
+        <div class="deft-group">
+          <label class="deft-cell">
+            <span class="deft-cell-body"><span class="deft-body deft-cell-title">Send a copy to me</span></span>
+            <input class="deft-switch" type="checkbox" role="switch" aria-label="Send a copy to me" />
+          </label>
+        </div>
+        <p class="deft-footnote">Sending is not undone. Check the recipient first.</p>
+      </form>
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

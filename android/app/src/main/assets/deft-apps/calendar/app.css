@@ -1,0 +1,35 @@
+/* Calendar: month grid and day agenda. Tokens and runtime components only. */
+@layer deft.components {
+  .cal-page {
+    padding-bottom: calc(var(--deft-tap) + 3 * var(--deft-space-m));
+  }
+  .deft-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--deft-space-3xs);
+    margin-block: var(--deft-space-s);
+  }
+  .deft-cal-dow {
+    text-align: center;
+    color: var(--deft-label-2);
+  }
+  .deft-cal-spacer {
+    min-height: var(--deft-tap);
+  }
+  .deft-cal-day {
+    min-height: var(--deft-tap);
+    padding: 0;
+    border: 0;
+    border-radius: var(--deft-radius-full);
+    background: transparent;
+    color: var(--deft-label);
+  }
+  .deft-cal-day.today {
+    box-shadow: inset 0 0 0 2px var(--deft-label-3);
+  }
+  .deft-cal-day.on {
+    background: var(--deft-label);
+    color: var(--deft-bg);
+    font-weight: 650;
+  }
+}

@@ -1,0 +1,11 @@
+/* Platform Check: a grid of test buttons and the result log. */
+@layer deft.components {
+  .tests {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--deft-space-xs);
+    margin-bottom: var(--deft-space-s);
+  }
+  #log { padding: var(--deft-space-s); color: var(--deft-label-2); }
+  #log:empty { display: none; }
+}

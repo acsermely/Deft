@@ -1,0 +1,24 @@
+{
+  "deft": 1,
+  "id": "example-tool",
+  "name": "Example tool",
+  "version": "0.1.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [],
+  "network": [],
+  "tools": [
+    {
+      "name": "count_words",
+      "description": "Counts the words and characters in a text the user gives. Use when the user asks for a word count.",
+      "params": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string", "description": "The text to count", "maxLength": 2000 }
+        },
+        "required": ["text"]
+      },
+      "handler": { "isolate": "./tools.js#countWords" }
+    }
+  ]
+}

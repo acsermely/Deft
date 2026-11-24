@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Mac BLE central for samples/mesh. Phone: Mesh → Go live, then run this.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+VENV="$ROOT/scripts/.venv-mesh"
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Need python3." >&2
+  exit 1
+fi
+if [[ ! -x "$VENV/bin/python" ]]; then
+  echo "Setting up bleak (one-time)…"
+  python3 -m venv "$VENV"
+  "$VENV/bin/pip" install -q --upgrade pip
+  "$VENV/bin/pip" install -q "bleak>=0.22"
+fi
+exec "$VENV/bin/python" "$ROOT/scripts/mesh-cli.py" "$@"

@@ -1,0 +1,14 @@
+{
+  "deft": 1,
+  "id": "contacts",
+  "name": "Contacts",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "contacts.read", "reason": "Show and search your address book" },
+    { "id": "contacts.write", "reason": "Create and edit contacts from the app" },
+    { "id": "share.receive", "reason": "Save shared text as a contact" }
+  ],
+  "network": []
+}

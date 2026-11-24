@@ -1,0 +1,58 @@
+# One Worker for all sample PWAs. Each app is a hostname, not a path.
+#
+#   bunx wrangler dev     → http://localhost:8787/  (index)
+#                          → http://contacts.localhost:8787/  (install this shape)
+#   bun scripts/build-samples-site.ts   (samples + /_deft/v1 runtime → build/samples-site)
+#   bunx wrangler deploy
+#
+# Custom domains on acsermely.hu (same Worker, eight origins):
+#   https://app.acsermely.hu/                  directory
+#   https://contacts.app.acsermely.hu/         installer URLs
+#   https://phone.app.acsermely.hu/            …
+#
+# Do not install more than one sample from a single hostname (path prefixes
+# share one origin and one grant neighborhood).
+
+name = "freedom-samples"
+main = "workers/samples.js"
+compatibility_date = "2026-09-06"
+workers_dev = true
+
+[assets]
+directory = "./build/samples-site"
+binding = "ASSETS"
+run_worker_first = true
+html_handling = "auto-trailing-slash"
+not_found_handling = "none"
+
+[dev]
+ip = "0.0.0.0"
+port = 8787
+
+[[routes]]
+pattern = "app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "contacts.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "files.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "sms.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "calendar.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "clock.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "mesh.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "phone.app.acsermely.hu"
+custom_domain = true
+[[routes]]
+pattern = "three-tps.app.acsermely.hu"
+custom_domain = true

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!-- Phone: recents, keypad dialer and the incoming call screen. Needs the dialer role for calls. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Phone</title>
+  <link rel="stylesheet" href="/_deft/v1/base.css" />
+  <link rel="stylesheet" href="/_deft/v1/tokens.css" />
+  <link rel="stylesheet" href="/_deft/v1/components.css" />
+  <link rel="stylesheet" href="/_deft/v1/theme.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <div class="deft-app">
+    <main class="deft-scroll">
+      <div class="deft-alert" id="err" data-tone="error" role="alert" hidden>
+        <deft-icon name="circle-alert" aria-hidden="true"></deft-icon>
+        <span class="deft-body">Something went wrong.</span>
+      </div>
+      <section class="deft-page" id="recentsView" data-large-title aria-labelledby="recentsTitle">
+        <h1 id="recentsTitle" class="deft-largeTitle">Recents</h1>
+        <div id="recents"></div>
+      </section>
+      <section class="deft-page" id="keypad" data-large-title aria-labelledby="keypadTitle" hidden>
+        <h1 id="keypadTitle" class="deft-largeTitle">Keypad</h1>
+        <select class="deft-select" id="sim" aria-label="SIM for this call" hidden></select>
+        <p class="deft-title1 dial" id="dialNum" aria-live="polite"></p>
+        <div class="deft-keypad" id="keys"></div>
+        <div class="deft-cluster actions">
+          <button class="deft-btn" data-primary id="call" type="button"><deft-icon name="phone-call" aria-hidden="true"></deft-icon>Call</button>
+          <button class="deft-btn" id="backspace" type="button"><deft-icon name="delete" aria-hidden="true"></deft-icon>Delete</button>
+        </div>
+      </section>
+    </main>
+    <nav class="deft-tabbar" aria-label="Sections">
+      <button type="button" id="tabRecents" aria-current="page"><deft-icon name="history" aria-hidden="true"></deft-icon><span>Recents</span></button>
+      <button type="button" id="tabKeypad"><deft-icon name="layout-grid" aria-hidden="true"></deft-icon><span>Keypad</span></button>
+    </nav>
+  </div>
+  <dialog class="deft-dialog deft-fullscreen" id="incoming" aria-labelledby="callfrom">
+    <div class="deft-stack">
+      <p class="deft-subhead">Incoming call</p>
+      <h2 id="callfrom" class="deft-title1">Unknown</h2>
+      <div class="deft-cluster">
+        <button class="deft-btn" data-primary id="answer" type="button"><deft-icon name="phone-incoming" aria-hidden="true"></deft-icon>Answer</button>
+        <button class="deft-btn" data-tone="destructive" id="reject" type="button"><deft-icon name="phone-missed" aria-hidden="true"></deft-icon>Reject</button>
+      </div>
+      <div class="deft-cluster">
+        <button class="deft-btn" id="end" type="button">End</button>
+        <button class="deft-btn" id="hold" type="button">Hold</button>
+      </div>
+      <div class="deft-keypad" id="dtmf"></div>
+    </div>
+  </dialog>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
