@@ -1,6 +1,7 @@
 package app.deft.config
 
 import androidx.compose.ui.graphics.Color
+import app.deft.agent.AgentModelChoices
 import app.deft.workspace.DeftPaths
 
 data class ColorTokens(
@@ -30,13 +31,28 @@ data class HomeConfig(
 )
 
 data class AgentConfig(
-    val apiBase: String,
     val model: String,
     val maxTokens: Int,
     val contextWindow: Int,
     /** "Let the agent read the web": web.fetch and the web reads are off until the user says yes. */
     val webRead: Boolean = false,
-)
+    /** Fast: OpenRouter routes each request to the provider with the highest throughput. */
+    val fast: Boolean = true,
+    /** The reasoning effort sent with every request, one of [AgentModelChoices.EFFORTS]. */
+    val effort: String = AgentModelChoices.DEFAULT_EFFORT,
+) {
+    /** agent.toml with every key, for writers that change one setting and keep the rest. */
+    fun toToml(): String = Toml.encode(
+        listOf(
+            "model" to model,
+            "fast" to fast,
+            "effort" to effort,
+            "max_tokens" to maxTokens,
+            "context_window" to contextWindow,
+            "web_read" to webRead,
+        ),
+    )
+}
 
 data class DeftConfig(
     val colors: ColorTokens,
@@ -89,10 +105,21 @@ fun parseLimits(map: Map<String, String>): DeftPaths.Limits = DeftPaths.clampLim
     pkg = Toml.int(map, "max_package_bytes", DeftPaths.HARD_PACKAGE_BYTES.toInt()).toLong(),
 )
 
-fun parseAgent(map: Map<String, String>): AgentConfig = AgentConfig(
-    apiBase = Toml.str(map, "api_base", "https://openrouter.ai/api/v1").trimEnd('/'),
-    model = Toml.str(map, "model", "z-ai/glm-5.3-flash:nitro"),
-    maxTokens = Toml.int(map, "max_tokens", 16384).coerceIn(256, 32_768),
-    contextWindow = Toml.int(map, "context_window", 128_000).coerceIn(8_000, 2_000_000),
-    webRead = Toml.bool(map, "web_read", false),
-)
+/**
+ * Reads agent.toml. The agent talks only to OpenRouter, so an `api_base` left by an older version is ignored.
+ * A `:nitro` suffix from an older version becomes the plain id with [AgentConfig.fast] on.
+ */
+fun parseAgent(map: Map<String, String>): AgentConfig {
+    val rawModel = Toml.str(map, "model", AgentModelChoices.DEFAULT_MODEL).trim()
+    val nitro = rawModel.endsWith(":nitro")
+    val effort = Toml.str(map, "effort", AgentModelChoices.DEFAULT_EFFORT)
+    return AgentConfig(
+        model = rawModel.removeSuffix(":nitro").ifBlank { AgentModelChoices.DEFAULT_MODEL },
+        maxTokens = Toml.int(map, "max_tokens", 16384).coerceIn(256, 32_768),
+        contextWindow = Toml.int(map, "context_window", 128_000).coerceIn(8_000, 2_000_000),
+        webRead = Toml.bool(map, "web_read", false),
+        fast = nitro || Toml.bool(map, "fast", true),
+        effort = effort.takeIf { it in AgentModelChoices.EFFORTS }
+            ?: AgentModelChoices.DEFAULT_EFFORT,
+    )
+}

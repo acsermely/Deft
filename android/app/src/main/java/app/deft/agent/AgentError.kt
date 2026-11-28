@@ -26,6 +26,9 @@ data class AgentError(
         const val TOOL_ARGS = "TOOL_ARGS"
         const val CANCELLED = "CANCELLED"
         const val NO_KEY = "NO_KEY"
+        const val NO_CREDITS = "NO_CREDITS"
+        const val NO_CREDITS_MESSAGE =
+            "No OpenRouter credits for this model. Switch to the free model in Settings, or add credits on openrouter.ai."
         const val UNKNOWN = "UNKNOWN"
 
         fun from(t: Throwable, contextBytes: Int? = null): AgentError {
@@ -39,6 +42,9 @@ data class AgentError(
             }
             if (t is AgentTurnException) {
                 return AgentError(t.code, t.message ?: t.code, finishReason = t.finishReason, contextBytes = contextBytes)
+            }
+            if (t is HttpStatusException && t.code == 402) {
+                return AgentError(NO_CREDITS, NO_CREDITS_MESSAGE, 402, contextBytes = contextBytes)
             }
             if (t is HttpStatusException) {
                 return AgentError("${HTTP}_${t.code}", t.message ?: "HTTP ${t.code}", t.code, contextBytes = contextBytes)

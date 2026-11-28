@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,14 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import app.deft.DeftApp
 import app.deft.device.DeviceTierProbe
 import app.deft.device.DeviceTierStore
 import app.deft.ui.theme.DeftTheme
 import app.deft.agent.AgentKeyStore
+import app.deft.agent.AgentModelChoices
 import app.deft.agent.AgentWeb
+import app.deft.agent.OpenRouterSignIn
+import app.deft.ui.agent.AgentSignIn
 import app.deft.config.DeftConfig
 import app.deft.config.ThemeSettings
 import app.deft.config.Toml
@@ -70,13 +73,13 @@ fun DashboardConfigTab(config: DeftConfig) {
     var maxFiles by remember { mutableStateOf(config.limits.maxFiles.toString()) }
     var maxPackage by remember { mutableStateOf(config.limits.maxPackageBytes.toString()) }
 
-    var apiBase by remember { mutableStateOf(config.agent.apiBase) }
-    var model by remember { mutableStateOf(config.agent.model) }
     var maxTokens by remember { mutableStateOf(config.agent.maxTokens.toString()) }
     var contextWindow by remember { mutableStateOf(config.agent.contextWindow.toString()) }
 
     var apiKey by remember { mutableStateOf("") }
-    var hasKey by remember { mutableStateOf(AgentKeyStore.get(context) != null) }
+    val keyChanges by AgentKeyStore.changes.collectAsState()
+    val keySource = remember(keyChanges) { AgentKeyStore.source(context) }
+    val hasKey = keySource != null
 
     var rawOpen by remember { mutableStateOf(false) }
     var rawPath by remember { mutableStateOf("theme.toml") }
@@ -99,8 +102,6 @@ fun DashboardConfigTab(config: DeftConfig) {
         maxBinary = config.limits.maxBinaryBytes.toString()
         maxFiles = config.limits.maxFiles.toString()
         maxPackage = config.limits.maxPackageBytes.toString()
-        apiBase = config.agent.apiBase
-        model = config.agent.model
         maxTokens = config.agent.maxTokens.toString()
         contextWindow = config.agent.contextWindow.toString()
     }
@@ -238,8 +239,72 @@ fun DashboardConfigTab(config: DeftConfig) {
         }) { Text("Save limits") }
 
         Text("Agent", style = MaterialTheme.typography.titleLarge)
-        Field("api_base", apiBase) { apiBase = it }
-        Field("model", model) { model = it }
+        if (!hasKey) {
+            AgentSignIn(
+                keyDraft = apiKey,
+                onKeyDraft = { apiKey = it },
+                onSaveKey = {
+                    OpenRouterSignIn.savePastedKey(context, apiKey)
+                    apiKey = ""
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        } else {
+            Text(
+                if (keySource == AgentKeyStore.SOURCE_SIGN_IN) "Signed in with OpenRouter." else "Using a pasted OpenRouter key.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                "Signing out removes the key from this phone. Revoke it at openrouter.ai/settings/keys.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            TextButton(onClick = { AgentKeyStore.clear(context) }) { Text("Sign out") }
+
+            Text("Model", style = MaterialTheme.typography.titleMedium)
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                AgentModelChoices.ALL.forEach { choice ->
+                    FilterChip(
+                        selected = config.agent.model == choice.id,
+                        onClick = { runWrite { store.write("agent.toml", config.agent.copy(model = choice.id).toToml()) } },
+                        label = { Text(if (choice.free) "${choice.label} (free)" else choice.label) },
+                    )
+                }
+            }
+            if (AgentModelChoices.find(config.agent.model) == null) {
+                Text("Current: ${config.agent.model}", style = MaterialTheme.typography.bodySmall)
+            }
+            if (AgentModelChoices.isFree(config.agent.model)) {
+                Text(AgentModelChoices.FREE_TRAINING_NOTE, style = MaterialTheme.typography.bodySmall)
+            }
+
+            Text("Effort", style = MaterialTheme.typography.titleMedium)
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                AgentModelChoices.EFFORTS.forEach { level ->
+                    FilterChip(
+                        selected = config.agent.effort == level,
+                        onClick = { runWrite { store.write("agent.toml", config.agent.copy(effort = level).toToml()) } },
+                        label = { Text(level.replaceFirstChar { it.uppercase() }) },
+                    )
+                }
+            }
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text("Fast", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "Route to the quickest provider. Can cost a little more.",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                Switch(
+                    checked = config.agent.fast,
+                    onCheckedChange = { on -> runWrite { store.write("agent.toml", config.agent.copy(fast = on).toToml()) } },
+                )
+            }
+        }
         Field("max_tokens", maxTokens) { maxTokens = it }
         Field("context_window", contextWindow) { contextWindow = it }
         Row(
@@ -263,49 +328,13 @@ fun DashboardConfigTab(config: DeftConfig) {
             runWrite {
                 store.write(
                     "agent.toml",
-                    Toml.encode(
-                        listOf(
-                            "api_base" to apiBase.trim(),
-                            "model" to model.trim(),
-                            "max_tokens" to (maxTokens.toIntOrNull() ?: 16384),
-                            "context_window" to (contextWindow.toIntOrNull() ?: 128_000),
-                            "web_read" to config.agent.webRead,
-                        ),
-                    ),
+                    config.agent.copy(
+                        maxTokens = maxTokens.toIntOrNull() ?: 16384,
+                        contextWindow = contextWindow.toIntOrNull() ?: 128_000,
+                    ).toToml(),
                 )
             }
         }) { Text("Save agent") }
-
-        Text("API key", style = MaterialTheme.typography.titleMedium)
-        Text(
-            if (hasKey) "A key is stored on this device." else "No key stored.",
-            style = MaterialTheme.typography.bodySmall,
-        )
-        OutlinedTextField(
-            value = apiKey,
-            onValueChange = { apiKey = it },
-            label = { Text("OpenRouter key") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true,
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = {
-                if (apiKey.isBlank()) {
-                    error = "Enter a key first."
-                    return@Button
-                }
-                AgentKeyStore.set(context, apiKey)
-                apiKey = ""
-                hasKey = true
-                error = null
-            }) { Text("Save key") }
-            TextButton(onClick = {
-                AgentKeyStore.clear(context)
-                apiKey = ""
-                hasKey = false
-            }) { Text("Clear key") }
-        }
 
         Text("Reset", style = MaterialTheme.typography.titleLarge)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

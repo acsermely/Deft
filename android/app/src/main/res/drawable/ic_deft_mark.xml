@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Deft mark in colour from ic_launcher_foreground.xml (ash dots, ember send button, ink chevron),
+     cropped to its own bounds for small in-app use. Draw it untinted. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="54" android:viewportHeight="54">
+    <path android:fillColor="#5A5A5E" android:pathData="M2,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M38,6 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M2,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M38,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M2,42 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z M20,42 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 Z" />
+    <path android:fillColor="#E8622C" android:pathData="M32,42 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z" />
+    <path android:fillColor="#14120F" android:pathData="M38.792,38.545 A1.555,1.555 0 0,1 40.99,36.346 L45.545,40.901 A1.555,1.555 0 0,1 45.545,43.099 L40.99,47.654 A1.555,1.555 0 0,1 38.792,45.455 L42.247,42 Z" />
+</vector>

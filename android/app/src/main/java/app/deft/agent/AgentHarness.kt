@@ -180,10 +180,11 @@ class AgentHarness(
             val reply = try {
                 withContext(Dispatchers.IO) {
                     AgentChatApi.stream(
-                        apiBase = cfg.apiBase,
                         apiKey = key,
                         model = cfg.model,
                         maxTokens = cfg.maxTokens,
+                        fast = cfg.fast,
+                        effort = cfg.effort,
                         messages = projected,
                         tools = toolDefs,
                         sessionId = sessionId,
@@ -548,10 +549,11 @@ class AgentHarness(
         val reply = try {
             withContext(Dispatchers.IO) {
                 AgentChatApi.stream(
-                    apiBase = cfg.apiBase,
                     apiKey = key,
                     model = cfg.model,
                     maxTokens = compactCfg.maxTokens,
+                    fast = cfg.fast,
+                    effort = cfg.effort,
                     messages = compactMessages,
                     tools = toolDefs,
                     sessionId = compactSession.take(256),

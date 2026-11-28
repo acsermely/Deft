@@ -192,6 +192,8 @@ class HomeActivity : ComponentActivity() {
                 var agentFocusInput by remember { mutableStateOf(false) }
                 var agentStartListen by remember { mutableStateOf(false) }
                 var hasApiKey by remember { mutableStateOf(AgentKeyStore.get(this@HomeActivity) != null) }
+                val keyChanges by AgentKeyStore.changes.collectAsState()
+                LaunchedEffect(keyChanges) { hasApiKey = AgentKeyStore.get(this@HomeActivity) != null }
                 val wantAgent by openAgent.collectAsState()
                 val askMigrate by migratePickerNeeded.collectAsState()
                 val askUrlNotice by urlAppsNotice.collectAsState()

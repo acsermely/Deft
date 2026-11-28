@@ -22,7 +22,7 @@ User files live in the app private directory `filesDir/config/` (copied from APK
 | `theme.toml` | The accent and appearance. Written by `theme.set`. Apps get tokens only from `/_deft/v1/theme.css`. Do not edit the generated theme.css. |
 | `shell.toml` | `dock_radius`, `dock_alpha`, `search_center`, `type_scale`, `recents_count` |
 | `home.toml` | `search_open_dp`, `search_snap` |
-| `agent.toml` | `api_base`, `model`, `max_tokens`, `context_window` — never store API keys here |
+| `agent.toml` | `model`, `fast`, `effort`, `max_tokens`, `context_window`, `web_read` — never store API keys here |
 | `limits.toml` | App quotas. `max_text_bytes` 524288–4194304, `max_binary_bytes` 2097152–8388608, `max_files` 256–1024, `max_package_bytes` 10485760–67108864. Values outside the range are clamped. Raise one only when the user asks. |
 | `theme.name` | Current theme id |
 

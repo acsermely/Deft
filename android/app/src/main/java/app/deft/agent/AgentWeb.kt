@@ -3,7 +3,6 @@ package app.deft.agent
 import app.deft.bridge.CallRate
 import app.deft.config.AgentConfig
 import app.deft.config.ConfigStore
-import app.deft.config.Toml
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
@@ -44,18 +43,7 @@ object AgentWeb {
 
     /** Writes agent.toml with the setting changed and every other key kept. */
     fun writeSetting(store: ConfigStore, agent: AgentConfig, enabled: Boolean) {
-        store.write(
-            "agent.toml",
-            Toml.encode(
-                listOf(
-                    "api_base" to agent.apiBase,
-                    "model" to agent.model,
-                    "max_tokens" to agent.maxTokens,
-                    "context_window" to agent.contextWindow,
-                    "web_read" to enabled,
-                ),
-            ),
-        )
+        store.write("agent.toml", agent.copy(webRead = enabled).toToml())
     }
 
     fun untrustedLine(host: String): String =

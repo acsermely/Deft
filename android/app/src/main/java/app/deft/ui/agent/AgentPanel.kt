@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Spacer
@@ -62,7 +63,6 @@ import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.PictureAsPdf
 import androidx.compose.material.icons.outlined.Stop
@@ -116,6 +116,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
@@ -131,7 +132,8 @@ import app.deft.agent.AgentDictation
 import app.deft.agent.AgentAttachment
 import app.deft.agent.AgentAttachments
 import app.deft.agent.AgentImages
-import app.deft.agent.AgentKeyStore
+import app.deft.R
+import app.deft.agent.OpenRouterSignIn
 import app.deft.agent.AgentLine
 import app.deft.agent.AgentSession
 import app.deft.agent.AgentTabView
@@ -247,7 +249,7 @@ fun HomeAgentOverlay(
         keyDraft = keyDraft,
         onKeyDraft = { keyDraft = it },
         onSaveKey = {
-            AgentKeyStore.set(context, keyDraft)
+            OpenRouterSignIn.savePastedKey(context, keyDraft)
             keyDraft = ""
             onSavedKey()
         },
@@ -566,27 +568,13 @@ fun AgentPanel(
                 }
             }
             if (!hasKey) {
-                Text(
-                    "Paste an OpenRouter API key. It is stored encrypted on this device, not in config files.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                AgentSignIn(
+                    keyDraft = keyDraft,
+                    onKeyDraft = onKeyDraft,
+                    onSaveKey = onSaveKey,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    fieldModifier = Modifier.focusRequester(focusRequester),
                 )
-                OutlinedTextField(
-                    value = keyDraft,
-                    onValueChange = onKeyDraft,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).focusRequester(focusRequester),
-                    label = { Text("OpenRouter API key") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { if (keyDraft.isNotBlank()) onSaveKey() }),
-                )
-                Button(
-                    onClick = onSaveKey,
-                    enabled = keyDraft.isNotBlank(),
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                ) { Text("Save key") }
             } else if (empty) {
                 WorkspaceWelcome(
                     recents = recents,
@@ -872,6 +860,11 @@ fun AgentPanel(
                                 )
                             }
                         }
+                        // The thin model line, from the start of the composer row.
+                        AgentModelLine(
+                            enabled = !busy,
+                            modifier = Modifier.fillMaxWidth().offset(y = (-6).dp),
+                        )
                     }
                 }
                         }
@@ -1045,8 +1038,9 @@ private fun WorkspaceTabs(
                 label = {
                     if (home) {
                         Icon(
-                            Icons.Outlined.Home,
+                            painterResource(R.drawable.ic_deft_mark),
                             contentDescription = "Home",
+                            tint = Color.Unspecified,
                             modifier = Modifier.size(18.dp),
                         )
                     } else {

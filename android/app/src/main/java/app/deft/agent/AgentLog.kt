@@ -164,6 +164,8 @@ class AgentLog(
                 put("model", cfg.model)
                 put("maxTokens", cfg.maxTokens)
                 put("contextWindow", cfg.contextWindow)
+                put("fast", cfg.fast)
+                put("effort", cfg.effort)
                 put("workspace", workspaceId)
             }
             File(dir, "meta.json").writeText(json.encodeToString(JsonObject.serializer(), meta) + "\n")

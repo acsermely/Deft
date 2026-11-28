@@ -30,10 +30,11 @@ object AgentChatApi {
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false; isLenient = true }
 
     suspend fun stream(
-        apiBase: String,
         apiKey: String,
         model: String,
         maxTokens: Int,
+        fast: Boolean,
+        effort: String,
         messages: List<ChatMessage>,
         tools: List<ToolDef>,
         sessionId: String,
@@ -45,7 +46,7 @@ object AgentChatApi {
         repeat(MAX_ATTEMPTS) { attempt ->
             try {
                 return streamOnce(
-                    apiBase, apiKey, model, maxTokens, messages, tools,
+                    apiKey, model, maxTokens, fast, effort, messages, tools,
                     sessionId, toolChoice, onText, onReasoning,
                 )
             } catch (e: CancellationException) {
@@ -67,10 +68,11 @@ object AgentChatApi {
     }
 
     private suspend fun streamOnce(
-        apiBase: String,
         apiKey: String,
         model: String,
         maxTokens: Int,
+        fast: Boolean,
+        effort: String,
         messages: List<ChatMessage>,
         tools: List<ToolDef>,
         sessionId: String,
@@ -94,10 +96,11 @@ object AgentChatApi {
                 stream = true,
                 stream_options = StreamOpts(include_usage = true),
                 session_id = sessionId,
-                reasoning = ReasoningOpts(effort = "minimal"),
+                reasoning = ReasoningOpts(effort = effort),
+                provider = if (fast) ProviderOpts(sort = "throughput") else null,
             ),
         )
-        val url = URL("${apiBase.trimEnd('/')}/chat/completions")
+        val url = URL("${OpenRouterAuth.API_BASE}/chat/completions")
         val conn = (url.openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             connectTimeout = 30_000
@@ -108,7 +111,7 @@ object AgentChatApi {
             setRequestProperty("Content-Type", "application/json")
             setRequestProperty("Accept", "text/event-stream")
             setRequestProperty("Authorization", "Bearer $apiKey")
-            setRequestProperty("X-Title", "Deft")
+            setRequestProperty("X-Title", TITLE)
             setRequestProperty("x-session-id", sessionId.take(256))
         }
         val cancel = coroutineContext[Job]?.invokeOnCompletion { conn.disconnect() }
@@ -378,6 +381,9 @@ object AgentChatApi {
     }
 
     private const val MAX_ATTEMPTS = 4
+
+    /** OpenRouter shows this title in its app stats. Neutral until the product name is cleared. */
+    private const val TITLE = "Android launcher agent"
     private val RETRY_STATUSES = setOf(408, 409, 425, 429, 500, 502, 503, 504)
 }
 
@@ -414,6 +420,7 @@ private data class ChatRequest(
     val stream_options: StreamOpts? = null,
     val session_id: String? = null,
     val reasoning: ReasoningOpts? = null,
+    val provider: ProviderOpts? = null,
 )
 
 @Serializable
@@ -445,6 +452,12 @@ private data class StreamOpts(
 @Serializable
 private data class ReasoningOpts(
     val effort: String,
+)
+
+/** OpenRouter provider routing: `sort = "throughput"` is what the `:nitro` model suffix stands for. */
+@Serializable
+private data class ProviderOpts(
+    val sort: String,
 )
 
 @Serializable
