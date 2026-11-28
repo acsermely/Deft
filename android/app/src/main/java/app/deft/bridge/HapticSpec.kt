@@ -3,7 +3,7 @@ package app.deft.bridge
 import android.view.HapticFeedbackConstants
 
 /**
- * `haptics.play` (DESIGN-SYSTEM-PROPOSAL 3.6): the page's `deft.haptic(kind)` as a View haptic. It needs
+ * `haptics.play` (deft-design motion.md): the page's `deft.haptic(kind)` as a View haptic. It needs
  * no capability grant, is foreground only, and the system's touch-feedback setting still applies.
  */
 internal object HapticSpec {

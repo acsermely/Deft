@@ -32,7 +32,7 @@ fun WebView.applyDeftTheme(tokens: ColorTokens) {
 }
 
 /**
- * Reloads /_deft/v1/theme.css (and /_fl/v1/theme.css in apps made before the rename) and sets the theme-color meta. It does not write the stylesheet:
+ * Reloads /_deft/v1/theme.css and sets the theme-color meta. It does not write the stylesheet:
  * `Palette.publish` (config load) is the single writer of `DeftRuntimeTheme.sheet`.
  */
 fun themeCssJs(tokens: ColorTokens): String {
@@ -44,7 +44,6 @@ fun themeCssJs(tokens: ColorTokens): String {
           var bg = $bgLiteral;
           var r = Date.now();
           var href = '/_deft/v1/theme.css?r=' + r;
-          document.querySelectorAll('link[href*="/_fl/v1/theme.css"]').forEach(function(l) { l.href = '/_fl/v1/theme.css?r=' + r; });
           var el = document.getElementById('deft-theme');
           if (!el) {
             el = document.createElement('link');
@@ -53,7 +52,7 @@ fun themeCssJs(tokens: ColorTokens): String {
             (document.head || document.documentElement).appendChild(el);
           }
           el.href = href;
-          try { window.dispatchEvent(new Event('deft:theme')); window.dispatchEvent(new Event('fl:theme')); } catch (e) {}
+          try { window.dispatchEvent(new Event('deft:theme')); } catch (e) {}
           var meta = document.querySelector('meta[name="theme-color"]');
           if (!meta) {
             meta = document.createElement('meta');

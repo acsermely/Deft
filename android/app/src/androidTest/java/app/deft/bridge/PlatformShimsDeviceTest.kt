@@ -13,7 +13,7 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** PARITY Phase A shims in the device's real WebView (no grants: everything must say no). */
+/** Shims in the device's real WebView (no grants: everything must say no). */
 @RunWith(AndroidJUnit4::class)
 class PlatformShimsDeviceTest {
     @Test

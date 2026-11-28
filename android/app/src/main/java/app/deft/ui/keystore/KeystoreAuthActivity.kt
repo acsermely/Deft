@@ -8,8 +8,11 @@ import androidx.fragment.app.FragmentActivity
 import app.deft.bridge.KeystoreAuth
 import app.deft.ui.OverlayGuard
 
+// DEVICE-UNCHECKED (Keystore keys): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a sample stores and reads back a biometric-locked secret.
+// Remove this note once checked.
 /**
- * PARITY F2: the fingerprint or face prompt for `keystore.*` calls on a biometric-locked key.
+ * The fingerprint or face prompt for `keystore.*` calls on a biometric-locked key.
  * It has no screen of its own; the system prompt is the whole UI. The result goes back through
  * [KeystoreAuth].
  */

@@ -5,8 +5,11 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 
+// DEVICE-UNCHECKED (USB transfers (claim/bulk/control/interrupt/release)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: talk to an Arduino or serial adapter over CDC-ACM from a sample.
+// Remove this note once checked.
 /**
- * Argument rules for USB transfers (PARITY B1), kept free of Android types so they can be tested.
+ * Argument rules for USB transfers, kept free of Android types so they can be tested.
  * Shapes follow WebUSB: OUT transfers carry `base64`, IN transfers ask for a `length`.
  */
 object UsbTransfers {

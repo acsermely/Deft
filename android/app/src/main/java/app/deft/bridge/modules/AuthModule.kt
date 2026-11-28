@@ -27,8 +27,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (auth session (Custom Tab + redirect)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an OAuth login against a test IdP completes.
+// Remove this note once checked.
 /**
- * `auth.prepare` / `auth.start` (PARITY E3): OAuth sign-in in a Custom Tab. The app asks for a
+ * `auth.prepare` / `auth.start`: OAuth sign-in in a Custom Tab. The app asks for a
  * nonce, builds its sign-in URL with the redirect `<scheme>:/cb/<nonce>`, then calls `auth.start`
  * while on screen. The redirect comes back through [app.deft.ui.auth.AuthRedirectActivity].
  */
@@ -82,7 +85,7 @@ class AuthModule(private val context: Context) : BridgeModule {
     private fun openTab(url: String): Boolean = try {
         val uri = Uri.parse(url)
         // Never the launcher itself: while it holds the browser role, an unpinned Custom Tab would
-        // open in the role alias and hand app A's sign-in page to the browser holder (PARITY G11).
+        // open in the role alias and hand app A's sign-in page to the browser holder.
         val browser = browserPackage(uri)
         if (browser == null) {
             false

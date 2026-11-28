@@ -388,16 +388,15 @@ object AppVerifier {
 
     /**
      * App attributes of `deft-widget`s that show the quiet placeholder rather than a frame or the setup tap.
-     * A home page made before the rename uses `fl-widget`, whose runtime (/_fl/v1) names its classes fl-.
      */
     private const val WIDGET_UNAVAILABLE_JS =
-        "(function(){var o=[];document.querySelectorAll('deft-widget,fl-widget').forEach(function(w){" +
-            "var q=w.querySelector('.deft-widget-quiet,.fl-widget-quiet');" +
-            "if(q&&!q.classList.contains('deft-widget-setup')&&!q.classList.contains('fl-widget-setup')||(!q&&/Widget unavailable/.test(w.textContent||'')))" +
+        "(function(){var o=[];document.querySelectorAll('deft-widget').forEach(function(w){" +
+            "var q=w.querySelector('.deft-widget-quiet');" +
+            "if(q&&!q.classList.contains('deft-widget-setup')||(!q&&/Widget unavailable/.test(w.textContent||'')))" +
             "o.push(String(w.getAttribute('app')||'').replace(/[^a-zA-Z0-9:._-]/g,''))});return o.join(',')})()"
 
     private const val WIDGET_UP_JS =
-        "(function(){var n=document.querySelectorAll('deft-widget,fl-widget');if(!n.length)return '';" +
+        "(function(){var n=document.querySelectorAll('deft-widget');if(!n.length)return '';" +
             "if(!customElements.get(n[0].localName))return 'dead';" +
             "for(var i=0;i<n.length;i++)if(n[i].childElementCount>0)return 'ok';return 'dead'})()"
 
@@ -536,7 +535,7 @@ object AppVerifier {
               return s.visibility !== 'hidden' && s.display !== 'none' && s.pointerEvents !== 'none';
             }
             function destructive(el) {
-              return !!(el.closest && el.closest('[data-deft-destructive],[data-fl-destructive],[data-tone=destructive]'));
+              return !!(el.closest && el.closest('[data-deft-destructive],[data-tone=destructive]'));
             }
             var seen = new Set(), todo = [];
             document.querySelectorAll(SEL).forEach(function (el) {

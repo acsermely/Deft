@@ -34,7 +34,7 @@
   #toast { color: var(--deft-label); }
   .ds-status-list { margin: 0; padding: 0; list-style: none; }
 
-  /* Motion and icon demos (DESIGN-SYSTEM-PROPOSAL 3.6, 3.7). */
+  /* Motion and icon demos (deft-design motion.md, icons.md). */
   .ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--deft-space-s); margin-block: var(--deft-space-s); }
   .ds-box { max-block-size: 11rem; overflow: auto; padding: var(--deft-space-s); border-radius: var(--deft-radius-lg); background: var(--deft-fill); }
   .ds-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.25rem, 1fr)); gap: var(--deft-space-s); }

@@ -108,7 +108,6 @@ object AgentChatApi {
             setRequestProperty("Content-Type", "application/json")
             setRequestProperty("Accept", "text/event-stream")
             setRequestProperty("Authorization", "Bearer $apiKey")
-            setRequestProperty("HTTP-Referer", "https://freedomlauncher.app")
             setRequestProperty("X-Title", "Deft")
             setRequestProperty("x-session-id", sessionId.take(256))
         }

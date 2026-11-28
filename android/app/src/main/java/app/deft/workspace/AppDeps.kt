@@ -5,8 +5,11 @@ import app.deft.DeftApp
 import app.deft.registry.DeftDependency
 import java.io.File
 
+// DEVICE-UNCHECKED (hash-pinned .wasm dependency): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: samples/wasm-dep downloads add@1.0.0.wasm on the consent screen (after the samples Worker is deployed) and shows add(2, 40) = 42.
+// Remove this note once checked.
 /**
- * Which manifest decides an app's CDN dependencies (spec 10.10), and fetching the missing
+ * Which manifest decides an app's CDN dependencies, and fetching the missing
  * ones after the user confirmed the consent screen.
  */
 object AppDeps {
@@ -37,6 +40,8 @@ object AppDeps {
         val missing = DepStore.missing(context, DepStore.dependenciesIn(manifest))
         if (missing.isEmpty()) return
         val pin = pinAllowed(context, slug, manifest)
+        // WebAssembly is never pinned on first download.
+        DepStore.requirePinnedWasm(missing)
         missing.firstOrNull { it.integrity == null && !pin }?.let {
             throw IllegalArgumentException("${it.url} has no hash in manifest.json")
         }

@@ -3,7 +3,7 @@ package app.deft.tiles
 import android.content.Context
 
 /**
- * Quick Settings tiles for web apps (PARITY C5). Tiles must be declared in the manifest, so the
+ * Quick Settings tiles for web apps. Tiles must be declared in the manifest, so the
  * launcher ships [COUNT] slots; an app claims one with `tiles.request` and owns it until it
  * releases it or is uninstalled.
  */

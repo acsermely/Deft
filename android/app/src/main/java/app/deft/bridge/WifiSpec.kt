@@ -1,6 +1,6 @@
 package app.deft.bridge
 
-/** Pure rules for `wifi.*` (PARITY G6): kept free of Android types so they can be unit tested. */
+/** Pure rules for `wifi.*`: kept free of Android types so they can be unit tested. */
 object WifiSpec {
     /** What Android reports for a hidden network or when the SSID is not readable. */
     const val UNKNOWN_SSID = "<unknown ssid>"

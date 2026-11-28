@@ -84,6 +84,8 @@ test("components.css stays under 32 KB and carries the motion and morph rules", 
   expect(statSync(file).size).toBeLessThanOrEqual(32 * 1024);
   expect(css).toContain("view-transition-name: deft-morph");
   expect(css).toContain("::view-transition-group(deft-morph)");
+  // The tab bar is its own view-transition group, so a route change does not slide it with the page.
+  expect(css).toContain("view-transition-name: deft-tabbar");
   expect(css).toContain("@layer deft.components");
 });
 

@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import app.deft.config.ColorTokens
 
 @Composable
@@ -32,12 +37,16 @@ fun HomeScreen(
     onPeekCancel: () -> Unit = {},
 ) {
     val placed by canvas.placedWidgets.collectAsState()
+    val density = LocalDensity.current.density
+    // CSS px from the canvas bottom to the top of the chrome below; the canvas page keeps its widgets above it.
+    var chromeClearance by remember { mutableIntStateOf(0) }
     Box(modifier.fillMaxSize()) {
         HomeCanvas(
             store = canvas,
             revision = canvasRevision,
             tokens = tokens,
             modifier = Modifier.fillMaxSize(),
+            chromeClearance = chromeClearance,
             peekEnabled = peekEnabled,
             paused = canvasPaused,
             visible = canvasVisible,
@@ -49,6 +58,8 @@ fun HomeScreen(
             chromeModifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
+                // Measured outside the system-bar padding, so the clearance includes the bottom inset.
+                .onSizeChanged { chromeClearance = ChromeClearance.cssPx(it.height, density) }
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.Bottom,
         ) {

@@ -24,8 +24,11 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
+// DEVICE-UNCHECKED (outbound intents and results): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a sample opens the system camera via IMAGE_CAPTURE and gets the photo back.
+// Remove this note once checked.
 /**
- * Runs one outbound intent for `intents.startForResult` (PARITY E2) and hands back what it
+ * Runs one outbound intent for `intents.startForResult` and hands back what it
  * returned. Content the other app grants us is copied into the app's [ShareInbox] before this
  * activity finishes, because the grant does not outlive it. Only inbox items go back to the app.
  */
@@ -53,7 +56,7 @@ class IntentResultActivity : ComponentActivity() {
             return
         }
         // Always a chooser: the app never picks the receiving app.
-        // PARITY G11: never the launcher's own browser-role entries.
+        // Never the launcher's own browser-role entries.
         try {
             launch.launch(RoleComponents.excludeSelf(this, Intent.createChooser(target, null)))
         } catch (e: SecurityException) {

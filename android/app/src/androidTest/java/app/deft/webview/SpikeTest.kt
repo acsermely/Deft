@@ -22,7 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Records four M0 assumptions on a real device. Results go in docs/spec/DECISIONS.md.
+ * Records four assumptions on a real device. Results are printed to the test output: logcat (tag DeftSpike) and stdout.
  *
  * 1. Host-injected scripts still run under CSP `script-src 'self'`.
  * 2. `https://x.app.deft.internal` is a secure context and interception sees fetch,
@@ -202,8 +202,8 @@ class SpikeTest {
 
         assertTrue("WebView major should parse, got $versionName", major > 0)
         assertTrue("DOCUMENT_START_SCRIPT and WEB_MESSAGE_LISTENER are required", docStart && webMessage)
-        // Assumptions 1–3 are recorded, not hard-gated: a FAIL here is written to DECISIONS.md
-        // and changes PR5/PR6, it must not block the rest of the suite.
+        // Assumptions 1–3 are recorded, not hard-gated: a FAIL here is printed in the report above
+        // and must be acted on, but it must not block the rest of the suite.
     }
 
     private fun decodeProbe(raw: String): JSONObject {

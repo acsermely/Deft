@@ -41,8 +41,11 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (headless background runner): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a background task runs after the app process is killed and shows in the audit log.
+// Remove this note once checked.
 /**
- * PARITY D1: one background run. An off-screen WebView with the app's WebView config, profile,
+ * One background run. An off-screen WebView with the app's WebView config, profile,
  * served files and CSP loads `/_deft/v1/background.html` (which loads the manifest module), gets a
  * bridge like the host's (every call flagged `background`) and the trigger as the event
  * `background.trigger`. It is destroyed when the module calls `background.done`, when the
@@ -95,7 +98,7 @@ class BackgroundSession(
         if (reuse == null) {
             DeftWebViewConfig.apply(
                 view,
-                // PARITY G5 decides background location; a run gets none for now.
+                // Background location is not given to a run for now.
                 geolocation = false,
                 profileName = DeftWebViewConfig.profileName(app.originId, app.origin),
             )
@@ -182,7 +185,7 @@ class BackgroundSession(
     }
 
     /**
-     * PARITY F7b: hands an urgent [trigger] to this run while it goes on, as one more
+     * Hands an urgent [trigger] to this run while it goes on, as one more
      * `background.trigger` event. False when the run has ended or not started.
      */
     fun deliver(trigger: BackgroundTrigger): Boolean {

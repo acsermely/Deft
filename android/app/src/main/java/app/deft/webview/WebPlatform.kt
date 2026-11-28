@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo
 import android.webkit.PermissionRequest
 import app.deft.catalog.Capability
 
-/** Mappings from web platform requests to launcher grants and Android settings (PARITY A4, A9). */
+/** Mappings from web platform requests to launcher grants and Android settings . */
 object WebPlatform {
     /** The Android runtime permission a media resource needs, with the message to show if it is refused; null when none. */
     fun osPermissionFor(resource: String): Pair<String, String>? = when (resource) {

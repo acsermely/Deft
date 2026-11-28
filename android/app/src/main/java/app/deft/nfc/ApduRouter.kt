@@ -13,8 +13,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (NFC host card emulation): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: the phone emulates a test tag to a second NFC phone or reader.
+// Remove this note once checked.
 /**
- * PARITY B3/B4: sends each reader command of one card emulation service to the app holding it, as
+ * Sends each reader command of one card emulation service to the app holding it, as
  * [commandEvent] `{requestId, base64}`, and waits up to [HceRouting.RESPONSE_TIMEOUT_MS] for its
  * answer. Only an open page of the holder gets commands (never queued, no background run: a cold
  * start does not fit in the window). No holder, no open page or no answer in time: null (6F00).
@@ -54,7 +57,7 @@ class ApduRouter(
         pending.respond(webAppId, requestId, response)
 }
 
-/** PARITY B3/B4: a [HostApduService] whose commands go through [router]; answers 6F00 when no app does. */
+/** A [HostApduService] whose commands go through [router]; answers 6F00 when no app does. */
 abstract class RoutedApduService : HostApduService() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 

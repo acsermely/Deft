@@ -30,8 +30,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.CopyOnWriteArrayList
 
+// DEVICE-UNCHECKED (typed foreground services): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a workout sample records a GPS track with the screen off, notification visible.
+// Remove this note once checked.
 /**
- * PARITY D3: one typed foreground service for every app that called `fgs.start`. Each app gets its
+ * One typed foreground service for every app that called `fgs.start`. Each app gets its
  * own ongoing notification ("<App>: <title>", tap opens it, Stop ends it); the first one is the
  * service's own notification. While an app is listed here its host activity keeps its page running
  * when it leaves the screen (see [WebViewHostRuntime] and `WebViewHostActivity.onStop`).
@@ -56,7 +59,7 @@ class AppForegroundService : Service() {
         when (intent?.action) {
             ACTION_STOP -> intent.getStringExtra(EXTRA_WEB_APP_ID)?.let { stop(this, it, REASON_USER) }
             else -> {
-                // PARITY D4: a media button in the notification (older Androids draw these).
+                // A media button in the notification (older Androids draw these).
                 val name = intent?.action?.takeIf { it.startsWith(ACTION_MEDIA_PREFIX) }?.removePrefix(ACTION_MEDIA_PREFIX)
                 val action = MediaSessionSpec.Action.fromId(name)
                 val id = intent?.getStringExtra(EXTRA_WEB_APP_ID)
@@ -174,7 +177,7 @@ class AppForegroundService : Service() {
         if (media == null) {
             builder.addAction(0, "Stop", stop)
         } else {
-            // PARITY D4: a media notification tied to the app's session; the app's name stays visible.
+            // A media notification tied to the app's session; the app's name stays visible.
             val buttons = MediaSessionSpec.notificationButtons(media.actions, media.state)
             for (a in buttons) builder.addAction(mediaIcon(a), mediaLabel(a), mediaIntent(s.webAppId, a))
             builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stop)
@@ -239,7 +242,7 @@ class AppForegroundService : Service() {
         val ready = CompletableDeferred<String?>()
         var running = false
 
-        /** PARITY D4: the app's media session, only for a running `mediaPlayback` session. Main thread. */
+        /** The app's media session, only for a running `mediaPlayback` session. Main thread. */
         var media: AppMediaSession? = null
     }
 
@@ -254,7 +257,7 @@ class AppForegroundService : Service() {
         const val FGS_ID = 0x46475301
         const val ACTION_STOP = "app.deft.FGS_STOP"
         const val ACTION_SYNC = "app.deft.FGS_SYNC"
-        /** PARITY D4: followed by a [MediaSessionSpec.Action] id. */
+        /** Followed by a [MediaSessionSpec.Action] id. */
         const val ACTION_MEDIA_PREFIX = "app.deft.FGS_MEDIA."
         const val EXTRA_WEB_APP_ID = "webAppId"
 
@@ -385,9 +388,9 @@ class AppForegroundService : Service() {
         }
 
         /**
-         * PARITY D3: after a grant changed to "no", ends the app's session when it lost
+         * After a grant changed to "no", ends the app's session when it lost
          * `foreground` or the last grant its type needs (`location`, `microphone`, a device cap).
-         * PARITY D4: losing `media.session` ends only the media session.
+         * Losing `media.session` ends only the media session.
          */
         suspend fun recheckGrants(context: Context, repository: AppRepository, webAppId: String) {
             val s = session(webAppId) ?: return
@@ -395,13 +398,13 @@ class AppForegroundService : Service() {
             if (!FgsType.stillAllowed(s.type, granted)) {
                 stop(context, webAppId, REASON_REVOKED)
             } else if (Capability.MEDIA_SESSION !in granted) {
-                // PARITY D4: without `media.session` the lock screen and headsets stop reaching the app.
+                // Without `media.session` the lock screen and headsets stop reaching the app.
                 main.post { releaseMedia(webAppId) }
             }
         }
 
         /**
-         * PARITY D4: [webAppId]'s media session, created on first use, or null when the app has no
+         * [webAppId]'s media session, created on first use, or null when the app has no
          * running foreground service of type `mediaPlayback`. Main thread.
          */
         fun media(context: Context, webAppId: String): AppMediaSession? {
@@ -419,12 +422,12 @@ class AppForegroundService : Service() {
             return AppMediaSession(ctx, webAppId, open, ::emitMediaAction).also { s.media = it }
         }
 
-        /** PARITY D4: redraws the app's notification after its media session changed. Main thread. */
+        /** Redraws the app's notification after its media session changed. Main thread. */
         fun mediaChanged() {
             instance?.refresh()
         }
 
-        /** PARITY D4: `media.release`; the notification goes back to the plain one. Main thread. */
+        /** `media.release`; the notification goes back to the plain one. Main thread. */
         fun releaseMedia(webAppId: String) {
             val s = session(webAppId) ?: return
             val m = s.media ?: return

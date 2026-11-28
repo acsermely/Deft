@@ -84,7 +84,10 @@ class WorkspaceLaunchActivity : ComponentActivity() {
                 repo.ungrantedCapabilities(installed.id, installed.requiredCapabilities)
             }
             val needsDeps = withContext(Dispatchers.IO) {
-                app.deft.workspace.AppDeps.missing(this@WorkspaceLaunchActivity, installed.id, slug).isNotEmpty()
+                app.deft.workspace.AppDeps.missing(this@WorkspaceLaunchActivity, installed.id, slug).isNotEmpty() ||
+                    // Asset packs not downloaded yet go through the same screen.
+                    runCatching { app.deft.workspace.AssetPacks.pendingFor(this@WorkspaceLaunchActivity, installed.id, slug) }
+                        .getOrDefault(emptyList()).isNotEmpty()
             }
             if (pending.isNotEmpty() || needsDeps) {
                 val existingGrants = withContext(Dispatchers.IO) { repo.grantsForApp(installed.id) }

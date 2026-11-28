@@ -51,7 +51,7 @@ class DeftApp : Application() {
         super.onCreate()
         instance = this
         lastNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        // PARITY G9: lets the accessibility service know when a grant or confirm screen shows.
+        // Lets the accessibility service know when a grant or confirm screen shows.
         app.deft.a11y.A11yGuard.install(this)
         // Step totals keep counting after a reboot or a process death (a no-op until an app asked once).
         app.deft.bridge.StepStore.get(this).start()
@@ -67,6 +67,7 @@ class DeftApp : Application() {
                 AppDatabase.MIGRATION_8_9,
                 AppDatabase.MIGRATION_9_10,
                 AppDatabase.MIGRATION_10_11,
+                AppDatabase.MIGRATION_11_12,
             )
             .addCallback(object : RoomDatabase.Callback() {
                 // A brand-new database never held URL apps, so MIGRATION_6_7's notice does not apply.
@@ -110,12 +111,12 @@ class DeftApp : Application() {
         agentWorkspace = AgentWorkspace(File(filesDir, "config/agent.recents"))
         AgentSession.syncPreviewSlug()
         NativeDrawer.warm(this)
-        // PARITY G0: daily "still want this?" review of special access (30-day reminder, 90-day removal).
+        // Daily "still want this?" review of special access (30-day reminder, 90-day removal).
         runCatching { app.deft.special.SpecialReviewRunner.ensureScheduled(this) }
         Thread {
             runCatching { kotlinx.coroutines.runBlocking { app.deft.special.SpecialReviewRunner.runCheck(this@DeftApp) } }
         }.start()
-        // PARITY D2: catch up on `periodic:N` work for manifests that changed while no hook ran
+        // Catch up on `periodic:N` work for manifests that changed while no hook ran
         // (bundled apps after an update, overlay edits).
         Thread {
             runCatching {
@@ -124,7 +125,7 @@ class DeftApp : Application() {
                 }
             }
         }.start()
-        // PARITY G5: geofences are proximity alerts, which an update or a force stop drops.
+        // Geofences are proximity alerts, which an update or a force stop drops.
         Thread {
             runCatching {
                 kotlinx.coroutines.runBlocking {
@@ -132,9 +133,9 @@ class DeftApp : Application() {
                 }
             }
         }.start()
-        // PARITY E1: "Open with" aliases follow the installed apps' `handles` (bundled apps after an update, overlay edits).
+        // "Open with" aliases follow the installed apps' `handles` (bundled apps after an update, overlay edits).
         app.deft.ui.handlers.HandlerAliases.syncSoon(this)
-        // PARITY G11: role components follow the special role grants.
+        // Role components follow the special role grants.
         app.deft.roles.RoleComponents.syncSoon(this)
     }
 

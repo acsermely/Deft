@@ -5,7 +5,9 @@ package app.deft.ui.home
  *
  * Styled with the design runtime (8.1, 8.2): base, tokens, components, then the theme. Tokens only.
  * The canvas content stays opaque: no blur and no animation, per the A16 audit (commit 8f9c92f).
- * The dock and the harness bar are native glass in Compose, not part of this page.
+ * The dock and the harness bar are native glass in Compose, not part of this page. Their measured height
+ * (plus the bottom system bar) arrives as `--chrome-clearance` on the root element ([ChromeClearance]);
+ * the 240px in the stylesheet is only the fallback until it does.
  */
 object HomeCanvasDefaults {
     const val INDEX = "index.html"
@@ -50,6 +52,7 @@ object HomeCanvasDefaults {
 
     private const val STYLES_CSS = """
 /* Home canvas: opaque wallpaper and widgets. Tokens only (deft-design). No blur, no animation. */
+/* The launcher sets --chrome-clearance to the height of its dock, harness bar and bottom system bar. */
 :root {
   --chrome-clearance: 240px;
 }
@@ -76,7 +79,7 @@ html, body {
   z-index: 1;
   overflow: hidden;
   box-sizing: border-box;
-  padding: calc(env(safe-area-inset-top, 0px) + 92px) 28px calc(var(--chrome-clearance) + env(safe-area-inset-bottom, 0px));
+  padding: calc(env(safe-area-inset-top, 0px) + 92px) 28px var(--chrome-clearance);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

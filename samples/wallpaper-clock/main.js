@@ -1,4 +1,4 @@
-// Wallpaper Clock app page (PARITY G11): a preview of the clock the wallpaper page draws, and how
+// Wallpaper Clock app page: a preview of the clock the wallpaper page draws, and how
 // to turn the wallpaper on. The wallpaper itself is wallpaper/index.html and wallpaper/main.js.
 import { themeColors, fitCanvas, drawClock } from './wallpaper/clock.js';
 

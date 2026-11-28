@@ -6,8 +6,11 @@ import kotlinx.coroutines.CompletableDeferred
 import org.unifiedpush.android.connector.UnifiedPush
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (UnifiedPush): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an ntfy-backed sample receives a push with the app closed.
+// Remove this note once checked.
 /**
- * PARITY D6: one UnifiedPush instance per web app (instance name = webAppId) and its endpoint,
+ * One UnifiedPush instance per web app (instance name = webAppId) and its endpoint,
  * kept in private SharedPreferences. The connector library keeps the instance tokens itself.
  * Endpoints are secrets of the app's server and are never logged.
  */

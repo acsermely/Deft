@@ -8,8 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.unifiedpush.android.connector.MessagingReceiver
 
+// DEVICE-UNCHECKED (UnifiedPush): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an ntfy-backed sample receives a push with the app closed.
+// Remove this note once checked.
 /**
- * PARITY D6: broadcasts from the UnifiedPush distributor. The connector library matches each
+ * Broadcasts from the UnifiedPush distributor. The connector library matches each
  * broadcast's token to an instance (= webAppId) and ignores unknown tokens, so another app
  * cannot fake a message without the distributor's token.
  */

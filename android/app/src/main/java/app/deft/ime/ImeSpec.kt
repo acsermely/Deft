@@ -6,7 +6,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 
 /**
- * Pure rules for the launcher's keyboard (PARITY G11 `ime`). No Android types; unit tested. The
+ * Pure rules for the launcher's keyboard (the `ime` role). No Android types; unit tested. The
  * numbers below are Android's `InputType`, `EditorInfo` and `KeyEvent` constants, copied so this
  * file runs on the JVM.
  */
@@ -163,7 +163,7 @@ object ImeSpec {
     }
 
     /**
-     * PARITY G11: `ime.*` methods are only for the keyboard page the launcher's keyboard shows
+     * `ime.*` methods are only for the keyboard page the launcher's keyboard shows
      * (a bridge flagged background with `ime` as its run capability). The app's own pages, its
      * background runs and its wallpaper page get `unsupported`.
      */

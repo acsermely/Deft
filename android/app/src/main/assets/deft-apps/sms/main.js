@@ -2,6 +2,7 @@
 import '/_deft/v1/motion.js';
 import { ready, call, on, inLauncher } from '/_deft/v1/bridge.js';
 import { back } from '/_deft/v1/app.js';
+import { threadFromHash, backAction, adoptFragmentEntry } from './nav.js';
 
 const $ = (id) => document.getElementById(id);
 const sheet = $('sheet');
@@ -185,7 +186,15 @@ $('back').addEventListener('click', () => {
   if (history.state && history.state.view === 'chat') history.back();
   else { showInbox(); loadInbox(); }
 });
+// A notification tap while the app is open loads `#t/<id>` into this page (no state): open that thread in place.
+function adoptFragment() {
+  const threadId = adoptFragmentEntry(history, location);
+  if (threadId) openChat(threadId, true);
+  return !!threadId;
+}
+window.addEventListener('hashchange', adoptFragment);
 window.addEventListener('popstate', () => {
+  if (adoptFragment()) return;
   const state = history.state || { view: 'inbox' };
   if (state.view === 'compose') {
     showInbox();
@@ -202,18 +211,15 @@ window.addEventListener('popstate', () => {
 // Android Back: close the sheet first, then leave a thread for the list. Each step pops the history entry
 // it pushed (popstate then redraws), so Back at the list leaves the app instead of replaying stale entries.
 back(() => {
-  const view = history.state && history.state.view;
-  if (sheet.open) {
-    if (view === 'compose') history.back();
-    else closeSheet();
-    return true;
-  }
-  if (!$('chat').hidden) {
-    if (view === 'chat') history.back();
-    else { showInbox(); loadInbox(); }
-    return true;
-  }
-  return false;
+  const action = backAction({
+    sheetOpen: sheet.open,
+    chatShown: !$('chat').hidden,
+    view: history.state && history.state.view,
+  });
+  if (action === 'pop') history.back();
+  else if (action === 'close') closeSheet();
+  else if (action === 'inbox') { showInbox(); loadInbox(); }
+  return action !== false;
 });
 $('newForm').addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -259,8 +265,8 @@ $('attach').addEventListener('click', async () => {
   if (!(await awaitBridge())) { loadInbox(); return; }
   await loadNames();
   await loadInbox();
-  const threadHash = pendingHash.match(/^#t\/(.+)$/);
-  if (threadHash) await openChat(decodeURIComponent(threadHash[1]));
+  const threadId = threadFromHash(pendingHash);
+  if (threadId) await openChat(threadId);
   on('sms.received', () => (openThread ? openChat(openThread) : loadInbox()));
   on('sms.mmsReceived', () => (openThread ? openChat(openThread) : loadInbox()));
   on('sms.composeRequested', (msg) => {

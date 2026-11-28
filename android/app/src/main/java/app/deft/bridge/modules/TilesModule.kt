@@ -18,7 +18,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlin.coroutines.resume
 
-/** `tiles.*` (PARITY C5): claim a Quick Settings tile slot, update it, release it. */
+/** `tiles.*`: claim a Quick Settings tile slot, update it, release it. */
 class TilesModule(private val context: Context) : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome = when (request.method) {
         "tiles.request" -> request(request)

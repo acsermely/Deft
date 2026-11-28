@@ -11,8 +11,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * PARITY G11: Android starts a session when the user asks for the assistant. The session shows
+ * Android starts a session when the user asks for the assistant. The session shows
  * nothing: it opens the app holding `role.assistant` with `assist.invoked {source: "assist-gesture"}` and hides. The
  * assist data Android may offer (the screen in front) is never read or passed on.
  */

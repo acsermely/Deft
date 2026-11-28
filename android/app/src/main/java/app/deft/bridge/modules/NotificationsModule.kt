@@ -15,8 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonArray
 
+// DEVICE-UNCHECKED (notification listener): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a notification-history sample works and only the holder gets events.
+// Remove this note once checked.
 /**
- * `notifications.*` (PARITY G8, SPECIAL exclusive `notifications.listen`): read, dismiss, reply
+ * `notifications.*` (SPECIAL exclusive `notifications.listen`): read, dismiss, reply
  * to and open other apps' notifications through [DeftNotificationListener]. Only the holder of
  * group `notif-listener` gets here (the grant check in `BridgeService.invoke`; checked again).
  * The launcher's own notifications are invisible to every method. `open` needs the app on

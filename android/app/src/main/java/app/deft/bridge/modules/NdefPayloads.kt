@@ -1,7 +1,10 @@
 package app.deft.bridge.modules
 
+// DEVICE-UNCHECKED (NFC write, read-only and tech transceive): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: write a URL tag; read a transit card's ISO-DEP response.
+// Remove this note once checked.
 /**
- * NFC Forum payload formats for well-known Text and URI records (PARITY B2). Pure byte logic so it
+ * NFC Forum payload formats for well-known Text and URI records. Pure byte logic so it
  * can be tested off-device; building [android.nfc.NdefRecord]s happens in [NfcModule].
  */
 object NdefPayloads {

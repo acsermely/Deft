@@ -17,8 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * PARITY G11: keeps the role components ([RoleComponent]) enabled only while a web app holds the
+ * Keeps the role components ([RoleComponent]) enabled only while a web app holds the
  * matching special grant. Disabling one makes the launcher stop qualifying for the Android role,
  * and Android then gives the role back to its default app. Re-evaluated on every special grant
  * change, uninstall, manifest change and process start, and right after a grant in the sheet
@@ -36,7 +39,7 @@ object RoleComponents {
         val groups = RoleComponent.entries.mapNotNull { it.cap.exclusiveGroup }.distinct()
         val held = groups.filter { repository.specialHolder(it) != null }.toSet()
         val on = RoleSpec.enabledComponents(held)
-        // PARITY B4: with no payment holder, the last holder's AIDs go too, so a later holder never
+        // With no payment holder, the last holder's AIDs go too, so a later holder never
         // gets commands for AIDs it did not register. Android keeps dynamic AIDs across restarts;
         // cleared before the service is disabled, while Android still knows it.
         if (Capability.NFC_HCE_PAYMENT.exclusiveGroup !in held) {
@@ -62,7 +65,7 @@ object RoleComponents {
                     .onFailure { Log.w(TAG, "${component.name} not updated", it) }
             }
         }
-        // PARITY G11 device.admin: with no app holding the grant, the launcher's device admin goes off.
+        // With no app holding the grant, the launcher's device admin goes off.
         val adminGroup = Capability.DEVICE_ADMIN.exclusiveGroup!!
         if (repository.specialHolder(adminGroup) == null && DeftDeviceAdminReceiver.isActive(context)) {
             runCatching {
@@ -73,7 +76,7 @@ object RoleComponents {
     }
 
     /**
-     * PARITY G11: links the launcher itself opens (a web app's outside link, `intents.open`) must
+     * Links the launcher itself opens (a web app's outside link, `intents.open`) must
      * reach a real browser, not come back to the browser-role holder. Adds the role components to
      * a chooser's excluded list.
      */
@@ -82,7 +85,7 @@ object RoleComponents {
         RoleComponent.entries.map { ComponentName(context.packageName, it.className) }.toTypedArray(),
     )
 
-    /** PARITY G11: true when [intent] would open in the launcher itself (it is the default browser). */
+    /** True when [intent] would open in the launcher itself (it is the default browser). */
     fun resolvesToSelf(context: Context, intent: Intent): Boolean = runCatching {
         context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName == context.packageName

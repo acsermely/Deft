@@ -17,8 +17,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+// DEVICE-UNCHECKED (inbound "Open with" handlers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: "Open with" a PDF from the Files app opens the FL app with the content readable via the bridge.
+// Remove this note once checked.
 /**
- * PARITY E1: keeps the launcher's "Open with" aliases enabled only while an installed app
+ * Keeps the launcher's "Open with" aliases enabled only while an installed app
  * handles them, so Deft does not show up in other apps' choosers for nothing.
  * Re-evaluated on install, uninstall, manifest change, `share.receive` grant change and process start.
  */
@@ -74,7 +77,7 @@ object HandlerAliases {
     }
 }
 
-/** PARITY E1: the "Always" choice per alias (alias key → webAppId). Cleared on the dashboard or on uninstall. */
+/** The "Always" choice per alias (alias key → webAppId). Cleared on the dashboard or on uninstall. */
 class HandlerDefaults(context: Context) {
     private val prefs = context.applicationContext.getSharedPreferences("fl_handler_defaults", Context.MODE_PRIVATE)
 

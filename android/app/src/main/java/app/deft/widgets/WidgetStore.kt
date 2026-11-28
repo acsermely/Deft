@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 /**
- * Home widgets for web apps (PARITY C4). Data cards, not live pages: an app sets a title, text and
+ * Home widgets for web apps. Data cards, not live pages: an app sets a title, text and
  * an optional value; Home draws them natively and a tap opens the app. Cheap on battery, and no
  * app code runs on the Home screen.
  */

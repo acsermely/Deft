@@ -12,10 +12,10 @@ const apkCandidates = [
 
 function localApkDev(): Plugin {
 	return {
-		name: 'freedom-local-apk',
+		name: 'deft-local-apk',
 		configureServer(server) {
 			server.middlewares.use((req, res, next) => {
-				if (req.url?.split('?')[0] !== '/freedom-launcher.apk') return next();
+				if (req.url?.split('?')[0] !== '/deft.apk') return next();
 				const file = apkCandidates.find((path) => existsSync(path));
 				if (!file) {
 					res.statusCode = 404;
@@ -47,7 +47,7 @@ export default defineConfig({
 			}),
 			prerender: {
 				handleHttpError: ({ path, message }) => {
-					if (path === '/freedom-launcher.apk') return;
+					if (path === '/deft.apk') return;
 					throw new Error(message);
 				}
 			},

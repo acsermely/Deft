@@ -1,4 +1,4 @@
-/* Components layer (deft.components). Tokens only (--deft-bg*, --deft-label*, --deft-fill*, --deft-separator, --deft-accent, --deft-error). Colour map: DESIGN-SYSTEM-PROPOSAL 8.1. Requires base.css and tokens.css. */
+/* Components layer (deft.components). Tokens only (--deft-bg*, --deft-label*, --deft-fill*, --deft-separator, --deft-accent, --deft-error). Colour map. Requires base.css and tokens.css. */
 @layer deft.components {
   /* Buttons. Secondary (fill + label) is the default; the accent marks one primary per screen. */
   .deft-btn, .deft-btn-secondary {
@@ -337,6 +337,10 @@
   ::view-transition-old(root) { animation: deft-fade-out var(--deft-duration-s) var(--deft-ease-exit) both; }
   ::view-transition-new(root) { animation: deft-rise-in var(--deft-duration-l) var(--deft-ease-enter) both; }
   ::view-transition-group(deft-morph) { animation-duration: var(--deft-duration-l); animation-timing-function: var(--deft-ease-enter); }
+  /* The tab bar stays put while the page under it rises in. */
+  .deft-tabbar { view-transition-name: deft-tabbar; }
+  ::view-transition-old(deft-tabbar) { display: none; }
+  ::view-transition-group(deft-tabbar), ::view-transition-new(deft-tabbar) { animation: none; }
   dialog.deft-dialog, dialog.deft-sheet {
     transition: opacity var(--deft-duration-s) var(--deft-ease-exit), transform var(--deft-duration-s) var(--deft-ease-exit), overlay var(--deft-duration-s) allow-discrete, display var(--deft-duration-s) allow-discrete;
   }

@@ -13,8 +13,11 @@ import androidx.core.content.ContextCompat
 import app.deft.bridge.LocationSpec
 import app.deft.catalog.Capability
 
+// DEVICE-UNCHECKED (background location and geofences): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a run tracker records with the screen off; the notification stays visible.
+// Remove this note once checked.
 /**
- * PARITY G5: each app's geofences, as proximity alerts on Android's own [LocationManager] (no
+ * Each app's geofences, as proximity alerts on Android's own [LocationManager] (no
  * Google services). The list is kept in private SharedPreferences, so it can be registered again
  * after a reboot ([restoreAll]); Android forgets proximity alerts when the phone restarts.
  * Alerts reach [GeofenceReceiver] (not exported) through a PendingIntent whose data names the

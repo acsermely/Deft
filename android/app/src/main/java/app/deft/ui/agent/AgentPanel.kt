@@ -185,7 +185,7 @@ fun HomeAgentOverlay(
     DisposableEffect(dictation) {
         onDispose { dictation.destroy() }
     }
-    // While the panel shows, the home screen is a guarded screen for accessibility (PARITY G9):
+    // While the panel shows, the home screen is a guarded screen for accessibility:
     // a holder must not read the conversation or press Send / Apply.
     DisposableEffect(Unit) {
         A11yGuard.agentPanelShown(true)

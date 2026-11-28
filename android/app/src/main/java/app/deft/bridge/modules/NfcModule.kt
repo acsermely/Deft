@@ -39,8 +39,11 @@ import kotlinx.serialization.json.contentOrNull
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (NFC write, read-only and tech transceive): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: write a URL tag; read a transit card's ISO-DEP response.
+// Remove this note once checked.
 /**
- * NFC (PARITY B2). `nfc.read` is the original one-shot read. `nfc.scanStart` reads tags while the
+ * NFC. `nfc.read` is the original one-shot read. `nfc.scanStart` reads tags while the
  * app is on screen and emits `nfc.tag`; the tag id in that event is then used with
  * `nfc.writeNdef`, `nfc.makeReadOnly` and `nfc.transceive` while the tag stays in the field.
  */
@@ -278,7 +281,7 @@ class NfcModule(
         return BridgeOutcome.Ok(buildJsonObject { put("base64", JsonPrimitive(Base64.encodeToString(response, Base64.NO_WRAP))) })
     }
 
-    // ---- PARITY B3: card emulation for the app holding nfc.hce (exclusive grant) ----
+    // ---- card emulation for the app holding nfc.hce (exclusive grant) ----
 
     private fun cardEmulation(): android.nfc.cardemulation.CardEmulation? {
         val adapter = android.nfc.NfcAdapter.getDefaultAdapter(context) ?: return null
@@ -330,7 +333,7 @@ class NfcModule(
         else BridgeOutcome.Err(BridgeErrors.INVALID_ARGS, "unknown or expired requestId")
     }
 
-    // ---- PARITY B4: payment-category card emulation for the app holding nfc.hce.payment (special, exclusive) ----
+    // ---- payment-category card emulation for the app holding nfc.hce.payment (special, exclusive) ----
 
     private fun paymentRegister(request: BridgeRequest): BridgeOutcome {
         val outcome = registerAids(request) { aids ->

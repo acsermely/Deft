@@ -3,7 +3,7 @@ package app.deft.data
 import app.deft.registry.DeftManifestParser
 
 /**
- * Network origins are a permission, not a source edit (PARITY H4).
+ * Network origins are a permission, not a source edit.
  *
  * The app's manifest declares `network` origins; the consent screen records which ones the user
  * saw and allowed. The host serves `connect-src` from the intersection, so an edit that adds an
@@ -21,7 +21,7 @@ object NetworkConsent {
     /** Row came from the consent screen (manifest `network`). */
     const val SOURCE_MANIFEST = "manifest"
 
-    /** PARITY P3: a server the user typed on the dashboard; served only with `network.user`. */
+    /** A server the user typed on the dashboard; served only with `network.user`. */
     const val SOURCE_USER = "user"
     const val MAX_USER_SERVERS = 16
 
@@ -58,7 +58,7 @@ object NetworkConsent {
     }
 
     /**
-     * PARITY P3: what the user typed as a server, as an origin to store, or null when it is not
+     * What the user typed as a server, as an origin to store, or null when it is not
      * one. Same rule as manifest origins ([DeftManifestParser.validNetworkOrigin]): https, a dotted
      * public host name, optional port; one trailing slash and letter case are forgiven.
      */
@@ -67,13 +67,13 @@ object NetworkConsent {
         return origin.takeIf { DeftManifestParser.validNetworkOrigin(it) }
     }
 
-    /** Origins for `connect-src` (and P2 img/media): consented manifest origins, then user servers when granted. */
+    /** Origins for `connect-src` (and img/media): consented manifest origins, then user servers when granted. */
     fun served(consented: List<String>, userServers: List<String>, userGranted: Boolean): List<String> =
         (consented + if (userGranted) userServers else emptyList()).distinct()
 }
 
 /**
- * PARITY G14: which manifest `embeds` origins the user approved, one by one. Stored in the
+ * Which manifest `embeds` origins the user approved, one by one. Stored in the
  * `network_consent` table under [SOURCE_APPROVED] / [SOURCE_REFUSED] (no schema change), so an
  * unticked origin is not asked again on every launch, and a new one is.
  *
@@ -130,7 +130,7 @@ object EmbedConsent {
         afterConsent(declared, approved, refused, shown = listOf(origin), ticked = if (allow) listOf(origin) else emptyList())
 }
 
-/** W5: source names of the agent-tool consent rows in `network_consent` (see [AppRepository.unconsentedTools]). */
+/** Source names of the agent-tool consent rows in `network_consent` (see [AppRepository.unconsentedTools]). */
 object AgentToolConsent {
     const val SOURCE_TOOL = "tool"
     const val SOURCE_OFF = "tools-off"

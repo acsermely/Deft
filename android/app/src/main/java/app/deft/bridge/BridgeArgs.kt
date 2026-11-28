@@ -212,7 +212,7 @@ object BridgeArgs {
         ),
         "usb.bulkTransfer" to ArgSchema(required = setOf("deviceName", "endpoint"), stringMax = mapOf("deviceName" to SHORT, "base64" to 90_000)),
         "usb.interruptTransfer" to ArgSchema(required = setOf("deviceName", "endpoint"), stringMax = mapOf("deviceName" to SHORT, "base64" to 90_000)),
-        // PARITY F8/G4: base64 of at most 64 KiB (65,536 bytes is 87,384 characters).
+        // Base64 of at most 64 KiB (65,536 bytes is 87,384 characters).
         "net.discover" to ArgSchema(required = setOf("type"), stringMax = mapOf("type" to 64)),
         "net.discoverStop" to ArgSchema(),
         "net.resolve" to ArgSchema(required = setOf("name", "type"), stringMax = mapOf("name" to SHORT, "type" to 64)),
@@ -228,24 +228,27 @@ object BridgeArgs {
         "wifi.info" to ArgSchema(),
         "wifi.openPanel" to ArgSchema(),
         "wifi.suggest" to ArgSchema(required = setOf("ssid"), stringMax = mapOf("ssid" to 128, "passphrase" to 64)),
-        // PARITY G7: package names are at most 255 characters; usage times are epoch milliseconds.
+        // Package names are at most 255 characters; usage times are epoch milliseconds.
         "apps.list" to ArgSchema(),
         "apps.icon" to ArgSchema(required = setOf("package"), stringMax = mapOf("package" to 256)),
         "apps.launch" to ArgSchema(required = setOf("package"), stringMax = mapOf("package" to 256)),
         "usage.stats" to ArgSchema(required = setOf("sinceMs", "untilMs"), stringMax = mapOf("sinceMs" to 20, "untilMs" to 20)),
         "device.id" to ArgSchema(),
-        // PARITY E3: a sign-in URL is at most 8 KiB; the nonce is 32 hex characters.
+        // A sign-in URL is at most 8 KiB; the nonce is 32 hex characters.
         "auth.prepare" to ArgSchema(),
         "auth.start" to ArgSchema(required = setOf("url", "nonce"), stringMax = mapOf("url" to 8_192, "nonce" to 32)),
-        // PARITY D3: type is one of five short names; title and text show in the notification.
+        // WebAuthn options JSON, at most 16 KiB (PasskeyPolicy.MAX_REQUEST_BYTES also counts bytes).
+        "passkeys.status" to ArgSchema(),
+        "passkeys.create" to ArgSchema(required = setOf("requestJson"), stringMax = mapOf("requestJson" to PasskeyPolicy.MAX_REQUEST_BYTES)),
+        "passkeys.get" to ArgSchema(required = setOf("requestJson"), stringMax = mapOf("requestJson" to PasskeyPolicy.MAX_REQUEST_BYTES)),
+        // Type is one of five short names; title and text show in the notification.
         "fgs.start" to ArgSchema(required = setOf("type", "title"), stringMax = mapOf("type" to 20, "title" to 80, "text" to 200)),
         "fgs.update" to ArgSchema(stringMax = mapOf("title" to 80, "text" to 200)),
         "fgs.stop" to ArgSchema(),
-        // PARITY D6
         "push.register" to ArgSchema(),
         "push.unregister" to ArgSchema(),
         "push.status" to ArgSchema(),
-        // PARITY G5: numbers are checked in LocationSpec; ids are short names.
+        // Numbers are checked in LocationSpec; ids are short names.
         "location.watchBackground" to ArgSchema(required = setOf("intervalMs"), stringMax = mapOf("intervalMs" to 24, "minDistanceM" to 24)),
         "location.watchStop" to ArgSchema(required = setOf("watchId"), stringMax = mapOf("watchId" to 32)),
         "location.geofenceAdd" to ArgSchema(
@@ -256,7 +259,6 @@ object BridgeArgs {
         ),
         "location.geofenceRemove" to ArgSchema(required = setOf("id"), stringMax = mapOf("id" to LocationSpec.ID_MAX)),
         "location.geofenceList" to ArgSchema(),
-        // PARITY G10
         "accounts.add" to ArgSchema(required = setOf("name"), stringMax = mapOf("name" to AccountsSpec.NAME_MAX * 2)),
         "accounts.list" to ArgSchema(),
         "accounts.remove" to ArgSchema(required = setOf("name"), stringMax = mapOf("name" to AccountsSpec.NAME_MAX * 2)),
@@ -266,10 +268,10 @@ object BridgeArgs {
             stringMax = mapOf("name" to AccountsSpec.NAME_MAX * 2, "seconds" to 16),
         ),
         "accounts.listAll" to ArgSchema(),
-        // PARITY G11: no arguments.
+        // No arguments.
         "admin.lockNow" to ArgSchema(),
         "admin.status" to ArgSchema(),
-        // PARITY F7b: action and flags checked in ScreeningSpec.parseRespond.
+        // Action and flags checked in ScreeningSpec.parseRespond.
         "calls.screenRespond" to ArgSchema(
             required = setOf("callId", "action"),
             stringMax = mapOf(
@@ -277,7 +279,7 @@ object BridgeArgs {
                 "action" to 16, "skipLog" to 8, "skipNotification" to 8,
             ),
         ),
-        // PARITY G11 ime: only from the keyboard page; numbers and key names checked in ImeSpec.
+        // Only from the keyboard page; numbers and key names checked in ImeSpec.
         "ime.commitText" to ArgSchema(required = setOf("text"), stringMax = mapOf("text" to ImeSpec.TEXT_MAX)),
         "ime.deleteBefore" to ArgSchema(required = setOf("n"), stringMax = mapOf("n" to 8)),
         "ime.sendKey" to ArgSchema(required = setOf("key"), stringMax = mapOf("key" to 16)),
@@ -286,7 +288,7 @@ object BridgeArgs {
         "ime.hide" to ArgSchema(),
         "ime.switchKeyboard" to ArgSchema(),
         "ime.setHeight" to ArgSchema(required = setOf("dp"), stringMax = mapOf("dp" to 8)),
-        // PARITY G8: Android notification keys are "<user>|<package>|<id>|<tag>|<uid>"; replies at most 1000 characters.
+        // Android notification keys are "<user>|<package>|<id>|<tag>|<uid>"; replies at most 1000 characters.
         "notifications.active" to ArgSchema(),
         "notifications.dismiss" to ArgSchema(required = setOf("key"), stringMax = mapOf("key" to NotificationsSpec.KEY_MAX)),
         "notifications.reply" to ArgSchema(
@@ -294,7 +296,7 @@ object BridgeArgs {
             stringMax = mapOf("key" to NotificationsSpec.KEY_MAX, "actionIndex" to 4, "text" to NotificationsSpec.REPLY_MAX),
         ),
         "notifications.open" to ArgSchema(required = setOf("key"), stringMax = mapOf("key" to NotificationsSpec.KEY_MAX)),
-        // PARITY G9: numbers are short; setText at most A11ySpec.SET_TEXT_MAX; a path has at most 50 points.
+        // Numbers are short; setText at most A11ySpec.SET_TEXT_MAX; a path has at most 50 points.
         "a11y.windowTree" to ArgSchema(stringMax = mapOf("maxDepth" to 8, "maxNodes" to 8)),
         "a11y.perform" to ArgSchema(
             required = setOf("nodeId", "action"),
@@ -306,7 +308,7 @@ object BridgeArgs {
             arrayMax = mapOf("path" to A11ySpec.MAX_POINTS),
         ),
         "a11y.global" to ArgSchema(required = setOf("action"), stringMax = mapOf("action" to 32)),
-        // PARITY D4: artworkUrl may be a data: image (MediaSessionSpec.ARTWORK_URL_MAX); eight action names.
+        // ArtworkUrl may be a data: image (MediaSessionSpec.ARTWORK_URL_MAX); eight action names.
         "media.setMetadata" to ArgSchema(
             required = setOf("title"),
             stringMax = mapOf(

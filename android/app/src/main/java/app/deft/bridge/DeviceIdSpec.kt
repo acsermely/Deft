@@ -4,7 +4,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * PARITY G7: `device.id`. HMAC-SHA256 of the web origin, keyed with the launcher's secret, as hex.
+ * `device.id`. HMAC-SHA256 of the web origin, keyed with the launcher's secret, as hex.
  * The same origin gets the same id on this phone; other origins get different ids, and the
  * secret never leaves the launcher.
  */

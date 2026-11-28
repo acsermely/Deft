@@ -10,7 +10,7 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.put
 
 /**
- * PARITY G8: `notifications.*` (capability `notifications.listen`) rules. Pure, unit tested; the
+ * `notifications.*` (capability `notifications.listen`) rules. Pure, unit tested; the
  * Android side is `notifications.DeftNotificationListener` and `bridge.modules.NotificationsModule`.
  *
  * What the holder sees of another app's notification:

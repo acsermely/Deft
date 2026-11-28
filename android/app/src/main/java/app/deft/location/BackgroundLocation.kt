@@ -24,10 +24,13 @@ import kotlinx.coroutines.launch
 import java.security.SecureRandom
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (background location and geofences): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a run tracker records with the screen off; the notification stays visible.
+// Remove this note once checked.
 /**
- * PARITY G5: `location.watchBackground` watches. Each one listens to Android's own GPS and
+ * `location.watchBackground` watches. Each one listens to Android's own GPS and
  * network providers ([LocationManager], no Google services) and only while the app's foreground
- * service of type `location` runs (D3): it ends when that service stops or changes type, when
+ * service of type `location` runs: it ends when that service stops or changes type, when
  * `location` or `location.background` is turned off, and on uninstall. Fixes go to the app as
  * `location.fix`. While an app has a watch or a geofence, [SpecialUse] shows
  * "<App> is using: Your location all the time".
@@ -142,7 +145,7 @@ object BackgroundLocation {
     }
 
     /**
-     * PARITY G5: after a grant changed to "no", ends the app's watches and removes its
+     * After a grant changed to "no", ends the app's watches and removes its
      * geofences when it lost `location` or `location.background`.
      */
     suspend fun recheckGrants(context: Context, repository: AppRepository, webAppId: String) {

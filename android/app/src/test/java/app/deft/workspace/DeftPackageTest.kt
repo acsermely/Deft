@@ -7,6 +7,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.ByteArrayOutputStream
@@ -20,11 +21,11 @@ import java.util.zip.ZipOutputStream
 
 class DeftPackageTest {
     @Test
-    fun acceptsPackagesMadeBeforeTheRename() {
+    fun rejectsPackagesMadeBeforeTheRename() {
         val keys = KeyPairGenerator.getInstance("Ed25519").generateKeyPair()
         val old = pack(keys, mapOf("manifest.json" to """{"fl":1,"id":"notes","name":"Notes"}"""), legacy = true)
-        assertTrue(DeftPackage.looksSigned(old))
-        assertEquals("notes", DeftPackage.verify(old).id)
+        assertFalse(DeftPackage.looksSigned(old))
+        assertTrue(runCatching { DeftPackage.verify(old) }.isFailure)
     }
 
     @Test
@@ -83,7 +84,7 @@ class DeftPackageTest {
 
     @Test
     fun largeStorageNeedsTheDeclarationAndTheGrant() {
-        // PARITY G3: a 2 MiB + 1 byte binary is over the normal binary cap; only a declared and granted app may ship it.
+        // A 2 MiB + 1 byte binary is over the normal binary cap; only a declared and granted app may ship it.
         val keys = KeyPairGenerator.getInstance("Ed25519").generateKeyPair()
         val manifest = """{"deft":1,"id":"notes","name":"Notes","version":"1.0.0"}"""
         val big = "a".repeat((DeftPaths.MAX_BINARY_BYTES + 1).toInt())
@@ -162,9 +163,122 @@ class DeftPackageTest {
                     zip.write(text.toByteArray())
                     zip.closeEntry()
                 }
-                zip.putNextEntry(ZipEntry(if (legacy) DeftPackage.LEGACY_PACKAGE_FILE else DeftPackage.PACKAGE_FILE))
+                zip.putNextEntry(ZipEntry(if (legacy) "fl-package.json" else DeftPackage.PACKAGE_FILE))
                 zip.write(doc.toString().toByteArray())
                 zip.closeEntry()
+            }
+            out.toByteArray()
+        }
+    }
+
+    // A plain zip takes the same path as a signed package, minus the signature.
+
+    private fun plainZip(vararg entries: Pair<String, ByteArray>): ByteArray =
+        ByteArrayOutputStream().use { out ->
+            ZipOutputStream(out).use { zip ->
+                entries.forEach { (path, body) ->
+                    zip.putNextEntry(ZipEntry(path))
+                    zip.write(body)
+                    zip.closeEntry()
+                }
+            }
+            out.toByteArray()
+        }
+
+    private fun snapshot(dir: java.io.File): Map<String, String> =
+        dir.walkTopDown().filter { it.isFile }.associate { it.relativeTo(dir).path to sha(it.readBytes()) }
+
+    private val plainManifest = """{"deft":1,"id":"notes","name":"Notes","version":"1.2.0"}""".toByteArray()
+
+    @Test
+    fun unsignedZipIsReadWithThePathRules() {
+        val ok = DeftPackage.readUnsigned(
+            plainZip(
+                "manifest.json" to plainManifest,
+                "index.html" to "<p>hi</p>".toByteArray(),
+                "Evil.EXE" to "x".toByteArray(),
+            ),
+        )
+        assertFalse(ok.signed)
+        assertEquals("notes", ok.id)
+        assertEquals("1.2.0", ok.version)
+        assertEquals(setOf("manifest.json", "index.html"), ok.files.keys)
+        assertEquals(1, ok.skipped.size)
+        assertTrue(ok.skipped.single().startsWith("Evil.EXE"))
+    }
+
+    @Test
+    fun unsignedBadZipLeavesTheAppUnchanged() {
+        val root = java.nio.file.Files.createTempDirectory("deft-h5").toFile()
+        try {
+            val dir = java.io.File(root, "notes").apply { mkdirs() }
+            java.io.File(dir, "manifest.json").writeBytes(plainManifest)
+            java.io.File(dir, "index.html").writeText("<p>old</p>")
+            val before = snapshot(dir)
+            val staging = java.io.File(root, "staging")
+            val tooBig = ByteArray((DeftPaths.active.maxTextBytes + 1).toInt()) { 'a'.code.toByte() }
+            val bad = listOf(
+                // zip-slip after a good entry: the old direct import had already written index.html by then.
+                plainZip("index.html" to "<p>new</p>".toByteArray(), "../escape.txt" to "x".toByteArray(), "manifest.json" to plainManifest),
+                plainZip(*(listOf("manifest.json" to plainManifest) + (0..DeftPaths.active.maxFiles).map { "f$it.js" to "x".toByteArray() }).toTypedArray()),
+                plainZip("index.html" to "<p>no manifest</p>".toByteArray()),
+                plainZip("manifest.json" to plainManifest, "main.js" to tooBig),
+                "not a zip at all".toByteArray(),
+                plainZip(),
+            )
+            for ((i, zip) in bad.withIndex()) {
+                assertThrows("bad zip $i", IllegalArgumentException::class.java) {
+                    DeftPackage.swapInto(DeftPackage.readUnsigned(zip), dir, staging)
+                }
+                assertEquals("bad zip $i", before, snapshot(dir))
+            }
+            // A failure after staging, before the swap, also leaves the old app and no staging copy.
+            val good = DeftPackage.readUnsigned(plainZip("manifest.json" to plainManifest, "index.html" to "<p>new</p>".toByteArray()))
+            assertThrows(IllegalStateException::class.java) {
+                DeftPackage.swapInto(good, dir, staging) { throw IllegalStateException("lint said no") }
+            }
+            assertEquals(before, snapshot(dir))
+            assertTrue(staging.listFiles().orEmpty().isEmpty())
+            // The good one swaps in completely.
+            DeftPackage.swapInto(good, dir, staging)
+            assertEquals("<p>new</p>", java.io.File(dir, "index.html").readText())
+            assertTrue(staging.listFiles().orEmpty().isEmpty())
+        } finally {
+            root.deleteRecursively()
+        }
+    }
+
+    /** A pack hash lives in manifest.json, which the signed file list covers. */
+    @Test
+    fun assetPackHashesAreCoveredBySignature() {
+        val keys = KeyPairGenerator.getInstance("Ed25519").generateKeyPair()
+        val withPack = """{"deft":1,"id":"notes","name":"Notes","version":"1.0.0","assetPacks":[""" +
+            """{"name":"maps","url":"https://cdn.example.com/m@1.0.0/m.zip","sha256":"${"a".repeat(64)}","size":10}]}"""
+        val good = pack(keys, mapOf("manifest.json" to withPack))
+        val verified = DeftPackage.verify(good)
+        assertTrue(verified.files.getValue("manifest.json").decodeToString().contains("a".repeat(64)))
+        // Swapping the pack hash in manifest.json after signing breaks the package.
+        val swapped = rezip(good, "manifest.json", withPack.replace("a".repeat(64), "b".repeat(64)).toByteArray())
+        val err = assertThrows(IllegalArgumentException::class.java) { DeftPackage.verify(swapped) }
+        assertTrue(err.message.orEmpty(), err.message.orEmpty().contains("hash mismatch manifest.json"))
+    }
+
+    private fun rezip(bytes: ByteArray, path: String, body: ByteArray): ByteArray {
+        val entries = LinkedHashMap<String, ByteArray>()
+        java.util.zip.ZipInputStream(bytes.inputStream()).use { z ->
+            while (true) {
+                val e = z.nextEntry ?: break
+                entries[e.name] = z.readBytes()
+            }
+        }
+        entries[path] = body
+        return ByteArrayOutputStream().use { out ->
+            ZipOutputStream(out).use { z ->
+                entries.forEach { (name, data) ->
+                    z.putNextEntry(ZipEntry(name))
+                    z.write(data)
+                    z.closeEntry()
+                }
             }
             out.toByteArray()
         }

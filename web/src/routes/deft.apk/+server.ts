@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types';
 
 export const prerender = false;
 
-const KEY = 'freedom-launcher.apk';
+const KEY = 'deft.apk';
 
 export const GET: RequestHandler = async ({ platform }) => {
 	const env = platform?.env;

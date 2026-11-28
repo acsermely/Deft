@@ -15,8 +15,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// DEVICE-UNCHECKED (accessibility service): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an automation sample taps a button in another app; grant screens stay unreadable.
+// Remove this note once checked.
 /**
- * `a11y.*` (PARITY G9, SPECIAL exclusive `accessibility`): read the screen of other apps and act
+ * `a11y.*` (SPECIAL exclusive `accessibility`): read the screen of other apps and act
  * on it through [DeftAccessibilityService]. Only the holder of group `a11y` gets here (the grant
  * check in `BridgeService.invoke`; checked again). None of the methods needs the app on screen:
  * acting on another app means the holder is not in front. Background runs may use them too.

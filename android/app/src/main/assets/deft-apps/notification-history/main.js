@@ -1,4 +1,4 @@
-// Notification History (PARITY G8): lists other apps' notifications showing now (open, clear,
+// Notification History : lists other apps' notifications showing now (open, clear,
 // reply) and a history of everything posted, kept in IndexedDB. The background module (bg.js)
 // adds to the history while the app is closed.
 import '/_deft/v1/motion.js';

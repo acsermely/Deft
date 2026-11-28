@@ -1,7 +1,7 @@
 package app.deft.bridge
 
 /**
- * PARITY F2: the key names an app may use and how they map to names in the Android Keystore.
+ * The key names an app may use and how they map to names in the Android Keystore.
  * Free of Android types so it can be unit tested.
  */
 object KeystoreAliases {

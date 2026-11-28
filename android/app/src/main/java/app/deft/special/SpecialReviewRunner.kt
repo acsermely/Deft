@@ -16,8 +16,11 @@ import app.deft.catalog.GrantLevel
 import app.deft.catalog.Risk
 import app.deft.ui.dashboard.DashboardActivity
 
+// DEVICE-UNCHECKED (special access tier): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a special grant only via the launcher sheet after the screen lock; use notification shown; 90-day review fires.
+// Remove this note once checked.
 /**
- * PARITY G0: the daily "still want this?" check for special access. Runs when the launcher
+ * The daily "still want this?" check for special access. Runs when the launcher
  * process starts and from a daily inexact alarm (re-armed at boot). No WorkManager.
  */
 object SpecialReviewRunner {
@@ -88,7 +91,7 @@ object SpecialReviewRunner {
     /**
      * True while a web app holds `accessibility` and the launcher's service runs: it could press
      * "Keep" in the shade (SystemUI windows stay usable for it), so the reminder then has no
-     * buttons and keeping happens on the dashboard, which accessibility cannot touch (PARITY G9).
+     * buttons and keeping happens on the dashboard, which accessibility cannot touch.
      */
     private suspend fun a11yWatching(): Boolean =
         DeftAccessibilityService.instance != null &&

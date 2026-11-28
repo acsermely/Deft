@@ -8,7 +8,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** PARITY D3: each `fgs.start` type needs its own grant and maps to the right service type. */
+/** Each `fgs.start` type needs its own grant and maps to the right service type. */
 class FgsTypeTest {
     @Test
     fun idsParse() {

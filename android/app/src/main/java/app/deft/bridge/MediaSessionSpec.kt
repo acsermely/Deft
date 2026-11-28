@@ -5,7 +5,7 @@ import java.net.URI
 import java.util.Base64
 
 /**
- * PARITY D4: names, limits and the artwork rule of `media.*`. Pure (the Android values are
+ * Names, limits and the artwork rule of `media.*`. Pure (the Android values are
  * compile-time constants), unit tested.
  */
 object MediaSessionSpec {

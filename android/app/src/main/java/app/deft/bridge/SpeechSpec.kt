@@ -1,6 +1,6 @@
 package app.deft.bridge
 
-/** PARITY F3: argument rules for `speech.*`, free of Android types so they can be unit tested. */
+/** Argument rules for `speech.*`, free of Android types so they can be unit tested. */
 object SpeechSpec {
     const val MIN_RATE = 0.25f
     const val MAX_RATE = 4.0f

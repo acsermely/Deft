@@ -4,7 +4,10 @@ import android.app.Activity
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 
-/** PARITY B2: NFC reader mode for the activity in front. It only works while [activity] is resumed. */
+// DEVICE-UNCHECKED (NFC write, read-only and tech transceive): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: write a URL tag; read a transit card's ISO-DEP response.
+// Remove this note once checked.
+/** NFC reader mode for the activity in front. It only works while [activity] is resumed. */
 internal object NfcReader {
     /** False when the device has no NFC or it is off. */
     fun available(activity: Activity): Boolean = NfcAdapter.getDefaultAdapter(activity)?.isEnabled == true

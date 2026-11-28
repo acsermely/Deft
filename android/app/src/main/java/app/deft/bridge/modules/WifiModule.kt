@@ -31,8 +31,11 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (Wi-Fi scan and control): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a Wi-Fi analyzer sample lists networks.
+// Remove this note once checked.
 /**
- * `wifi.*` (PARITY G6): nearby networks and the current one (`wifi.scan`, which also needs
+ * `wifi.*`: nearby networks and the current one (`wifi.scan`, which also needs
  * Your location), the Wi-Fi panel (`wifi.openPanel`, only while the app is on screen) and
  * network suggestions (`wifi.suggest`). Android does not let apps switch Wi-Fi on or off.
  */

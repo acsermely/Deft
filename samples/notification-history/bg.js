@@ -1,4 +1,4 @@
-// Background module (PARITY G8): another app posted a notification while this app was closed.
+// Background module: another app posted a notification while this app was closed.
 // Saves it to the history; nothing is shown and nothing is sent.
 import { call, on } from '/_deft/v1/bridge.js';
 import { save } from './store.js';

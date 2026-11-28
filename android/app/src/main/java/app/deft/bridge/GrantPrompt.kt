@@ -8,7 +8,7 @@ import java.util.UUID
 import kotlinx.coroutines.withTimeoutOrNull
 
 /**
- * Per-action confirmation for confirm-each capabilities (spec 8.4). Grants themselves come
+ * Per-action confirmation for confirm-each capabilities. Grants themselves come
  * from the consent screen; this only confirms one specific send or call the user did not
  * just tap for. The dialog always names the app.
  */
@@ -35,7 +35,7 @@ object GrantPrompt {
     }
 
     /**
-     * PARITY G0: screen-lock check (fingerprint, face or device PIN/pattern/password) before a
+     * Screen-lock check (fingerprint, face or device PIN/pattern/password) before a
      * special-access grant. Without a screen lock the answer is always DENY. Does not reopen
      * the app afterwards.
      */

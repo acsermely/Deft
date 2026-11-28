@@ -16,8 +16,11 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// DEVICE-UNCHECKED (app list, launch, usage stats and per-app device id): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a screen-time sample shows per-app usage.
+// Remove this note once checked.
 /**
- * `usage.stats` (PARITY G7, SPECIAL exclusive `usage.read`): foreground time per app between two
+ * `usage.stats` (SPECIAL exclusive `usage.read`): foreground time per app between two
  * times, from Android's usage statistics. Needs the Usage access switch the user turns on in
  * system settings; without it the call returns `os_permission_missing`. Foreground only.
  */

@@ -505,7 +505,7 @@ class AgentTools(
     private val builtinSpecs: List<ToolSpec> = allSpecs.filter { AgentTabRules.toolAllowed(workspaceId, it.name) }
     private val builtinNames: Set<String> = allSpecs.map { it.name }.toSet()
 
-    /** W5: custom tools of applied, consented, enabled apps this tab may use; refreshed by [refreshCustomTools] before each model request. */
+    /** Custom tools of applied, consented, enabled apps this tab may use; refreshed by [refreshCustomTools] before each model request. */
     @Volatile private var custom: List<CustomTools.Custom> = emptyList()
 
     /** The tools the next model request offers: the tab's built-ins, then the custom ones. */
@@ -519,7 +519,7 @@ class AgentTools(
     }
 
     /**
-     * W5: re-reads which custom tools exist (applied, consented, switched on, not over the caps) so a switch turned
+     * Re-reads which custom tools exist (applied, consented, switched on, not over the caps) so a switch turned
      * off on the dashboard, an Apply or an uninstall shows up in the very next request.
      */
     suspend fun refreshCustomTools() {
@@ -724,7 +724,7 @@ class AgentTools(
             "grants.set" -> {
                 val id = req(args, "webAppId")
                 val app = repo.getApp(id) ?: throw IllegalArgumentException("unknown web app")
-                // PARITY G0: the agent never grants special access, not even by opening a screen for it.
+                // The agent never grants special access, not even by opening a screen for it.
                 val asked = Capability.fromId(arg(args, "capability"))
                 if (asked?.risk == Risk.SPECIAL) {
                     throw IllegalArgumentException(
@@ -1028,7 +1028,7 @@ class AgentTools(
         if (!myApps.hasProject(slug)) throw IllegalArgumentException("unknown app $slug")
         val parsed = myApps.readManifest(slug)
         val tree = myApps.tree(slug)
-        // PARITY H3: verify what the host would serve: merged files, the app's origin, its consented network.
+        // Verify what the host would serve: merged files, the app's origin, its consented network.
         val row = repo.getApp(app.deft.workspace.MyAppsStore.webAppId(slug))
         val policy = row?.let { repo.cspPolicyFor(it) } ?: app.deft.webview.CspPolicy()
         // A pending app's origins are unconsented: its page may fetch from them only with the web setting on.
@@ -1355,7 +1355,7 @@ class AgentTools(
     }
 
     /**
-     * W5: one custom tool call. Everything is read fresh (applied, consented to exactly this tool, switched on), the
+     * One custom tool call. Everything is read fresh (applied, consented to exactly this tool, switched on), the
      * arguments are checked against the tool's schema before anything runs, and the call is audited with sizes and
      * timing only. The result reaches the model marked UNTRUSTED and cut at 32 KB.
      */

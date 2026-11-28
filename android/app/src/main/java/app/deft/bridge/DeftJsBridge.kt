@@ -34,17 +34,17 @@ class DeftJsBridge(
     var grantedPrefixes: Set<String>,
     private val scope: CoroutineScope,
     private val listenerOrigin: String = app.origin,
-    /** PARITY D1: this bridge belongs to a background run; every call is flagged as such. */
+    /** This bridge belongs to a background run; every call is flagged as such. */
     private val background: Boolean = false,
     /**
-     * PARITY G11: the grant a [background] page needs on every call: `background` for a run, `wallpaper`
+     * The grant a [background] page needs on every call: `background` for a run, `wallpaper`
      * for the live wallpaper's page (same `needs_foreground` rules).
      */
     private val runCapability: Capability = Capability.BACKGROUND,
     /** Widget frame or agent tool run: set only by the code that builds the bridge (see [RunContext]). */
     private val context: RunContext = RunContext.RUN,
     /**
-     * W2: this bridge serves one `<deft-widget>` frame of the home canvas. It runs with [background] semantics
+     * This bridge serves one `<deft-widget>` frame of the home canvas. It runs with [background] semantics
      * (`needs_foreground` for anything that shows a screen or asks), needs no run grant, answers only a sub-frame
      * (see [onWebMessage]) and is fed by the canvas router, never by its own listener.
      */
@@ -85,7 +85,7 @@ class DeftJsBridge(
     /** Request id to method, for calls made while [tap] was set (their result names the method). */
     private val tapMethods = ConcurrentHashMap<String, String>()
 
-    /** PARITY G11: called on the main thread when the page subscribes to an event (the wallpaper sends its current offsets). */
+    /** Called on the main thread when the page subscribes to an event (the wallpaper sends its current offsets). */
     @Volatile var onSubscribe: ((String) -> Unit)? = null
     @Volatile private var detached = false
     @Volatile private var greeted = false
@@ -162,13 +162,13 @@ class DeftJsBridge(
     /** The page the haptic call vibrates; set while attached. */
     @Volatile private var hapticView: WebView? = null
 
-    /** W2: a [widget] bridge has no listener of its own; the canvas router feeds [onWebMessage]. */
+    /** A [widget] bridge has no listener of its own; the canvas router feeds [onWebMessage]. */
     fun attachRouted(webView: WebView) {
         hapticView = webView
     }
 
     /**
-     * W2 `deft.open()`: called on the main thread with the optional same-origin path; returns null when the app was
+     * `deft.open()`: called on the main thread with the optional same-origin path; returns null when the app was
      * opened, else a message. Set by the canvas router, which knows the visibility and rate limit.
      */
     @Volatile var onOpen: ((String?) -> String?)? = null
@@ -216,7 +216,7 @@ class DeftJsBridge(
         if (greeted) sendReady()
     }
 
-    /** PARITY G11: whether the page listens for [event] now; events it does not listen for are not queued by the caller. */
+    /** Whether the page listens for [event] now; events it does not listen for are not queued by the caller. */
     fun hasSubscriber(event: String): Boolean = !detached && reply != null && !subscribers[event].isNullOrEmpty()
 
     override val isWidget: Boolean get() = widget
@@ -423,7 +423,7 @@ class DeftJsBridge(
         private const val HAPTIC_GAP_MS = 40L
         const val PORT_NAME = "jsBridge"
 
-        /** W2: the one method only a home-widget frame may call; no grant, always its own app. */
+        /** The one method only a home-widget frame may call; no grant, always its own app. */
         const val WIDGET_OPEN = "widget.open"
         const val PROTOCOL = 1
         const val CLIENT_ASSET = "bridge/deft-bridge.js"

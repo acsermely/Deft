@@ -85,8 +85,8 @@ object WebViewFindings {
     console.error('[uncaught] unhandled ' + clip(e.reason));
   });
   try {
-    // Spec 8.2: the single 'fl' policy goes to dom.js through a one-shot handshake.
-    // Page code cannot reach it after that, and cannot create another 'fl' policy.
+    // Spec 8.2: the single 'deft' policy goes to dom.js through a one-shot handshake.
+    // Page code cannot reach it after that, and cannot create another 'deft' policy.
     if (window.trustedTypes && !('__deftTT' in window)) {
       var deftPolicy = trustedTypes.createPolicy('deft', {
         createHTML: function (s) { return String(s); }

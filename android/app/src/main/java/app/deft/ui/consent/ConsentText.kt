@@ -16,4 +16,12 @@ object ConsentText {
      */
     fun replacesHolder(holderName: String, group: String): String =
         "This replaces $holderName as your ${groupLabel(group)} app."
+
+    /** A download size in plain units (1000-based, like Android's storage screens). */
+    fun bytes(n: Long): String = when {
+        n >= 1_000_000_000L -> String.format(java.util.Locale.ROOT, "%.1f GB", n / 1e9)
+        n >= 1_000_000L -> String.format(java.util.Locale.ROOT, "%.1f MB", n / 1e6)
+        n >= 1_000L -> String.format(java.util.Locale.ROOT, "%.0f kB", n / 1e3)
+        else -> "$n bytes"
+    }
 }

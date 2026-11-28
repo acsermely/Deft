@@ -1,4 +1,4 @@
-/** motion: enter stagger, press haptics, deft.haptic, deft.toast, deft.open (widgets), frame rest; starts sheet.js and elements.js. Budget 4 KB. Auto-init, idempotent (DESIGN-SYSTEM-PROPOSAL 3.6). */
+/** motion: enter stagger, press haptics, deft.haptic, deft.toast, deft.open (widgets), frame rest; starts sheet.js and elements.js. Budget 4 KB. Auto-init, idempotent (deft-design motion.md). */
 import{toast,dialog,confirm,prompt}from'./app.js';import'./elements.js';import{initSheets}from'./sheet.js';
 const D=typeof document=='undefined'?0:document,KINDS=['light','medium','success','warning','selection'];
 const RM=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,7 +24,7 @@ function enter(box){if(seen.has(box))return;seen.add(box);const rm=RM(),m=motion
 /** deft.enter(el, kind?): play the enter stagger on el's children now (again, if it already ran). For lists filled after load. */
 export const replay=(box,kind)=>{if(kind)box.dataset.deftEnter=kind;seen.delete(box);enter(box)};
 const scan=r=>{if(!r.querySelectorAll||!io)return;[...(r.matches?.('[data-deft-enter]')?[r]:[]),...r.querySelectorAll('[data-deft-enter]')].forEach(e=>seen.has(e)||io.observe(e))};
-function init(){if(self.__deftMotion||!D?.documentElement)return;self.__deftMotion=1;D.documentElement.classList.add('deft-motion');self.deft=Object.assign(self.deft||{},{haptic,toast,dialog,confirm,prompt,enter:replay,open});self.fl=self.deft;/* fl: pre-rename alias */
+function init(){if(self.__deftMotion||!D?.documentElement)return;self.__deftMotion=1;D.documentElement.classList.add('deft-motion');self.deft=Object.assign(self.deft||{},{haptic,toast,dialog,confirm,prompt,enter:replay,open});
   rest();
   D.addEventListener('pointerdown',e=>{if(e.target.closest?.('.deft-btn,.deft-cell[href],[data-deft-press]'))haptic('light')},{passive:true});
   initSheets(D,haptic);

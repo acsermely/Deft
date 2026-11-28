@@ -43,7 +43,7 @@ object OsPermissionHelper {
                 }
                 Capability.NOTIFICATIONS_POST, Capability.ALARMS ->
                     out += Manifest.permission.POST_NOTIFICATIONS
-                // PARITY G6: scans need location, and on Android 13 and newer the nearby-devices permission.
+                // Scans need location, and on Android 13 and newer the nearby-devices permission.
                 Capability.WIFI_SCAN -> {
                     out += Manifest.permission.ACCESS_FINE_LOCATION
                     if (android.os.Build.VERSION.SDK_INT >= 33) out += Manifest.permission.NEARBY_WIFI_DEVICES
@@ -69,49 +69,50 @@ object OsPermissionHelper {
                 }
                 Capability.USB, Capability.FILES_PICK, Capability.FILES_READ, Capability.FILES_WRITE,
                 Capability.INTENTS_OPEN, Capability.INTENTS_START, Capability.SHARE_RECEIVE,
-                // PARITY Phase A: VIBRATE is an install-time permission; the rest need none.
+                // VIBRATE is an install-time permission; the rest need none.
                 Capability.HAPTICS, Capability.DISPLAY, Capability.TILES, Capability.WIDGETS, Capability.CLIPBOARD_READ, Capability.MEDIA_DRM, Capability.MIDI,
-                // PARITY F5b: notification policy access is an install-time permission; the system screen grants the rest.
+                // Notification policy access is an install-time permission; the system screen grants the rest.
                 Capability.TORCH, Capability.PIP, Capability.SYSTEM_STATS, Capability.TTS, Capability.AUDIO_CONTROL, Capability.DND, Capability.KEYSTORE,
                 Capability.PAYMENTS_REQUEST, Capability.CALLS_BLOCK, Capability.NETWORK_OPEN, Capability.NETWORK_USER, Capability.WASM, Capability.WEB_EMBED,
                 Capability.STORAGE_LARGE,
-                // PARITY F8/G4: the multicast lock is an install-time permission; sockets need no runtime grant.
+                // The multicast lock is an install-time permission; sockets need no runtime grant.
                 Capability.NET_LOCAL, Capability.NET_SOCKETS,
-                // PARITY G6: Wi-Fi state and suggestions are install-time permissions; the panel needs none.
+                // Wi-Fi state and suggestions are install-time permissions; the panel needs none.
                 Capability.WIFI_CONTROL,
-                // PARITY E3: the sign-in page opens in the browser; no Android permission.
+                // The sign-in page opens in the browser; no Android permission.
                 Capability.AUTH_SESSION,
-                // PARITY G7: opening apps and the device id need no Android permission.
+                // Credential Manager needs no Android permission.
+                Capability.WEBAUTHN,
+                // Opening apps and the device id need no Android permission.
                 Capability.APPS_LAUNCH, Capability.DEVICE_ID,
-                // PARITY D1: runs inside the launcher's own service; no Android permission.
+                // Runs inside the launcher's own service; no Android permission.
                 Capability.BACKGROUND,
-                // PARITY D4: the media session lives in the foreground service; no Android permission.
+                // The media session lives in the foreground service; no Android permission.
                 Capability.MEDIA_SESSION,
-                // PARITY G10: the launcher's own account type and sync adapter need no runtime permission.
+                // The launcher's own account type and sync adapter need no runtime permission.
                 Capability.ACCOUNTS_OWN,
                 -> Unit
-                // PARITY D3: the notification that must show while the app keeps running.
+                // The notification that must show while the app keeps running.
                 Capability.FOREGROUND -> out += Manifest.permission.POST_NOTIFICATIONS
-                // PARITY D6: a push for a closed app can show as a notification.
+                // A push for a closed app can show as a notification.
                 Capability.PUSH -> out += Manifest.permission.POST_NOTIFICATIONS
-                // PARITY G0: special access is never asked at install; each later item adds its own
-                // Android permission or system-screen step when its module lands. PARITY G7: usage
-                // access is a system-screen step (SystemAccess), not a runtime permission. PARITY G5:
+                // Special access is never asked at install. Usage access is a system-screen step (SystemAccess),
+                // not a runtime permission.
                 // ACCESS_BACKGROUND_LOCATION must be asked on its own after fine location (Android 11+),
                 // so the special-access sheet asks it (SystemAccess.BACKGROUND_LOCATION), never install.
-                // PARITY G10: accounts.read needs no permission; Android 8+ shows only accounts visible to the launcher.
+                // accounts.read needs no permission; Android 8+ shows only accounts visible to the launcher.
                 Capability.APPS_LIST, Capability.USAGE_READ, Capability.NOTIFICATIONS_LISTEN, Capability.ACCESSIBILITY,
                 Capability.CLIPBOARD_WATCH, Capability.ACCOUNTS_READ, Capability.LOCATION_BACKGROUND,
-                // PARITY G11: roles are asked from the special-access sheet (RoleManager), never at install.
+                // Roles are asked from the special-access sheet (RoleManager), never at install.
                 Capability.ROLE_BROWSER, Capability.ROLE_ASSISTANT, Capability.DEVICE_ADMIN, Capability.WALLPAPER, Capability.IME,
-                // PARITY F7b: the default dialer screens calls already; otherwise the sheet asks ROLE_CALL_SCREENING.
+                // The default dialer screens calls already; otherwise the sheet asks ROLE_CALL_SCREENING.
                 Capability.CALLS_SCREEN,
                 -> Unit
-                // PARITY F7a: carrier codes are dialled through the phone permission.
+                // Carrier codes are dialled through the phone permission.
                 Capability.USSD -> out += Manifest.permission.CALL_PHONE
-                // PARITY F1: step sensors need physical activity access on Android 10 and newer.
+                // Step sensors need physical activity access on Android 10 and newer.
                 Capability.SENSORS -> if (android.os.Build.VERSION.SDK_INT >= 29) out += Manifest.permission.ACTIVITY_RECOGNITION
-                // PARITY F6: Android 13 and newer split media by type; older versions use one storage permission.
+                // Android 13 and newer split media by type; older versions use one storage permission.
                 Capability.MEDIA_READ -> if (android.os.Build.VERSION.SDK_INT >= 33) {
                     out += Manifest.permission.READ_MEDIA_IMAGES
                     out += Manifest.permission.READ_MEDIA_VIDEO

@@ -4,7 +4,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlin.math.roundToInt
 
-/** Pure rules for the live wallpaper (PARITY G11 `wallpaper`). No Android types; unit tested. */
+/** Pure rules for the live wallpaper. No Android types; unit tested. */
 object WallpaperSpec {
     const val TOUCH_EVENT = "wallpaper.touch"
     const val OFFSETS_EVENT = "wallpaper.offsets"

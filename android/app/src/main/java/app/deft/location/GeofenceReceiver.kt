@@ -16,8 +16,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
+// DEVICE-UNCHECKED (background location and geofences): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a run tracker records with the screen off; the notification stays visible.
+// Remove this note once checked.
 /**
- * PARITY G5: a proximity alert from [LocationManager] for one app's geofence (see [Geofences]).
+ * A proximity alert from [LocationManager] for one app's geofence (see [Geofences]).
  * Not exported: only the launcher's own PendingIntent reaches it. The app gets event
  * `location.geofence {id, entering}` (queued while it is closed) and, if it declares the
  * `geofence` trigger and holds `background`, a background run with the same payload.

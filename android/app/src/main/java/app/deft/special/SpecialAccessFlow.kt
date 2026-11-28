@@ -11,7 +11,7 @@ import app.deft.a11y.DeftAccessibilityService
 import app.deft.notifications.DeftNotificationListener
 
 /**
- * PARITY W7: one screen to try for a special access, with the extra that points it at this app or component.
+ * One screen to try for a special access, with the extra that points it at this app or component.
  * [packageData] adds the `package:` URI that highlights this app where Android supports it.
  */
 internal data class SettingsTarget(
@@ -24,7 +24,7 @@ internal data class SettingsTarget(
 )
 
 /**
- * PARITY W7: the one helper for every special-access step. It picks the deepest Settings screen Android allows
+ * The one helper for every special-access step. It picks the deepest Settings screen Android allows
  * for the phone's API level (the screens are tried in order, the plain list last), starts the first one that
  * resolves, and tracks one Android step from "needs a switch" to "done" on return.
  *

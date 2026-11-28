@@ -84,7 +84,6 @@ object BridgeCatalog {
         )
         add(Capability.WIFI_SCAN, "wifi.scan", "wifi.info")
         add(Capability.WIFI_CONTROL, "wifi.openPanel", "wifi.suggest")
-        // PARITY G7
         add(Capability.APPS_LIST, "apps.list", "apps.icon")
         add(Capability.APPS_LAUNCH, "apps.launch")
         add(Capability.USAGE_READ, "usage.stats")
@@ -94,45 +93,34 @@ object BridgeCatalog {
         add(Capability.TTS, "speech.speak", "speech.stop", "speech.voices")
         add(Capability.SPEECH_RECOGNIZE, "speech.recognize", "speech.cancel")
         add(Capability.CLIPBOARD_READ, "clipboard.readText")
-        // PARITY E3
         add(Capability.AUTH_SESSION, "auth.prepare", "auth.start")
-        // PARITY D1
+        add(Capability.WEBAUTHN, "passkeys.status", "passkeys.create", "passkeys.get")
         add(Capability.BACKGROUND, "background.done")
-        // PARITY D3
         add(Capability.FOREGROUND, "fgs.start", "fgs.update", "fgs.stop")
-        // PARITY D4
         add(Capability.MEDIA_SESSION, "media.setMetadata", "media.setState", "media.setActions", "media.release")
-        // PARITY D6
         add(Capability.PUSH, "push.register", "push.unregister", "push.status")
-        // PARITY G5
         add(
             Capability.LOCATION_BACKGROUND,
             "location.watchBackground", "location.watchStop",
             "location.geofenceAdd", "location.geofenceRemove", "location.geofenceList",
         )
-        // PARITY G10
         add(
             Capability.ACCOUNTS_OWN,
             "accounts.add", "accounts.list", "accounts.remove", "accounts.requestSync", "accounts.setPeriodicSync",
         )
         add(Capability.ACCOUNTS_READ, "accounts.listAll")
-        // PARITY G8
         add(
             Capability.NOTIFICATIONS_LISTEN,
             "notifications.active", "notifications.dismiss", "notifications.reply", "notifications.open",
         )
-        // PARITY G9
         add(Capability.ACCESSIBILITY, "a11y.windowTree", "a11y.perform", "a11y.gesture", "a11y.global")
-        // PARITY G11
         add(Capability.DEVICE_ADMIN, "admin.lockNow", "admin.status")
         add(
             Capability.IME,
             "ime.commitText", "ime.deleteBefore", "ime.sendKey", "ime.setComposing", "ime.finishComposing",
             "ime.hide", "ime.switchKeyboard", "ime.setHeight",
         )
-        // PARITY F7b
         add(Capability.CALLS_SCREEN, "calls.screenRespond")
-        // PARITY G12
         add(Capability.CLIPBOARD_WATCH, "clipboard.watchStart", "clipboard.watchStop")
         add(Capability.TILES, "tiles.request", "tiles.update", "tiles.release")
         add(Capability.WIDGETS, "widgets.update", "widgets.remove", "widgets.list")
@@ -232,7 +220,7 @@ object BridgeCatalog {
     /**
      * Events an app may get without any capability. `intents.viewReceived` is listed under
      * `share.receive` and `role.browser`, but a `mailto:` / `web+deft:` link the app declares in
-     * `handles` reaches it with neither (PARITY E1).
+     * `handles` reaches it with neither.
      */
     val UNGATED_EVENTS: Set<String> = setOf("intents.viewReceived")
 

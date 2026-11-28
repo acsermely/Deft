@@ -10,7 +10,10 @@ import app.deft.bridge.jsonArg
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** PARITY D5: picture-in-picture for the app that is on screen. */
+// DEVICE-UNCHECKED (picture-in-picture): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a video sample continues in PiP.
+// Remove this note once checked.
+/** Picture-in-picture for the app that is on screen. */
 class PipModule : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         val surface = HostSurfaces.forRequest(request)

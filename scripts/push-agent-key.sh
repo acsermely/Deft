@@ -7,13 +7,13 @@
 #
 # Key source, first found wins:
 #   1. $OPENROUTER_API_KEY
-#   2. ~/.config/freedom-launcher/openrouter.key   (chmod 600, outside the repo)
+#   2. ~/.config/deft/openrouter.key   (chmod 600, outside the repo)
 # The key goes over stdin, never on a command line.
 set -euo pipefail
 
 PKG="${PKG:-app.deft.debug}"
 ADB="${ADB:-$(command -v adb || echo "$HOME/Android/Sdk/platform-tools/adb")}"
-KEY_FILE="${KEY_FILE:-$HOME/.config/freedom-launcher/openrouter.key}"
+KEY_FILE="${KEY_FILE:-$HOME/.config/deft/openrouter.key}"
 
 if [[ -n "${OPENROUTER_API_KEY:-}" ]]; then
   key_input() { printf '%s' "$OPENROUTER_API_KEY"; }

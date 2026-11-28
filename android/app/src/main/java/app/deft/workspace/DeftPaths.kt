@@ -1,7 +1,7 @@
 package app.deft.workspace
 
 /**
- * Spec 3.1 path rules. Used by stores, agent file tools, zip import and the installer.
+ * Path rules. Used by stores, agent file tools, zip import and the installer.
  */
 object DeftPaths {
     const val MAX_DEPTH = 6
@@ -44,14 +44,14 @@ object DeftPaths {
         maxPackageBytes = pkg.coerceIn(MAX_PACKAGE_BYTES, PACKAGE_CEILING),
     )
 
-    /** PARITY G3: package and binary caps that apply to one package install. */
+    /** Package and binary caps that apply to one package install. */
     data class Caps(val packageBytes: Long, val binaryBytes: Long)
 
     /** The normal caps: the live `limits.toml` values. */
     fun normalCaps() = Caps(active.maxPackageBytes, active.maxBinaryBytes)
 
     /**
-     * PARITY G3: caps for an app whose manifest declares `storage.large` and whose grant is on.
+     * Caps for an app whose manifest declares `storage.large` and whose grant is on.
      * Package: min(free space − 1 GiB, 2 GiB). Binary files: 200 MiB. Never lower than the normal caps.
      */
     fun largeCaps(freeBytes: Long): Caps {
@@ -63,15 +63,13 @@ object DeftPaths {
         )
     }
 
-    /** PARITY G3: the capability id that opts an app into [largeCaps]. */
+    /** The capability id that opts an app into [largeCaps]. */
     const val STORAGE_LARGE_ID = "storage.large"
     const val LARGE_PACKAGE_MAX_BYTES = 2L * 1024 * 1024 * 1024
     const val LARGE_BINARY_BYTES = 200L * 1024 * 1024
     const val LARGE_FREE_RESERVE_BYTES = 1L * 1024 * 1024 * 1024
     const val RUNTIME_DIR = "_deft"
 
-    /** The pre-rename runtime dir; LocalOriginPathHandler still serves /_fl/v1/, so apps cannot create it either. */
-    const val LEGACY_RUNTIME_DIR = "_fl"
     const val RUNTIME_MESSAGE =
         "Writes under _deft/ are reserved for the Deft runtime (/_deft/v1/). Apps cannot create this path."
 
@@ -105,7 +103,7 @@ object DeftPaths {
         for (part in parts) {
             if (part == "." || part == "..") throw IllegalArgumentException("invalid path")
             if (part.startsWith('.')) throw IllegalArgumentException("dotfiles are not allowed: $part")
-            if (part.equals(RUNTIME_DIR, ignoreCase = true) || part.equals(LEGACY_RUNTIME_DIR, ignoreCase = true)) {
+            if (part.equals(RUNTIME_DIR, ignoreCase = true)) {
                 throw IllegalArgumentException(RUNTIME_MESSAGE)
             }
             if (!SEGMENT.matches(part.lowercase()) || part != part.lowercase()) {
@@ -139,7 +137,7 @@ object DeftPaths {
         return ext in TEXT_EXT || ext in BINARY_EXT
     }
 
-    /** PARITY G2: `.wasm` files reach deft-lint by path only; their bytes are never text. */
+    /** `.wasm` files reach deft-lint by path only; their bytes are never text. */
     fun isWasmFileName(name: String): Boolean = name.lowercase().endsWith(".wasm")
 
     fun isTextFileName(name: String): Boolean {

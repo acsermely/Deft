@@ -42,6 +42,9 @@ import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (speech recognition and TTS): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: voice to text works (offline where supported) and tts.speak is audible.
+// Remove this note once checked.
 /** One utterance: the app's own id for it, and the app it belongs to. */
 private class Utterance(val webAppId: String, val id: String)
 
@@ -51,7 +54,7 @@ private class Engine(val tts: TextToSpeech, val ready: CompletableDeferred<Boole
 private class Listening(val recognizer: SpeechRecognizer, val result: CompletableDeferred<BridgeOutcome>)
 
 /**
- * `speech.*` (PARITY F3): text to speech with the phone's voice, and one-shot speech to text.
+ * `speech.*`: text to speech with the phone's voice, and one-shot speech to text.
  * Listening needs the app on screen and a genuine tap in it, and stops when the app leaves the screen.
  */
 class SpeechModule(private val context: Context) : BridgeModule {
@@ -311,7 +314,7 @@ class SpeechModule(private val context: Context) : BridgeModule {
         // Main thread only.
         private val listening = HashMap<String, Listening>()
 
-        /** PARITY F3: leaving the app's screen ends its listening. Called from the host activity's onStop. */
+        /** Leaving the app's screen ends its listening. Called from the host activity's onStop. */
         fun stopListeningFor(webAppId: String) {
             val entry = listening.remove(webAppId) ?: return
             entry.recognizer.cancel()

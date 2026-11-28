@@ -214,7 +214,7 @@ async def cmd_chat(nick: str, seconds: float, address: str | None) -> int:
 
 def main() -> int:
     p = argparse.ArgumentParser(
-        description="Flood the Freedom Mesh (same JSON as the phone: id + ttl 7). Phone → Go live.",
+        description="Flood the Deft Mesh sample (same JSON as the phone: id + ttl 7). Phone → Go live.",
     )
     p.add_argument("command", nargs="?", default="chat", choices=("scan", "chat"))
     p.add_argument("--nick", default="Mac", help="Nickname in JSON messages (default Mac)")

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY G10: syncs run only when an app asks (accounts.requestSync / setPeriodicSync). -->
+<!-- Syncs run only when an app asks (accounts.requestSync / setPeriodicSync). -->
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="@string/fl_sync_authority"
     android:accountType="@string/fl_account_type"

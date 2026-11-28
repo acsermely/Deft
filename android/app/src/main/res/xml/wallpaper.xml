@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY G11: Deft's live wallpaper (wallpaper/DeftWallpaperService). No settings activity:
+<!-- Deft's live wallpaper (wallpaper/DeftWallpaperService). No settings activity:
      the app it shows is chosen on the app's card in the launcher. -->
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/wallpaper_description"

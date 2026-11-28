@@ -1,4 +1,4 @@
-// RSS Reader (PARITY G1): reads any RSS or Atom feed the user types, with network.open.
+// RSS Reader : reads any RSS or Atom feed the user types, with network.open.
 // The feed server must allow cross-origin reads (CORS); pictures load from any https site.
 import '/_deft/v1/motion.js';
 import { store } from '/_deft/v1/store.js';

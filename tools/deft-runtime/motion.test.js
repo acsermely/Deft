@@ -137,13 +137,13 @@ describe("budgets", () => {
     expect(src).toContain("sandbox','allow-scripts allow-same-origin'");
   });
 
-  test("motion.js starts the sheets and elements and publishes deft.haptic and deft.toast, with fl as the pre-rename alias", () => {
+  test("motion.js starts the sheets and elements and publishes deft.haptic and deft.toast, and no old fl alias", () => {
     const src = readFileSync(join(DIR, "motion.js"), "utf8");
     expect(src).toContain("./elements.js");
     expect(src).toContain("initSheets");
     expect(src).toContain("self.deft=Object.assign(self.deft||{},");
     expect(src).toContain("{haptic,toast,dialog,confirm,prompt,enter:replay,open}");
-    expect(src).toContain("self.fl=self.deft");
+    expect(src).not.toContain("self.fl=");
     expect(src).toContain("haptics.play");
     expect(src).toContain("__deftMotion");
   });

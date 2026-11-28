@@ -5,7 +5,7 @@ import kotlinx.coroutines.CompletableDeferred
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * PARITY F2: a fingerprint or face check for one key use. The module registers the cipher or
+ * A fingerprint or face check for one key use. The module registers the cipher or
  * signature it wants authorised; [ui.keystore.KeystoreAuthActivity] shows the prompt and
  * reports back here. A null crypto object means a timed key: the prompt only unlocks it.
  */

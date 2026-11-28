@@ -31,7 +31,7 @@ object AlarmScheduler {
         }
     }
 
-    /** PARITY W7: the exact-alarm screen for this app (the app's own page when that screen is missing). */
+    /** The exact-alarm screen for this app (the app's own page when that screen is missing). */
     fun requestExactAlarmAccess(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
         val am = context.getSystemService(AlarmManager::class.java) ?: return

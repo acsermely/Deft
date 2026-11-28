@@ -32,12 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.deft.DeftApp
+import app.deft.data.ConsentBinding
 import app.deft.R
 import app.deft.bridge.BridgeService
 import app.deft.bridge.SpecialAsks
 import app.deft.catalog.Capability
 import app.deft.catalog.CapabilityKind
 import app.deft.catalog.Risk
+import app.deft.catalog.isGranted
 import app.deft.permissions.OsPermissionHelper
 import app.deft.registry.ConsentPayload
 import app.deft.registry.decodeConsentPayload
@@ -105,7 +107,7 @@ class ConsentActivity : ComponentActivity() {
                 return
             }
         }
-        // PARITY G0: special access is never granted here. It is listed under "Asks later" with no
+        // Special access is never granted here. It is listed under "Asks later" with no
         // checkbox; installing writes it as DENIED and the dashboard sheet is the only way to allow it.
         val normalCaps = caps.filter { it.risk != Risk.SPECIAL }
         val specialCaps = caps.filter { it.risk == Risk.SPECIAL }
@@ -119,16 +121,31 @@ class ConsentActivity : ComponentActivity() {
                 var replaces by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
                 var error by remember { mutableStateOf<String?>(null) }
                 var deps by remember { mutableStateOf<List<DeftDependency>>(emptyList()) }
+                // Asset packs not downloaded yet, listed with their size.
+                var packs by remember { mutableStateOf<List<app.deft.registry.DeftAssetPack>>(emptyList()) }
                 var depsChecked by remember { mutableStateOf(false) }
                 var origins by remember { mutableStateOf<List<String>>(emptyList()) }
-                // PARITY G14: embed origins, approved one by one (ticked by default, untick to refuse).
+                // Embed origins, approved one by one (ticked by default, untick to refuse).
                 var embeds by remember { mutableStateOf<List<String>>(emptyList()) }
                 val embedTicked = remember { mutableStateMapOf<String, Boolean>() }
-                // W5: agent tools the app declares, listed by name and description; allowing the install allows them.
+                // Agent tools the app declares, listed by name and description; allowing the install allows them.
                 var tools by remember { mutableStateOf<List<DeftTool>>(emptyList()) }
                 var downloading by remember { mutableStateOf(false) }
+                // The websites a `webauthn` row is for, shown under that row.
+                var passkeySites by remember { mutableStateOf<List<String>>(emptyList()) }
                 val scope = rememberCoroutineScope()
                 LaunchedEffect(depsAppId) {
+                    // The manifest this screen shows, hashed before anything is read from it.
+                    shownManifestHash = depsAppId?.let { id ->
+                        withContext(Dispatchers.IO) {
+                            runCatching { DeftApp.instance.repository.servedManifestHash(id, slug) }.getOrNull()
+                        }
+                    }
+                    if (depsAppId != null && caps.any { it == app.deft.catalog.Capability.WEBAUTHN }) {
+                        passkeySites = withContext(Dispatchers.IO) {
+                            runCatching { DeftApp.instance.repository.passkeyRpIdsFor(depsAppId, slug) }.getOrDefault(emptyList())
+                        }
+                    }
                     // A point-of-use ask has no libraries, network or embed origins to settle: only its capability.
                     if (pointOfUseToken != null) {
                         depsChecked = true
@@ -136,6 +153,11 @@ class ConsentActivity : ComponentActivity() {
                     }
                     deps = depsAppId?.let { id ->
                         withContext(Dispatchers.IO) { runCatching { AppDeps.missing(this@ConsentActivity, id, slug) }.getOrDefault(emptyList()) }
+                    }.orEmpty()
+                    packs = depsAppId?.let { id ->
+                        withContext(Dispatchers.IO) {
+                            runCatching { app.deft.workspace.AssetPacks.pendingFor(this@ConsentActivity, id, slug) }.getOrDefault(emptyList())
+                        }
                     }.orEmpty()
                     origins = depsAppId?.let { id ->
                         withContext(Dispatchers.IO) {
@@ -175,14 +197,15 @@ class ConsentActivity : ComponentActivity() {
                     }
                     depsChecked = true
                     // Nothing left to ask: an app opened only for libraries or origins already settled.
-                    if (caps.isEmpty() && deps.isEmpty() && origins.isEmpty() && embeds.isEmpty() && tools.isEmpty() && depsAppId != null) {
+                    if (caps.isEmpty() && deps.isEmpty() && packs.isEmpty() && origins.isEmpty() && embeds.isEmpty() && tools.isEmpty() && depsAppId != null) {
                         if (skipLaunch) setResult(RESULT_OK) else startActivity(WebViewHostActivity.intent(this@ConsentActivity, depsAppId))
                         finish()
                     }
                 }
-                val onlyDeps = caps.isEmpty() && deps.isNotEmpty()
-                val onlyNetwork = caps.isEmpty() && deps.isEmpty() && (origins.isNotEmpty() || embeds.isNotEmpty())
-                val onlyTools = caps.isEmpty() && deps.isEmpty() && origins.isEmpty() && embeds.isEmpty() && tools.isNotEmpty()
+                val fetches = deps.isNotEmpty() || packs.isNotEmpty()
+                val onlyDeps = caps.isEmpty() && fetches
+                val onlyNetwork = caps.isEmpty() && !fetches && (origins.isNotEmpty() || embeds.isNotEmpty())
+                val onlyTools = caps.isEmpty() && !fetches && origins.isEmpty() && embeds.isEmpty() && tools.isNotEmpty()
                 Scaffold(containerColor = MaterialTheme.colorScheme.background) { pad ->
                     Column(
                         Modifier
@@ -223,6 +246,9 @@ class ConsentActivity : ComponentActivity() {
                                     val kind = if (cap.kind == CapabilityKind.BRIDGE) "Launcher bridge" else "Standard web API"
                                     Text("${cap.title} ($kind)", style = MaterialTheme.typography.titleSmall)
                                     Text(cap.description, style = MaterialTheme.typography.bodySmall)
+                                    if (cap == app.deft.catalog.Capability.WEBAUTHN && passkeySites.isNotEmpty()) {
+                                        Text("Websites: ${passkeySites.joinToString()}", style = MaterialTheme.typography.bodySmall)
+                                    }
                                     replaces[cap.id]?.let { line ->
                                         Text(line, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                                     }
@@ -261,6 +287,20 @@ class ConsentActivity : ComponentActivity() {
                                 Column {
                                     Text(dep.host, style = MaterialTheme.typography.titleSmall)
                                     Text(dep.path, style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+                        }
+                        if (packs.isNotEmpty()) {
+                            Text("Asset packs", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                "Data this app needs, downloaded once (${ConsentText.bytes(packs.sumOf { it.size })} in all), " +
+                                    "checked against its hash and kept on this phone. It counts toward the app's storage.",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            packs.forEach { pack ->
+                                Column {
+                                    Text("${pack.name} (${ConsentText.bytes(pack.size)})", style = MaterialTheme.typography.titleSmall)
+                                    Text(pack.url.removePrefix("https://").substringBefore('/'), style = MaterialTheme.typography.bodySmall)
                                 }
                             }
                         }
@@ -328,6 +368,8 @@ class ConsentActivity : ComponentActivity() {
                                 return@Button
                             }
                             scope.launch {
+                                // Checked before anything is downloaded or written.
+                                if (!manifestStillShown(depsAppId, slug)) return@launch
                                 if (deps.isNotEmpty() && depsAppId != null) {
                                     downloading = true
                                     error = null
@@ -341,6 +383,26 @@ class ConsentActivity : ComponentActivity() {
                                         return@launch
                                     }
                                     if (skipLaunch) DeftApp.instance.myApps.bumpPreview()
+                                }
+                                if (packs.isNotEmpty() && depsAppId != null) {
+                                    downloading = true
+                                    error = null
+                                    // storage.large counts when the app holds it or the user ticked it here.
+                                    val large = app.deft.catalog.Capability.STORAGE_LARGE in selected || withContext(Dispatchers.IO) {
+                                        runCatching {
+                                            DeftApp.instance.repository.grantLevel(depsAppId, app.deft.catalog.Capability.STORAGE_LARGE).isGranted() &&
+                                                app.deft.catalog.Capability.STORAGE_LARGE in allCaps
+                                        }.getOrDefault(false)
+                                    }
+                                    val failed = withContext(Dispatchers.IO) {
+                                        runCatching { app.deft.workspace.AssetPacks.downloadFor(this@ConsentActivity, depsAppId, slug, large) }
+                                            .exceptionOrNull()
+                                    }
+                                    downloading = false
+                                    if (failed != null) {
+                                        error = "Download failed: ${failed.message ?: "the asset pack could not be verified"}. Nothing was changed."
+                                        return@launch
+                                    }
                                 }
                                 approve(
                                     name,
@@ -367,8 +429,8 @@ class ConsentActivity : ComponentActivity() {
                                     onlyDeps -> "Download and open"
                                     onlyTools -> "Allow"
                                     onlyNetwork -> "Allow and open"
-                                    deps.isNotEmpty() && newCapsOnly -> "Allow and download"
-                                    deps.isNotEmpty() -> "Allow, download and install"
+                                    fetches && newCapsOnly -> "Allow and download"
+                                    fetches -> "Allow, download and install"
                                     newCapsOnly -> "Allow"
                                     else -> "Allow and install"
                                 },
@@ -453,6 +515,25 @@ class ConsentActivity : ComponentActivity() {
     }
 
     private var pendingInstallId: String? = null
+
+    /** [ConsentBinding.hash] of the manifest when this screen read it; null until then. */
+    private var shownManifestHash: String? = null
+
+    /**
+     * Allow counts only for the manifest the user saw. If it changed while this screen
+     * was open, nothing is written and the screen opens again on the new manifest (a point-of-use
+     * ask just ends; the app's next call asks again). False when this screen handed over.
+     */
+    private suspend fun manifestStillShown(appId: String?, slug: String?): Boolean {
+        appId ?: return true
+        val current = withContext(Dispatchers.IO) {
+            runCatching { DeftApp.instance.repository.servedManifestHash(appId, slug) }.getOrNull()
+        }
+        if (ConsentBinding.stillShown(shownManifestHash, current)) return true
+        if (pointOfUseToken == null) startActivity(Intent(intent))
+        finish()
+        return false
+    }
 
     override fun onDestroy() {
         super.onDestroy()

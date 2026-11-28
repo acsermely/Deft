@@ -1,0 +1,13 @@
+{
+  "deft": 1,
+  "id": "passkey-check",
+  "name": "Passkey Check",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "webauthn", "reason": "Test creating a passkey and signing in with it" }
+  ],
+  "passkeys": { "rpIds": ["app.acsermely.hu", "acsermely.hu"] },
+  "network": []
+}

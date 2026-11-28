@@ -1,4 +1,4 @@
-// Automation (PARITY G9): reads the clickable buttons of the app in front (a11y.windowTree) and taps
+// Automation reads the clickable buttons of the app in front (a11y.windowTree) and taps
 // the one whose text you choose (a11y.perform, or a tap at its centre). Screen text is not stored.
 import '/_deft/v1/motion.js';
 import { call, on } from '/_deft/v1/bridge.js';

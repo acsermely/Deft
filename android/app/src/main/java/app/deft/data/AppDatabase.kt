@@ -14,8 +14,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         RecentLaunchEntity::class,
         AlarmEntity::class,
         NetworkConsentEntity::class,
+        NetworkLogEntity::class,
     ],
-    version = 11,
+    version = 12,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -26,6 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun recentLaunches(): RecentLaunchDao
     abstract fun alarms(): AlarmDao
     abstract fun networkConsent(): NetworkConsentDao
+    abstract fun networkLog(): NetworkLogDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -140,7 +142,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        /** PARITY H4: consented network origins. Existing apps are marked legacy and adopt their manifest once. */
+        /** Consented network origins. Existing apps are marked legacy and adopt their manifest once. */
         val MIGRATION_7_8 = object : Migration(7, 8) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
@@ -156,7 +158,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        /** PARITY G0: grant time for the special-access review; existing rows count from the upgrade. */
+        /** Grant time for the special-access review; existing rows count from the upgrade. */
         val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE grants ADD COLUMN grantedAt INTEGER NOT NULL DEFAULT 0")
@@ -165,7 +167,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         /**
-         * PARITY P3: `source` tells consent-screen rows from servers the user typed. It joins the
+         * `source` tells consent-screen rows from servers the user typed. It joins the
          * primary key so the same origin can be both; SQLite cannot change a key in place.
          */
         val MIGRATION_9_10 = object : Migration(9, 10) {
@@ -190,7 +192,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         /**
-         * PARITY G0: a special row the user turned off (the dashboard's "Remove", audited as `special` / `revoked`)
+         * A special row the user turned off (the dashboard's "Remove", audited as `special` / `revoked`)
          * is told apart from the "asks later" row the consent screen leaves, so a bridge call can ask again only
          * for the latter. Existing rows are marked from that audit entry.
          */
@@ -205,6 +207,26 @@ abstract class AppDatabase : RoomDatabase() {
                     )
                     """.trimIndent(),
                 )
+            }
+        }
+
+        /** The per-app network log, a ring buffer of [NetworkLog.MAX_ROWS] rows per app. */
+        val MIGRATION_11_12 = object : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS network_log (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        webAppId TEXT NOT NULL,
+                        origin TEXT NOT NULL,
+                        host TEXT NOT NULL,
+                        kind TEXT NOT NULL,
+                        at INTEGER NOT NULL,
+                        allowed INTEGER NOT NULL
+                    )
+                    """.trimIndent(),
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_network_log_webAppId ON network_log (webAppId)")
             }
         }
     }

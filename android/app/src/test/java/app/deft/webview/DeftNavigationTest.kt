@@ -4,7 +4,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** PARITY G14: frames of approved embeds are left to the CSP; top-level rules are unchanged. */
+/** Frames of approved embeds are left to the CSP; top-level rules are unchanged. */
 class DeftNavigationTest {
     @Test
     fun subframeHttpsPassesOnlyWithApprovedEmbeds() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY B4. Payment-category card emulation for the app holding nfc.hce.payment. The real AIDs
+<!-- Payment-category card emulation for the app holding nfc.hce.payment. The real AIDs
      are registered at runtime (CardEmulation.registerAidsForService, category payment); this
      placeholder keeps the group valid. requireDeviceUnlock: Android sends payment commands only
      while the phone is unlocked (it is an attribute of the service, not of the AID group). -->

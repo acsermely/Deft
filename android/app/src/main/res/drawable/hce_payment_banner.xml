@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY B4: banner in Android's Contactless payments list (260 x 96 dp). -->
+<!-- Banner in Android's Contactless payments list (260 x 96 dp). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="260dp"
     android:height="96dp"

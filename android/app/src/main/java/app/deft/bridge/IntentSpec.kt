@@ -4,7 +4,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
- * PARITY E2: argument rules for `intents.start` and `intents.startForResult`, free of Android
+ * Argument rules for `intents.start` and `intents.startForResult`, free of Android
  * types so they can be unit tested. Every rule that keeps an app from sending the launcher's own
  * files, or steering other apps with arbitrary actions, lives here.
  */

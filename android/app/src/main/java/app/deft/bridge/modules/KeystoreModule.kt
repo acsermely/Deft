@@ -45,6 +45,9 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (Keystore keys): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a sample stores and reads back a biometric-locked secret.
+// Remove this note once checked.
 private const val ANDROID_KEYSTORE = "AndroidKeyStore"
 private const val SIGN_ALGORITHM = "SHA256withECDSA"
 private const val AES_GCM = "AES/GCM/NoPadding"
@@ -52,7 +55,7 @@ private const val GCM_TAG_BITS = 128
 private const val AUTH_TIMEOUT_MS = 120_000L
 
 /**
- * `keystore.*` (PARITY F2): keys made in the Android Keystore and kept to one app. The key
+ * `keystore.*`: keys made in the Android Keystore and kept to one app. The key
  * material never reaches the app; it gets public keys, signatures and ciphertext back. Only
  * while the app is on screen. A key locked by a fingerprint or face asks for one.
  */

@@ -12,8 +12,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (UnifiedPush): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an ntfy-backed sample receives a push with the app closed.
+// Remove this note once checked.
 /**
- * `push.*` (PARITY D6): a UnifiedPush endpoint per app, from a distributor app such as ntfy.
+ * `push.*`: a UnifiedPush endpoint per app, from a distributor app such as ntfy.
  * Messages arrive through `push.PushReceiver`; endpoints are not written to the audit log.
  */
 class PushModule(private val context: Context) : BridgeModule {

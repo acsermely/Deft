@@ -42,12 +42,12 @@ class HandlerMatchTest {
             HandlerMatch.enabledAliases(listOf(DeftHandles(mimeTypes = listOf("image/png")))),
         )
         assertEquals(
-            setOf(HandlerAlias.VIEW_PDF, HandlerAlias.SENDTO_MAILTO, HandlerAlias.VIEW_WEB_DEFT, HandlerAlias.VIEW_WEB_FL),
+            setOf(HandlerAlias.VIEW_PDF, HandlerAlias.SENDTO_MAILTO, HandlerAlias.VIEW_WEB_DEFT),
             HandlerMatch.enabledAliases(
                 listOf(
                     DeftHandles(mimeTypes = listOf("application/pdf")),
                     DeftHandles(schemes = listOf("mailto", "web+deft", "web+other")),
-                    DeftHandles(schemes = listOf("web+fl")), // pre-rename scheme keeps its alias
+                    DeftHandles(schemes = listOf("web+fl")), // the old scheme has no alias any more
                 ),
             ),
         )

@@ -47,7 +47,10 @@ object DeftWebViewConfig {
         applyProfile(view, profileName)
     }
 
-    /** PARITY E5: Payment Request reaches installed payment apps only with the payments.request grant. */
+    // DEVICE-UNCHECKED (Web Payment Request): built, but the developer has not checked it on
+    // a real device yet. Check: a sample pays through a test payment app on the device.
+    // Remove this note once checked.
+    /** Payment Request reaches installed payment apps only with the payments.request grant. */
     fun applyPaymentRequest(view: WebView, granted: Boolean) {
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.PAYMENT_REQUEST)) return
         androidx.webkit.WebSettingsCompat.setPaymentRequestEnabled(view.settings, granted)

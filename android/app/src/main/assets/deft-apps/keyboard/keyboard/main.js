@@ -1,4 +1,4 @@
-// Simple Keyboard keyboard page (PARITY G11 ime). The launcher shows this page as the phone's
+// Simple Keyboard keyboard page. The launcher shows this page as the phone's
 // keyboard. It types with ime.commitText / ime.deleteBefore / ime.sendKey, and learns the kind of
 // field from ime.start. It never sees password fields: the launcher shows its own keyboard there.
 // Outside the launcher (opened in a browser) there is no bridge; the keys then do nothing.

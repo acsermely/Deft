@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY G10: account type per build (resValue fl_account_type = <applicationId>.account). -->
+<!-- Account type per build (resValue fl_account_type = <applicationId>.account). -->
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="@string/fl_account_type"
     android:icon="@mipmap/ic_launcher"

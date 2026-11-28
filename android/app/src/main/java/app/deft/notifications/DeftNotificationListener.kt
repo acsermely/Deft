@@ -31,8 +31,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (notification listener): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a notification-history sample works and only the holder gets events.
+// Remove this note once checked.
 /**
- * PARITY G8: the launcher's notification listener (capability `notifications.listen`). Android
+ * The launcher's notification listener (capability `notifications.listen`). Android
  * binds it once the user turns on Notification access for the launcher; the FL grant decides
  * which one web app (the holder of exclusive group `notif-listener`) gets anything.
  *

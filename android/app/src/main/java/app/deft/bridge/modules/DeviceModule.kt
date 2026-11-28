@@ -15,8 +15,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import java.security.SecureRandom
 
+// DEVICE-UNCHECKED (app list, launch, usage stats and per-app device id): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a screen-time sample shows per-app usage.
+// Remove this note once checked.
 /**
- * `device.id` (PARITY G7): a per-origin id derived from the launcher's secret. Works in the
+ * `device.id`: a per-origin id derived from the launcher's secret. Works in the
  * background as well; it does not need the app on screen.
  */
 class DeviceModule(private val context: Context) : BridgeModule {

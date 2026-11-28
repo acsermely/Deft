@@ -5,7 +5,7 @@ export const site = {
 		'Deft is an Android home screen where every app is plain HTML. Say what you want, shape it with the agent, keep every file. Sideload, not on Play.',
 	version: '0.1.0',
 	android: 'Android 11+',
-	downloadHref: '/freedom-launcher.apk',
+	downloadHref: '/deft.apk',
 	samplesHost: 'app.acsermely.hu'
 };
 

@@ -3,7 +3,7 @@ package app.deft.bridge
 import java.net.InetAddress
 
 /**
- * PARITY F8/G4: which addresses a socket may connect to. Pure (no Android types) so every range
+ * Which addresses a socket may connect to. Pure (no Android types) so every range
  * edge can be unit tested.
  *
  * - [Class.LAN]: RFC 1918 (10/8, 172.16/12, 192.168/16), IPv4 link-local 169.254/16, IPv6 ULA

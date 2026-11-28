@@ -1,8 +1,11 @@
 package app.deft.background
 
+// DEVICE-UNCHECKED (headless background runner): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a background task runs after the app process is killed and shows in the audit log.
+// Remove this note once checked.
 /**
- * PARITY D1: one trigger waiting for, or given to, a background run. [at] is when it fired.
- * PARITY F7b: [expiresAt] marks an urgent trigger (see [BackgroundTriggers.urgentMs]): it waits
+ * One trigger waiting for, or given to, a background run. [at] is when it fired.
+ * [expiresAt] marks an urgent trigger (see [BackgroundTriggers.urgentMs]): it waits
  * ahead of the ordinary ones and is dropped, not run, from [expiresAt] on.
  */
 data class BackgroundTrigger(val name: String, val payloadJson: String, val at: Long, val expiresAt: Long? = null) {
@@ -10,7 +13,7 @@ data class BackgroundTrigger(val name: String, val payloadJson: String, val at: 
 }
 
 /**
- * PARITY D1: the scheduling rules of background runs, without Android, so they can be unit
+ * The scheduling rules of background runs, without Android, so they can be unit
  * tested. Not thread-safe; [BackgroundRunner] holds it under a lock.
  *
  * - One run per app at a time, and at most [maxRunning] runs at once across apps (the others
@@ -20,7 +23,7 @@ data class BackgroundTrigger(val name: String, val payloadJson: String, val at: 
  * - At most [maxPerHour] runs start per app in any 60 minutes; triggers over the limit are
  *   dropped when their turn comes, never delayed.
  * - Each run gets [budgetMs] of wall-clock time from the moment its page starts loading.
- * - PARITY F7b: an urgent trigger waits behind other urgent ones but ahead of ordinary ones, and
+ * - An urgent trigger waits behind other urgent ones but ahead of ordinary ones, and
  *   is dropped (reported as expired) instead of started once its time is up.
  */
 class RunnerQueue(
@@ -33,7 +36,7 @@ class RunnerQueue(
 
     /**
      * [start] is the trigger to run now, if any; [dropped] were over the hourly limit; [expired]
-     * were urgent triggers whose time was up (PARITY F7b).
+     * were urgent triggers whose time was up.
      */
     data class Poll(
         val start: BackgroundTrigger?,
@@ -120,7 +123,7 @@ class RunnerQueue(
     fun remainingMs(startedAt: Long, now: Long): Long = (budgetMs - (now - startedAt)).coerceIn(0, budgetMs)
 
     /**
-     * PARITY F7b: whether urgent [trigger] (fired-at clock [now]) may join a run that started at
+     * Whether urgent [trigger] (fired-at clock [now]) may join a run that started at
      * [startedAt] (elapsed clock [elapsedNow]): only when the run has at least as long left as the
      * trigger may still wait. Otherwise the run ends first and the trigger is queued for the next.
      */

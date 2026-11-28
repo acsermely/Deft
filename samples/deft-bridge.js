@@ -133,8 +133,7 @@
 
   installDefaultBack();
 
-  // freedomBridge: the pre-rename name, kept so apps written before Deft keep working.
-  global.freedomBridge = global.deftBridge = {
+  global.deftBridge = {
     __deftPort: true,
     ready: ready,
     get allowed() { return allowed; },
@@ -181,7 +180,7 @@
 
 
   /*
-   * Platform shims (PARITY Phase A): standard web APIs that Android WebView lacks or drops are
+   * Platform shims: standard web APIs that Android WebView lacks or drops are
    * routed to launcher methods, so ordinary web code works. Each one is gated by a grant on the
    * host; the shims only translate. Without the grant they fail like a browser that said no.
    */
@@ -209,12 +208,115 @@
     });
   }
 
+  /* Helpers: WebAuthn options and answers between buffers and their JSON form (base64url). */
+  var WEBAUTHN_ERRORS = {
+    cancelled: 'NotAllowedError',
+    not_granted: 'NotAllowedError',
+    unsupported: 'NotSupportedError',
+    in_use: 'InvalidStateError',
+    invalid_args: 'TypeError',
+  };
+  // Which option fields are buffers (WebAuthn Level 3 JSON): paths of dotted keys, `[]` for each item.
+  var CREATION_BUFFERS = ['challenge', 'user.id', 'excludeCredentials[].id'];
+  var REQUEST_BUFFERS = ['challenge', 'allowCredentials[].id'];
+  var RESPONSE_BUFFERS = ['clientDataJSON', 'attestationObject', 'authenticatorData', 'signature', 'userHandle', 'publicKey'];
+
+  function webauthnError(name, message) {
+    if (name === 'TypeError') return new TypeError(message || 'invalid options');
+    try { return new DOMException(message || name, name); } catch (e) {
+      var err = new Error(message || name); err.name = name; return err;
+    }
+  }
+
+  function b64url(buf) {
+    var bytes = buf instanceof ArrayBuffer ? new Uint8Array(buf) : new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function fromB64url(text) {
+    var s = String(text).replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out.buffer;
+  }
+
+  function isBuffer(v) { return v instanceof ArrayBuffer || ArrayBuffer.isView(v); }
+
+  // Options with buffers -> WebAuthn JSON: every buffer becomes base64url, undefined is dropped.
+  function toWebAuthnJson(value) {
+    if (isBuffer(value)) return b64url(value);
+    if (Array.isArray(value)) return value.map(toWebAuthnJson);
+    if (value && typeof value === 'object') {
+      var out = {};
+      Object.keys(value).forEach(function (k) {
+        if (value[k] !== undefined && typeof value[k] !== 'function') out[k] = toWebAuthnJson(value[k]);
+      });
+      return out;
+    }
+    return value;
+  }
+
+  function decodePath(obj, parts) {
+    if (!obj || typeof obj !== 'object') return;
+    var head = parts[0];
+    var list = /\[\]$/.test(head);
+    var key = list ? head.slice(0, -2) : head;
+    if (parts.length === 1) {
+      if (typeof obj[key] === 'string') obj[key] = fromB64url(obj[key]);
+      return;
+    }
+    if (list) {
+      if (Array.isArray(obj[key])) obj[key].forEach(function (item) { decodePath(item, parts.slice(1)); });
+    } else {
+      decodePath(obj[key], parts.slice(1));
+    }
+  }
+
+  // WebAuthn JSON -> options with buffers (parseCreationOptionsFromJSON / parseRequestOptionsFromJSON).
+  function fromWebAuthnJson(json, paths) {
+    if (!json || typeof json !== 'object') throw new TypeError('options must be an object');
+    var copy = JSON.parse(JSON.stringify(json));
+    paths.forEach(function (path) { decodePath(copy, path.split('.')); });
+    return copy;
+  }
+
+  function credentialFromJson(json, PKC) {
+    var r = json.response || {};
+    var response = {};
+    Object.keys(r).forEach(function (k) {
+      response[k] = RESPONSE_BUFFERS.indexOf(k) >= 0 && typeof r[k] === 'string' ? fromB64url(r[k]) : r[k];
+    });
+    var transports = Array.isArray(r.transports) ? r.transports.slice() : [];
+    response.getTransports = function () { return transports.slice(); };
+    if (r.publicKeyAlgorithm !== undefined) response.getPublicKeyAlgorithm = function () { return r.publicKeyAlgorithm; };
+    if (typeof r.publicKey === 'string') response.getPublicKey = function () { return fromB64url(r.publicKey); };
+    if (typeof r.authenticatorData === 'string') response.getAuthenticatorData = function () { return fromB64url(r.authenticatorData); };
+    var cred = Object.create(PKC && PKC.prototype ? PKC.prototype : Object.prototype);
+    var own = {
+      id: json.id,
+      rawId: fromB64url(json.rawId || json.id || ''),
+      type: json.type || 'public-key',
+      authenticatorAttachment: json.authenticatorAttachment || null,
+      response: response,
+      getClientExtensionResults: function () { return json.clientExtensionResults || {}; },
+      toJSON: function () { return json; },
+    };
+    Object.keys(own).forEach(function (k) {
+      Object.defineProperty(cred, k, { value: own[k], enumerable: typeof own[k] !== 'function', configurable: true });
+    });
+    return cred;
+  }
+
   function installPlatformShims() {
     var nav = global.navigator;
     var doc = global.document;
     if (!nav || !doc) return;
 
-    // A3: navigator.vibrate only with the haptics grant. Defined on the prototype, non-writable,
+    // navigator.vibrate only with the haptics grant. Defined on the prototype, non-writable,
     // so a page cannot reach the unguarded original.
     try {
       var proto = global.Navigator && global.Navigator.prototype;
@@ -230,7 +332,7 @@
       }
     } catch (e) {}
 
-    // E5: window.PaymentRequest exists only with the payments.request grant. Non-configurable
+    // window.PaymentRequest exists only with the payments.request grant. Non-configurable
     // getter, so a page cannot put back the unguarded constructor.
     try {
       var origPaymentRequest = global.PaymentRequest;
@@ -264,13 +366,13 @@
       } catch (e) {}
     }
 
-    // A8: window.print opens the system print dialog.
+    // window.print opens the system print dialog.
     global.print = function () {
       gated('display.print', function () { return call('display.print', { title: doc.title }); })
         .catch(function (e) { console.warn('print:', e && e.message); });
     };
 
-    // A5: Screen Wake Lock keeps the screen on while the app is visible.
+    // Screen Wake Lock keeps the screen on while the app is visible.
     var locks = new Set();
     function releaseAll() {
       locks.forEach(function (s) { s.release(); });
@@ -305,7 +407,7 @@
       doc.addEventListener('visibilitychange', function () { if (doc.hidden) releaseAll(); });
     } catch (e) {}
 
-    // A4: screen.orientation.lock / unlock.
+    // screen.orientation.lock / unlock.
     try {
       var so = global.screen && global.screen.orientation;
       if (so) {
@@ -320,7 +422,7 @@
       }
     } catch (e) {}
 
-    // A7: navigator.clipboard.readText, right after a tap.
+    // navigator.clipboard.readText, right after a tap.
     try {
       var cb = nav.clipboard;
       if (cb) {
@@ -332,7 +434,64 @@
       }
     } catch (e) {}
 
-    // D4: navigator.mediaSession reaches the lock screen, headsets and Bluetooth with the
+    // DEVICE-UNCHECKED (navigator.credentials shim): built and unit-tested, but the developer
+    // has not checked it on a real device yet. Check: passkey-check registers and signs in through navigator.credentials as well as passkeys.*.
+    // Remove this note once checked.
+    // navigator.credentials.create/get({publicKey}) through passkeys.create/get, only with the
+    // webauthn grant (the app's own website, after it opted in). Without the grant, and for any
+    // other credential type, the native (disabled) behaviour stays. Options go out as WebAuthn JSON
+    // (buffers as base64url); the answer comes back as a PublicKeyCredential-like object whose
+    // toJSON() is the provider's JSON, so code written for Chrome works unchanged.
+    try {
+      var creds = nav.credentials;
+      if (creds && typeof creds.create === 'function' && typeof creds.get === 'function') {
+        var nativeCreate = creds.create.bind(creds);
+        var nativeGet = creds.get.bind(creds);
+        var PKC = global.PublicKeyCredential;
+        var useBridge = function (method, options) {
+          return !!options && typeof options === 'object' && !!options.publicKey && allowed.has(method);
+        };
+        creds.create = function (options) {
+          return whenReady(function () {
+            if (!useBridge('passkeys.create', options)) return nativeCreate(options);
+            return passkeyCall('passkeys.create', options);
+          });
+        };
+        creds.get = function (options) {
+          return whenReady(function () {
+            if (!useBridge('passkeys.get', options)) return nativeGet(options);
+            if (options.mediation === 'conditional') {
+              return Promise.reject(webauthnError('NotSupportedError', 'conditional mediation is not supported'));
+            }
+            return passkeyCall('passkeys.get', options);
+          });
+        };
+        var passkeyCall = function (method, options) {
+          var json;
+          try { json = JSON.stringify(toWebAuthnJson(options.publicKey)); } catch (e) {
+            return Promise.reject(new TypeError('publicKey options could not be encoded'));
+          }
+          return call(method, { requestJson: json }).then(function (r) {
+            var parsed = JSON.parse((r && r.responseJson) || 'null');
+            if (!parsed || typeof parsed !== 'object') throw webauthnError('UnknownError', 'empty answer');
+            return credentialFromJson(parsed, PKC);
+          }, function (err) {
+            throw webauthnError(WEBAUTHN_ERRORS[err && err.code] || 'NotAllowedError', err && err.message);
+          });
+        };
+        // Chrome 129+ statics; added when the WebView lacks them, so the usual JSON flow works.
+        if (PKC) {
+          if (typeof PKC.parseCreationOptionsFromJSON !== 'function') {
+            PKC.parseCreationOptionsFromJSON = function (o) { return fromWebAuthnJson(o, CREATION_BUFFERS); };
+          }
+          if (typeof PKC.parseRequestOptionsFromJSON !== 'function') {
+            PKC.parseRequestOptionsFromJSON = function (o) { return fromWebAuthnJson(o, REQUEST_BUFFERS); };
+          }
+        }
+      }
+    } catch (e) {}
+
+    // navigator.mediaSession reaches the lock screen, headsets and Bluetooth with the
     // media.session grant and a running fgs.start {type: 'mediaPlayback'}. The page's own object
     // keeps working; the shim mirrors it to media.* and calls the page's handlers on media.action.
     try {
@@ -497,7 +656,7 @@
       };
     } catch (e) {}
 
-    // A2: <a download> saves through the system "Save as" dialog (files.write grant).
+    // <a download> saves through the system "Save as" dialog (files.write grant).
     var blobs = new Map();
     try {
       var createURL = URL.createObjectURL;

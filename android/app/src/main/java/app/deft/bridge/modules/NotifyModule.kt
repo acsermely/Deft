@@ -20,7 +20,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import java.util.UUID
 
-/** `notify.*` (PARITY C1/C2): channels, rich posts, update, cancel, list. */
+/** `notify.*`: channels, rich posts, update, cancel, list. */
 class NotifyModule(
     private val context: Context,
 ) : BridgeModule {

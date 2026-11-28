@@ -12,9 +12,9 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
 /**
- * Notification buttons, inline replies and dismissals that do not open the app (PARITY C2).
+ * Notification buttons, inline replies and dismissals that do not open the app.
  * Each becomes `notify.action {id, action, reply?}` for the app; if the app is closed the event
- * waits in the queue until its page subscribes. PARITY D2: it also wakes the app's background
+ * waits in the queue until its page subscribes. it also wakes the app's background
  * module when the app declares the `notify.action` trigger.
  */
 class NotifyActionReceiver : BroadcastReceiver() {
@@ -33,7 +33,7 @@ class NotifyActionReceiver : BroadcastReceiver() {
                 val service = BridgeService.instanceOrNull()
                 if (service != null) service.emit(webAppId, EVENT, payload)
                 else DeftApp.instance.repository.enqueueEvent(webAppId, EVENT, payload)
-                // PARITY D2: the app's background module may handle the action while it is closed.
+                // The app's background module may handle the action while it is closed.
                 // A notification action may start the service on Android 12+.
                 runCatching {
                     app.deft.background.BackgroundWake.wake(

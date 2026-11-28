@@ -10,7 +10,7 @@ import kotlinx.serialization.json.contentOrNull
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * PARITY F7b: the pure rules of call screening (`calls.screen`). No Android types; unit tested.
+ * The pure rules of call screening (`calls.screen`). No Android types; unit tested.
  * The Android side is [DeftCallScreeningService] and `CallsModule`.
  *
  * - Every incoming call goes to the holder as [EVENT]; its `calls.screenRespond` must arrive
@@ -174,7 +174,7 @@ object ScreeningSpec {
 }
 
 /**
- * PARITY F7b: calls waiting for the holder's answer. Thread-safe. Only the app a call was sent
+ * Calls waiting for the holder's answer. Thread-safe. Only the app a call was sent
  * to may answer it, once, and only before [ScreeningSpec.DEADLINE_MS]; times are a monotonic clock.
  */
 class ScreeningRegistry(private val newId: () -> String) {

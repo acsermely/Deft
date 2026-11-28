@@ -41,11 +41,11 @@ object DeftLintEngine {
 
     fun collect(root: File): Map<String, String> = collect(MergedAppTree(root, null))
 
-    /** Lint sees the merged app (PARITY H3): overlay files win, deleted paths are absent. */
+    /** Lint sees the merged app: overlay files win, deleted paths are absent. */
     fun collect(tree: MergedAppTree): Map<String, String> {
         val out = linkedMapOf<String, String>()
         for ((rel, file) in tree.files()) {
-            // PARITY G2: a binary the lint rules need by path only (WebAssembly) is listed with empty text.
+            // A binary the lint rules need by path only (WebAssembly) is listed with empty text.
             if (DeftPaths.isWasmFileName(file.name)) {
                 out[rel] = ""
                 continue
@@ -69,7 +69,7 @@ object DeftLintEngine {
         return mapOf(rel to runCatching { file.readText() }.getOrDefault(""))
     }
 
-    /** [packageBytes] is the package cap for this input; PARITY G3 passes the larger cap for a granted app. */
+    /** [packageBytes] is the package cap for this input; passes the larger cap for a granted app. */
     suspend fun run(
         context: Context,
         files: Map<String, String>,

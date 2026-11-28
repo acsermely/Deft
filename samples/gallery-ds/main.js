@@ -125,7 +125,7 @@ renderReadout();
 renderTokens();
 window.addEventListener('deft:theme', () => { renderReadout(); renderTokens(); });
 
-// Motion and icon demos (DESIGN-SYSTEM-PROPOSAL 3.6, 3.7). The imports above start motion.js, which defines deft.toast.
+// Motion and icon demos (deft-design motion.md, icons.md). The imports above start motion.js, which defines deft.toast.
 document.querySelectorAll('[data-haptic]').forEach((b) => b.addEventListener('click', () => haptic(b.dataset.haptic)));
 $('open-detent').addEventListener('click', () => $('detent').showModal());
 const num = $('num');

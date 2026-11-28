@@ -1,5 +1,5 @@
 /**
- * Design-system rules (DESIGN-SYSTEM-PROPOSAL section 4 and 8.1): accent placement, legacy tokens,
+ * Design-system rules : accent placement, legacy tokens,
  * raw motion, unlayered CSS, glyph icons, error colour without icon and text, one primary per screen, dialog or [hidden] view.
  * Hand-written scanners, same style as index.js and extra.js. Called from afterCss and afterHtml.
  */

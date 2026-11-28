@@ -13,7 +13,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
-/** `widgets.*` (PARITY C4): data cards on the Home screen. */
+/** `widgets.*`: data cards on the Home screen. */
 class WidgetsModule(private val context: Context) : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         val store = WidgetStore.get(context)

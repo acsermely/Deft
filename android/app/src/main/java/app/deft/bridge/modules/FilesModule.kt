@@ -88,7 +88,7 @@ class FilesModule(
     }
 
     /**
-     * PARITY A2: `files.saveAs {name, mime?, base64}` and `<a download>`. The user picks the
+     * `files.saveAs {name, mime?, base64}` and `<a download>`. The user picks the
      * destination in the system dialog; nothing else on the device is touched.
      */
     private suspend fun saveAs(request: BridgeRequest): BridgeOutcome {
@@ -150,7 +150,7 @@ class FilesModule(
         }
     }
 
-    /** Without a picked SAF tree, path-based file methods reach Downloads only (PARITY H6). */
+    /** Without a picked SAF tree, path-based file methods reach Downloads only. */
     @Suppress("UNUSED_PARAMETER")
     private fun roots(webAppId: String): List<File> =
         listOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).canonicalFile)

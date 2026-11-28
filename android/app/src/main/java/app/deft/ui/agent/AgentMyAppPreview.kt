@@ -114,7 +114,7 @@ fun AgentMyAppPreview(slug: String, modifier: Modifier = Modifier) {
     var pending by remember(slug) { mutableStateOf<List<Capability>>(emptyList()) }
     var newCapsOnly by remember(slug) { mutableStateOf(false) }
     var missingDeps by remember(slug) { mutableStateOf<List<DeftDependency>>(emptyList()) }
-    // W5: tools the app declares that the user has not allowed yet (Apply lists them on the consent screen).
+    // Tools the app declares that the user has not allowed yet (Apply lists them on the consent screen).
     var pendingTools by remember(slug) { mutableStateOf<List<String>>(emptyList()) }
     val consent = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
@@ -260,7 +260,7 @@ private fun PreviewWebView(
 
     val askedDeps = remember(installed.id) { mutableSetOf<String>() }
     LaunchedEffect(installed.id, revision) {
-        // The agent added a library mid-session: ask on the same consent screen (spec 10.10), once per URL set.
+        // The agent added a library mid-session: ask on the same consent screen, once per URL set.
         val deps = withContext(Dispatchers.IO) {
             AppDeps.missing(context, installed.id, slug)
         }
@@ -281,7 +281,7 @@ private fun PreviewWebView(
         )
     }
 
-    // PARITY H3/G1: the preview gets the same CSP as the host (consented origins and network grants only).
+    // The preview gets the same CSP as the host (consented origins and network grants only).
     var network by remember(installed.id) { mutableStateOf<app.deft.webview.CspPolicy?>(null) }
     LaunchedEffect(installed.id, revision) {
         network = withContext(Dispatchers.IO) {
@@ -773,7 +773,7 @@ private fun createPreviewWebView(
     )
     settings.mediaPlaybackRequiresUserGesture = false
     setOnTouchListener { v, event -> app.deft.bridge.UserGesture.track(v, event, installed.id) }
-    // PARITY H3: same merged tree and connect-src as the host.
+    // Same merged tree and connect-src as the host.
     val tree = DeftApp.instance.myApps.tree(slug)
     val loader = LocalOriginPathHandler.loader(
         tree.base,
@@ -809,7 +809,7 @@ private fun startUrl(installed: InstalledWebApp, revision: Int): String {
 private fun injectPreviewScripts(view: WebView, installed: InstalledWebApp, embedOrigins: List<String>) {
     if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) return
     val js = runCatching { DeftJsBridge.clientJs(view.context) }.getOrNull() ?: return
-    // PARITY G14: same Trusted Types default policy as the host for approved embed origins.
+    // Same Trusted Types default policy as the host for approved embed origins.
     val source = js + "\n" + WebViewFindings.HOOK_JS + app.deft.webview.EmbedScriptPolicy.js(embedOrigins)
     runCatching { WebViewCompat.addDocumentStartJavaScript(view, source, setOf(installed.origin)) }
 }

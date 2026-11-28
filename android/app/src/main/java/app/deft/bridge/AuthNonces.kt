@@ -4,7 +4,7 @@ import java.net.URI
 import java.security.SecureRandom
 
 /**
- * PARITY E3: one-time nonces that tie a sign-in to the app that asked for it. `auth.prepare`
+ * One-time nonces that tie a sign-in to the app that asked for it. `auth.prepare`
  * issues one; `auth.start` marks it started for the same app; the redirect activity completes it
  * once. A nonce is refused for any other app, a second use, or after [TTL_MS]. Free of Android
  * types so the rules can be unit tested with a fake clock.
@@ -89,7 +89,7 @@ class AuthNonces(
     }
 }
 
-/** PARITY E3: the rules for sign-in URLs and redirect paths. */
+/** The rules for sign-in URLs and redirect paths. */
 object AuthSpec {
     const val MAX_URL = 8_192
     private const val PATH_PREFIX = "/cb/"

@@ -1,5 +1,5 @@
 /**
- * WebAssembly sample (PARITY G2). add.wasm is a hand-made module that exports add(a, b).
+ * WebAssembly sample. add.wasm is a hand-made module that exports add(a, b).
  * It ships inside the app, so the app declares the wasm capability.
  */
 

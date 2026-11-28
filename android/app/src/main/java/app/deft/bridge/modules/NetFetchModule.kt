@@ -10,6 +10,8 @@ import app.deft.bridge.CallRate
 import app.deft.bridge.NetFetchSpec
 import app.deft.catalog.Capability
 import app.deft.catalog.isGranted
+import app.deft.data.NetworkLog
+import app.deft.data.NetworkLogWriter
 
 /**
  * `net.fetch`: a native GET/HEAD with no CORS rules, for feeds and public endpoints the web
@@ -29,10 +31,21 @@ class NetFetchModule(private val service: BridgeService) : BridgeModule {
         }
         val repo = service.repository
         val app = repo.getApp(request.webAppId) ?: return BridgeOutcome.Err(BridgeErrors.NOT_GRANTED, "Unknown app")
+        // The dashboard's "Block network" switch, and the per-app network log.
+        if (repo.networkBlocked(app.id)) {
+            log(app.id, args.target.origin, allowed = false)
+            return BridgeOutcome.Err(BridgeErrors.NOT_GRANTED, NetworkLog.BLOCKED_MESSAGE)
+        }
         val listed = repo.networkFor(app)
         val open = holds(request.webAppId, Capability.NETWORK_OPEN)
         val local = holds(request.webAppId, Capability.NET_LOCAL)
-        return NetFetchClient.fetch(args.target, args.method, args.mode, args.headers, listed, open, local)
+        val outcome = NetFetchClient.fetch(args.target, args.method, args.mode, args.headers, listed, open, local)
+        log(app.id, args.target.origin, allowed = (outcome as? BridgeOutcome.Err)?.code != BridgeErrors.NOT_GRANTED)
+        return outcome
+    }
+
+    private fun log(webAppId: String, origin: String, allowed: Boolean) {
+        NetworkLogWriter.record(NetworkLog.entry(webAppId, origin, NetworkLog.KIND_NET_FETCH, allowed, System.currentTimeMillis()))
     }
 
     private suspend fun holds(webAppId: String, cap: Capability): Boolean {

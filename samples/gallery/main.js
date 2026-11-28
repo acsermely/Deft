@@ -1,5 +1,5 @@
-// Photo grid from media.query and media.thumbnail (PARITY F6). Status goes to #log and the console.
-// "Open with → Gallery" from another app (PARITY E1) shows the picture at the top of the grid.
+// Photo grid from media.query and media.thumbnail. Status goes to #log and the console.
+// "Open with → Gallery" from another app shows the picture at the top of the grid.
 import '/_deft/v1/motion.js';
 import { call, on } from '/_deft/v1/bridge.js';
 const $ = (id) => document.getElementById(id);
@@ -36,7 +36,7 @@ async function loadPhotos() {
 $('load').addEventListener('click', () => {
   loadPhotos().catch((e) => status('FAIL ' + ((e && (e.name + ': ' + e.message)) || String(e))));
 });
-// PARITY E1: a picture another app opened with Gallery. The file was copied into the share inbox;
+// A picture another app opened with Gallery. The file was copied into the share inbox;
 // read it once by id.
 async function showOpened(event) {
   for (const item of event.items || []) {

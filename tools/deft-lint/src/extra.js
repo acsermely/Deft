@@ -86,7 +86,7 @@ function isDocument(source) {
   return /<!doctype\s+html/i.test(source) || /<html[\s>]/i.test(source) || /<head[\s>]/i.test(source);
 }
 
-/* CDN URLs and `as` aliases from manifest.dependencies (spec 10.10); imports of these are allowed. */
+/* CDN URLs and `as` aliases from manifest.dependencies; imports of these are allowed. */
 let declaredUrls = new Set();
 let declaredAliases = new Set();
 
@@ -181,11 +181,11 @@ export function afterJs(path, source, tokens, at, out, mode) {
           out.push(issue("FL110", "error", path, pos.line, pos.col, "window.open is not allowed"));
         }
       }
-      if (t.value.startsWith("__deft") || t.value.startsWith("__fl")) {
+      if (t.value.startsWith("__deft")) {
         const pos = at(t.index);
         out.push(issue("FL113", "error", path, pos.line, pos.col, "access to host internal __deft*"));
       }
-      if (t.value === "deftBridge" || t.value === "freedomBridge") {
+      if (t.value === "deftBridge") {
         const pos = at(t.index);
         out.push(issue("FL200", "warn", path, pos.line, pos.col, "direct deftBridge; use call() from bridge.js"));
       }
@@ -336,7 +336,7 @@ function noteBridgeCall(path, tokens, i, at, out) {
   if (prev && prev.type === "ident" && prev.value === "function") return;
   if (t.value === "call" && prev && prev.type === "punct" && prev.value === ".") {
     const obj = tokens[i - 2];
-    if (!obj || (obj.value !== "deftBridge" && obj.value !== "freedomBridge")) return;
+    if (!obj || obj.value !== "deftBridge") return;
   }
   const arg = tokens[i + 2];
   if (!arg || arg.type !== "string" || arg.tmpl) {
@@ -502,7 +502,7 @@ function scanDocument(path, source, out) {
     const href = (/\bhref\s*=\s*["']([^"']+)["']/i.exec(link[0]) || [])[1] || "";
     sheets.push({ href, index: link.index });
   }
-  // Runtime sheets load in this order (DESIGN-SYSTEM-PROPOSAL section 4): base, tokens, components, theme, then app CSS.
+  // Runtime sheets load in this order (lint FL603): base, tokens, components, theme, then app CSS.
   const RUNTIME_ORDER = ["base", "tokens", "components", "theme"];
   const runtimeSheet = /(?:base|tokens|components|theme)\.css(?:$|\?)/;
   const runtimeAt = RUNTIME_ORDER.map((name) => sheets.findIndex((s) => new RegExp(`${name}\\.css(?:$|\\?)`).test(s.href)));
@@ -671,6 +671,8 @@ export function scanProject(files, profile, mode, catalog, out, limits) {
   flagNetwork(files, manifest, out);
   flagBridge(files, manifest, catalog, out);
   flagWasm(files, manifest, out);
+  flagRemoteWasm(files, manifest, out);
+  flagAssetPacks(manifest, canvas, bytes, packageLimit, out);
   flagToolFiles(files, manifest, out);
   flagIds(files, out);
   flagReachable(files, out);
@@ -716,6 +718,17 @@ function readManifest(files) {
       dependencies: data.dependencies && typeof data.dependencies === "object" && !Array.isArray(data.dependencies)
         ? Object.keys(data.dependencies)
         : [],
+      // Raw manifest assetPacks, checked by flagAssetPacks.
+      assetPacks: data.assetPacks,
+      // Dependency URLs whose bytes are pinned by an SRI hash.
+      pinned: data.dependencies && typeof data.dependencies === "object" && !Array.isArray(data.dependencies)
+        ? Object.entries(data.dependencies)
+          .filter(([, spec]) => {
+            const integrity = spec && typeof spec === "object" ? spec.integrity : spec;
+            return typeof integrity === "string" && /^sha(256|384|512)-[A-Za-z0-9+/]+={0,2}$/.test(integrity);
+          })
+          .map(([url]) => url)
+        : [],
       profile: data.profile,
       kind: data.kind,
       license: data.license,
@@ -755,9 +768,9 @@ function flagCanvas(files, out) {
   for (const path of Object.keys(files)) {
     if (!path.endsWith(".js") && !path.endsWith(".html")) continue;
     const text = stripComments(files[path]);
-    if (/(?:deft|freedom)Bridge\b|\/_deft\/v1\/bridge\.js\b|\bfetch\s*\(|\bWebSocket\b|\bEventSource\b/.test(text)) {
+    if (/deftBridge\b|\/_deft\/v1\/bridge\.js\b|\bfetch\s*\(|\bWebSocket\b|\bEventSource\b/.test(text)) {
       const at = indexAt(files[path]);
-      const pos = at(Math.max(0, text.search(/(?:deft|freedom)Bridge|bridge\.js|\bfetch\s*\(|WebSocket|EventSource/)));
+      const pos = at(Math.max(0, text.search(/deftBridge|bridge\.js|\bfetch\s*\(|WebSocket|EventSource/)));
       out.push(issue("FL204", "error", path, pos.line, pos.col, "canvas cannot use the bridge or network"));
     }
     // FL637: <deft-widget> only works once /_deft/v1/elements.js defines it.
@@ -869,7 +882,7 @@ function definitionBody(text, name) {
   return text.slice(def.index);
 }
 
-/** PARITY G14: an origin matches an `embeds` entry exactly, or `*.` matches any subdomain (as in CSP). */
+/** An origin matches an `embeds` entry exactly, or `*.` matches any subdomain (as in CSP). */
 function embedMatches(entry, origin) {
   const o = origin.toLowerCase();
   if (!/^https:\/\/[a-z0-9.-]+(?::\d{1,5})?$/.test(o)) return false;
@@ -903,7 +916,7 @@ function flagNetwork(files, manifest, out) {
       if (embeds.some((entry) => embedMatches(entry, origin))) continue;
       // The embeds list itself is checked by FL712, not here.
       if (path === "manifest.json" && manifest && manifest.embeds.includes(url)) continue;
-      // Declared CDN dependencies are served locally through the import map, not fetched (spec 10.10).
+      // Declared CDN dependencies are served locally through the import map, not fetched.
       if (declaredUrls.has(url) && (path.endsWith(".js") || path === "manifest.json")) continue;
       const at = indexAt(source);
       const pos = at(m.index);
@@ -928,7 +941,7 @@ function flagBridge(files, manifest, catalog, out) {
       const literal = m[4];
       const prefix = text.slice(Math.max(0, m.index - 24), m.index + (m[1] ? m[1].length : 0));
       if (/function\s*$/.test(prefix)) continue;
-      if (kind === "call" && /\.\s*$/.test(prefix) && !/(?:deft|freedom)Bridge\s*\.\s*$/.test(prefix)) continue;
+      if (kind === "call" && /\.\s*$/.test(prefix) && !/deftBridge\s*\.\s*$/.test(prefix)) continue;
       if (kind === "call" && !literal.includes(".")) continue;
       const table = kind === "subscribe" ? maps.event : maps.method;
       const cap = table.get(literal);
@@ -966,7 +979,7 @@ function flagBridge(files, manifest, catalog, out) {
 }
 
 /**
- * PARITY G2: WebAssembly runs only when the app declares `wasm` (CSP 'wasm-unsafe-eval'). A `.wasm`
+ * WebAssembly runs only when the app declares `wasm` (CSP 'wasm-unsafe-eval'). A `.wasm`
  * file in the package, a `.wasm` dependency (hash rule in index.js FL710) or a `WebAssembly` use in
  * a script needs that declaration. Declared apps pass; nothing else is allowed through.
  */
@@ -994,6 +1007,87 @@ function flagWasm(files, manifest, out) {
   }
   for (const use of uses) {
     out.push(issue("FL202", "error", use.path, use.line, use.col, "capability wasm is used but not declared"));
+  }
+}
+
+const PACK_NAME = /^[a-z0-9][a-z0-9-]{0,31}$/;
+const PACK_URL = /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(?::[0-9]{1,5})?\/[A-Za-z0-9@._~+/-]+\.zip$/;
+const PACK_SHA = /^[0-9a-f]{64}$/;
+const MAX_ASSET_PACKS = 8;
+const LARGE_PACKAGE_MAX_BYTES = 2 * 1024 * 1024 * 1024;
+
+/**
+ * Manifest `assetPacks: [{name, url, sha256, size}]`, the same rules as the
+ * launcher's parser (DeftManifestParser.parseAssetPacks). Packs count against the package cap:
+ * the app's files plus every pack must fit, so a big pack needs `storage.large`.
+ */
+function flagAssetPacks(manifest, canvas, appBytes, packageLimit, out) {
+  if (!manifest || manifest.assetPacks == null) return;
+  const packs = manifest.assetPacks;
+  const bad = (message) => out.push(issue("FL723", "error", "manifest.json", 1, 1, message));
+  if (canvas) {
+    bad("canvas profile cannot declare assetPacks");
+    return;
+  }
+  if (!Array.isArray(packs)) {
+    bad("assetPacks must be an array of {name, url, sha256, size}");
+    return;
+  }
+  if (packs.length > MAX_ASSET_PACKS) bad(`at most ${MAX_ASSET_PACKS} asset packs`);
+  const seen = new Set();
+  let total = 0;
+  for (const pack of packs) {
+    if (!pack || typeof pack !== "object" || Array.isArray(pack)) {
+      bad("each asset pack must be {name, url, sha256, size}");
+      continue;
+    }
+    const name = typeof pack.name === "string" ? pack.name : "";
+    if (!PACK_NAME.test(name)) bad("asset pack name must be 1-32 chars [a-z0-9-]");
+    else if (seen.has(name)) bad(`asset pack ${name} is listed twice`);
+    seen.add(name);
+    const url = typeof pack.url === "string" ? pack.url : "";
+    if (url.length > 2048 || !PACK_URL.test(url) || url.includes("..") || url.indexOf("//", 8) >= 0) {
+      bad(`asset pack ${name} url must be an https .zip URL without query or fragment`);
+    }
+    if (typeof pack.sha256 !== "string" || !PACK_SHA.test(pack.sha256)) {
+      bad(`asset pack ${name} sha256 must be 64 lowercase hex characters`);
+    }
+    if (!Number.isInteger(pack.size) || pack.size < 1 || pack.size > LARGE_PACKAGE_MAX_BYTES) {
+      bad(`asset pack ${name} size must be 1 to ${LARGE_PACKAGE_MAX_BYTES} bytes`);
+    } else {
+      total += pack.size;
+    }
+  }
+  if (total + appBytes > packageLimit) {
+    const hint = manifest.caps.has("storage.large") ? "" : "; declare storage.large for more";
+    bad(`asset packs and app files are ${total + appBytes} bytes, over the ${packageLimit} byte cap${hint}`);
+  }
+}
+
+/**
+ * A `.wasm` from another origin runs only as a hash-pinned dependency, fetched by the
+ * launcher and served same-origin under /_deft/deps/<host>/<path>. A remote `.wasm` URL in a
+ * script or page is an error, even when its origin is in `network`: those bytes are not pinned.
+ * A pinned dependency's own URL gets a warning, because the page must load the served copy.
+ */
+function flagRemoteWasm(files, manifest, out) {
+  const pinned = new Set(manifest ? manifest.pinned : []);
+  for (const path of Object.keys(files)) {
+    if (!/\.(m?js|html?)$/i.test(path) || typeof files[path] !== "string") continue;
+    const source = files[path];
+    const text = /\.m?js$/i.test(path) ? stripComments(source) : source;
+    const re = /["'`](https?:\/\/[^"'`\s?#]+\.wasm)(?:[?#][^"'`\s]*)?["'`]/gi;
+    let m;
+    while ((m = re.exec(text))) {
+      const url = m[1];
+      const pos = indexAt(source)(m.index);
+      if (pinned.has(url)) {
+        const served = "/_deft/deps/" + url.replace(/^https:\/\//i, "");
+        out.push(issue("FL710", "warn", path, pos.line, pos.col, `load the pinned WebAssembly dependency from ${served}, not from ${url}`));
+      } else {
+        out.push(issue("FL710", "error", path, pos.line, pos.col, `WebAssembly from ${url} must be a hash-pinned dependency in manifest.json`));
+      }
+    }
   }
 }
 
@@ -1037,7 +1131,7 @@ function flagReachable(files, out) {
   if (typeof files["index.html"] !== "string" || !isDocument(files["index.html"])) return;
   const seen = new Set();
   const queue = ["index.html"];
-  // PARITY G11: the manifest wallpaper and keyboard pages are entry points of their own.
+  // The manifest wallpaper and keyboard pages are entry points of their own.
   const wallpaperPage = manifestWallpaperPage(files["manifest.json"]);
   if (wallpaperPage) queue.push(wallpaperPage);
   const keyboardPage = manifestWallpaperPage(files["manifest.json"], "keyboard");
@@ -1163,10 +1257,9 @@ function resolveRel(from, ref) {
   return base.join("/");
 }
 
-// Host paths an app may not claim: the runtime /_deft/ and the pre-rename /_fl/ (kept identical to DeftManifestParser.reservedPath).
+// Host paths an app may not claim: the runtime /_deft/ (kept identical to DeftManifestParser.reservedPath).
 export function reservedPath(absolute) {
-  const p = absolute.toLowerCase();
-  return p.startsWith("/_deft/") || p.startsWith("/_fl/");
+  return absolute.toLowerCase().startsWith("/_deft/");
 }
 
 // Kept identical to DeftManifestParser.normalizeModulePath (Kotlin): the absolute path without "." segments, or null.

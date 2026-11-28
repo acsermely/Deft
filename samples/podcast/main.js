@@ -1,4 +1,4 @@
-// PARITY D4 sample: a short looping episode that keeps playing with the screen off (foreground,
+// Sample: a short looping episode that keeps playing with the screen off (foreground,
 // type mediaPlayback) and answers the lock screen, headphones and Bluetooth (media.session)
 // through the standard navigator.mediaSession API. Results go to #log and console ("POD ...").
 import '/_deft/v1/motion.js';

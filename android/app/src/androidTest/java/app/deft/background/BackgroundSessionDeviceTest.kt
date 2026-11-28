@@ -20,7 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * PARITY D1: a background module runs in its off-screen page, gets the trigger, and the page is
+ * A background module runs in its off-screen page, gets the trigger, and the page is
  * destroyed when the budget runs out. Runs without the launcher's database or service.
  */
 @RunWith(AndroidJUnit4::class)

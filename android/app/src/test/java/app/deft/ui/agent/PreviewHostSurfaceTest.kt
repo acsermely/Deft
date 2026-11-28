@@ -25,7 +25,7 @@ class PreviewHostSurfaceTest {
 
     @Test
     fun openAppWithForegroundServiceKeepsItsWork() {
-        // PARITY D3: the full-screen app is off screen but kept running; its host stops the work when the service ends.
+        // The full-screen app is off screen but kept running; its host stops the work when the service ends.
         assertFalse(PreviewHostSurface.stopsOnLeave(held = true, holder = null, keptRunning = true))
     }
 

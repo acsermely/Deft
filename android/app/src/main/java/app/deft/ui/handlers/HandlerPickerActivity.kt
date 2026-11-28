@@ -40,8 +40,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (inbound "Open with" handlers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: "Open with" a PDF from the Files app opens the FL app with the content readable via the bridge.
+// Remove this note once checked.
 /**
- * PARITY E1: "Open with" target for other Android apps. Every alias in [HandlerAlias] points here.
+ * "Open with" target for other Android apps. Every alias in [HandlerAlias] points here.
  * Lists the installed apps whose manifest `handles` the request, with "Always" per alias, then
  * copies `content://` items into the chosen app's share inbox (same rules as share-in) or passes
  * the `mailto:` / `web+deft:` URL as data, opens the app and delivers `intents.viewReceived`.

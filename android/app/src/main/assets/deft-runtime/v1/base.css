@@ -1,4 +1,4 @@
-/* Load order: base.css, tokens.css, components.css, theme.css (see docs/design/DESIGN-SYSTEM-PROPOSAL.md 3.9). */
+/* Load order: base.css, tokens.css, components.css, theme.css (see CLAUDE.md and lint FL603). */
 @layer deft.reset, deft.theme, deft.base, deft.layout, deft.components, deft.utilities;
 /* Press state layer (components.css). Registered so it can fade out on release. */
 @property --deft-press-layer { syntax: "<color>"; inherits: false; initial-value: transparent; }

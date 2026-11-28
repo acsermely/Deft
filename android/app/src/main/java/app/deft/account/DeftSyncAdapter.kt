@@ -25,9 +25,12 @@ import app.deft.catalog.Capability
 import app.deft.catalog.isGranted
 import kotlinx.coroutines.runBlocking
 
+// DEVICE-UNCHECKED (accounts and sync): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an app registers its own account and a sync job runs.
+// Remove this note once checked.
 /**
- * PARITY G10: one sync adapter for all apps' accounts (authority `<applicationId>.sync`). A sync
- * Android runs for an account wakes the owning app's background runner (D1) with trigger `sync`
+ * One sync adapter for all apps' accounts (authority `<applicationId>.sync`). A sync
+ * Android runs for an account wakes the owning app's background runner with trigger `sync`
  * `{account}`, if the app declares that trigger and holds `background` and `accounts.own`. The
  * sync counts as done once the run is handed over; the run itself follows the runner's rules.
  * An account whose app is gone, or lost `accounts.own`, is removed.
@@ -64,7 +67,7 @@ class DeftSyncAdapter(context: Context) : AbstractThreadedSyncAdapter(context, t
 }
 
 /**
- * PARITY G10: binds [DeftSyncAdapter] for the system's SyncManager. The service must be exported
+ * Binds [DeftSyncAdapter] for the system's SyncManager. The service must be exported
  * for SyncManager, so the binder answers only calls from the system (SyncManager runs in
  * system_server; the launcher's own `requestSync` goes through it too).
  */
@@ -97,7 +100,7 @@ class DeftSyncService : Service() {
 }
 
 /**
- * PARITY G10: a sync adapter needs a content authority; this provider holds no data. Not
+ * A sync adapter needs a content authority; this provider holds no data. Not
  * exported, so only the launcher and the system see it.
  */
 class DeftSyncStubProvider : ContentProvider() {

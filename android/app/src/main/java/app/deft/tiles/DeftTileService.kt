@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-/** One Quick Settings tile slot (PARITY C5). The owning app sets its label and state; taps become `tile.clicked`. */
+/** One Quick Settings tile slot. The owning app sets its label and state; taps become `tile.clicked`. */
 abstract class DeftTileService(private val slot: Int) : TileService() {
     override fun onStartListening() {
         val tile = qsTile ?: return

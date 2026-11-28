@@ -10,7 +10,7 @@ import java.nio.charset.CodingErrorAction
 import java.util.Base64
 
 /**
- * PARITY D6: where a UnifiedPush message for a web app goes, and what it carries. Pure, unit
+ * Where a UnifiedPush message for a web app goes, and what it carries. Pure, unit
  * tested; the Android side is `push.PushDelivery`. Message contents are never logged.
  */
 object PushSpec {

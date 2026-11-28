@@ -12,8 +12,11 @@ import app.deft.catalog.isGranted
 import app.deft.ui.dashboard.DashboardActivity
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (special access tier): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a special grant only via the launcher sheet after the screen lock; use notification shown; 90-day review fires.
+// Remove this note once checked.
 /**
- * PARITY G0: "<App> is using <power>" while a [Capability.persistentWhileActive] power is in use.
+ * "<App> is using <power>" while a [Capability.persistentWhileActive] power is in use.
  * The module that implements the power calls [start] when it begins and [stop] when it ends.
  * Revoking the grant or uninstalling the app stops it too.
  */

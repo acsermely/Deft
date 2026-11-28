@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class MediaPickResult(val uri: String?, val mime: String?)
 
-/** What an outbound intent brought back (PARITY E2): only the inbox items, never the sender's URIs. */
+/** What an outbound intent brought back: only the inbox items, never the sender's URIs. */
 data class IntentReply(
     val ok: Boolean,
     val data: String?,
@@ -35,7 +35,7 @@ object BridgePicks {
         intentPending.remove(id)?.complete(reply)
     }
 
-    /** PARITY E3: keyed by the sign-in nonce. Completes with the full redirect URL, or null when cancelled. */
+    /** Keyed by the sign-in nonce. Completes with the full redirect URL, or null when cancelled. */
     fun registerAuth(nonce: String): CompletableDeferred<String?> {
         val d = CompletableDeferred<String?>()
         authPending[nonce] = d

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Local M0 gate. No CI.
+ * Local gate. No CI.
  *
  *   bun scripts/check.ts            unit, lint, runtime and sample checks
  *   bun scripts/check.ts --device   also instrumented tests on the connected device

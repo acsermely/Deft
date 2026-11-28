@@ -9,7 +9,7 @@ import android.speech.SpeechRecognizer
 import app.deft.roles.RoleSpec
 
 /**
- * PARITY G11: Android requires an assistant to name a speech recognizer, and while the launcher is
+ * Android requires an assistant to name a speech recognizer, and while the launcher is
  * the assistant it makes that recognizer the phone's default. So that speech to text keeps working
  * for every app, this one only hands each request to another installed recognizer
  * ([RoleSpec.pickRecognizer]) and passes its results back. It never keeps or reads the audio or text.

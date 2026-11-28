@@ -82,6 +82,7 @@ object NativeDrawer {
         }
         val mono = DeftApp.instance.configStore.config.value.theme.monochromeIcons
         // Per-app `mono` can be false in mono mode (no monochrome layer), so the cache is keyed on the mode itself.
+        // Such apps keep their full-colour icon: a silhouette of a coloured icon would be a solid blob.
         val modeChanged = renderedMono != mono
         renderedMono = mono
         val cached = if (modeChanged) emptyMap() else _apps.value.associateBy { it.packageName + "/" + it.activityName }

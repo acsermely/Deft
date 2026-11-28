@@ -18,7 +18,7 @@ import java.security.MessageDigest
 import java.util.Base64
 
 /**
- * Spec 10.10. Content-addressed store of CDN files, one file per SRI hash, shared by
+ * Content-addressed store of CDN files, one file per SRI hash, shared by
  * every app that declares it. Bytes are verified before they are stored.
  */
 object DepStore {
@@ -90,13 +90,15 @@ object DepStore {
     }
 
     /** Verifies [bytes] against [integrity] and stores them under their hash. */
-    fun store(context: Context, integrity: String, bytes: ByteArray) {
+    fun store(context: Context, integrity: String, bytes: ByteArray) = storeIn(root(context), integrity, bytes)
+
+    /** [store] into an explicit store folder (unit tests use a temp folder). */
+    fun storeIn(root: File, integrity: String, bytes: ByteArray) {
         if (bytes.size > MAX_FILE_BYTES) throw IllegalArgumentException("dependency larger than $MAX_FILE_BYTES bytes")
         val algo = SRI.matchEntire(integrity)?.groupValues?.get(1)
             ?: throw IllegalArgumentException("not an SRI hash: $integrity")
         if (sri(algo, bytes) != integrity) throw IllegalArgumentException("bytes do not match the declared hash $integrity")
         synchronized(lock) {
-            val root = root(context)
             root.mkdirs()
             val dest = fileIn(root, integrity)
             if (dest.isFile) return
@@ -122,7 +124,7 @@ object DepStore {
         return algo + "-" + Base64.getEncoder().encodeToString(MessageDigest.getInstance(name).digest(bytes))
     }
 
-    /** Hashes referenced by any manifest the host still needs (spec 10.10, clean up). */
+    /** Hashes referenced by any manifest the host still needs (clean up). */
     fun referenced(context: Context): Set<String> {
         val manifests = mutableListOf<File>()
         fun appsUnder(dir: File) {
@@ -177,7 +179,7 @@ object DepStore {
     }
 
     /**
-     * The import map for an app (spec 10.10): each declared host prefix -> its served prefix,
+     * The import map for an app: each declared host prefix -> its served prefix,
      * plus `as` aliases. Only stored files count. Returns null when nothing is servable.
      */
     fun importMap(storeRoot: File, deps: List<DeftDependency>): String? {
@@ -192,6 +194,39 @@ object DepStore {
             put("imports", buildJsonObject { for ((k, v) in imports) put(k, JsonPrimitive(v)) })
         }
         return Json.encodeToString(JsonObject.serializer(), map)
+    }
+
+    /** A WebAssembly dependency (by URL; the parser allows `.wasm` next to `.js`, `.mjs` and `.json`). */
+    fun isWasm(dep: DeftDependency): Boolean = dep.url.substringAfterLast('/').lowercase().endsWith(".wasm")
+
+    /**
+     * A `.wasm` dependency is fetched only with its hash in the manifest. The host never
+     * pins one on first download, so the bytes the author tested are the bytes that run.
+     */
+    fun requirePinnedWasm(deps: List<DeftDependency>) {
+        deps.firstOrNull { isWasm(it) && it.integrity == null }?.let {
+            throw IllegalArgumentException("WebAssembly dependency ${it.url} must be hash-pinned in manifest.json")
+        }
+    }
+
+    /** What `/_deft/deps/` serves for one request: a verified store file and its MIME type. */
+    data class Served(val file: File, val mime: String)
+
+    /**
+     * The response for `/_deft/deps/<host>/<path>`: only a URL this app declares,
+     * only once its pinned bytes are in the store. a `.wasm` file is served as
+     * `application/wasm`, and only when [wasmAllowed] (the app declares and holds `wasm`).
+     */
+    fun serve(storeRoot: File, deps: List<DeftDependency>, servedRest: String, wasmAllowed: Boolean): Served? {
+        if (servedRest.split('/').any { it.isEmpty() || it.startsWith(".") }) return null
+        val file = lookup(storeRoot, deps, servedRest) ?: return null
+        val name = servedRest.substringAfterLast('/').lowercase()
+        val mime = when {
+            name.endsWith(".json") -> "application/json"
+            name.endsWith(".wasm") -> if (wasmAllowed) "application/wasm" else return null
+            else -> "text/javascript"
+        }
+        return Served(file, mime)
     }
 
     /** Store file for a request under `/_deft/deps/<host>/<path>`, only when this app declares that URL. */

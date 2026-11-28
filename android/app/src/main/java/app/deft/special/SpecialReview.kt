@@ -5,7 +5,7 @@ import app.deft.catalog.GrantLevel
 import app.deft.catalog.Risk
 
 /**
- * PARITY G0: what the daily check does with one granted special capability. Pure, so it can be
+ * What the daily check does with one granted special capability. Pure, so it can be
  * unit tested without Android.
  *
  * "Last activity" is the later of when the grant was made (or kept) and the last successful use.

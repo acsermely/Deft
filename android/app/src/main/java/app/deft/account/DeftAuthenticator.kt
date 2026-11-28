@@ -13,8 +13,11 @@ import android.os.IBinder
 import android.os.Looper
 import android.widget.Toast
 
+// DEVICE-UNCHECKED (accounts and sync): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an app registers its own account and a sync job runs.
+// Remove this note once checked.
 /**
- * PARITY G10: the authenticator behind the launcher's account type. Accounts are added only by
+ * The authenticator behind the launcher's account type. Accounts are added only by
  * apps through `accounts.add`; "Add account" in system Settings explains that and adds nothing.
  * There are no passwords or auth tokens: an app keeps its own sign-in data. Removing an account
  * in Settings is allowed. Android lets only the system call this binder (ACCOUNT_MANAGER).
@@ -67,7 +70,7 @@ class DeftAuthenticator(private val context: Context) : AbstractAccountAuthentic
     }
 }
 
-/** PARITY G10: binds [DeftAuthenticator] for the system's AccountManager. */
+/** Binds [DeftAuthenticator] for the system's AccountManager. */
 class DeftAuthenticatorService : Service() {
     private val authenticator by lazy { DeftAuthenticator(this) }
 

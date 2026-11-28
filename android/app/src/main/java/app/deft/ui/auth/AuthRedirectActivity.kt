@@ -9,8 +9,11 @@ import app.deft.bridge.AuthSpec
 import app.deft.bridge.BridgePicks
 import app.deft.ui.host.WebViewHostActivity
 
+// DEVICE-UNCHECKED (auth session (Custom Tab + redirect)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an OAuth login against a test IdP completes.
+// Remove this note once checked.
 /**
- * Receives the sign-in redirect `<scheme>:/cb/<nonce>` (PARITY E3). It has no screen: it hands the
+ * Receives the sign-in redirect `<scheme>:/cb/<nonce>`. It has no screen: it hands the
  * full URL to the app that started the sign-in, brings that app back in front of the Custom Tab,
  * then finishes. An unknown, used or expired nonce
  * is dropped without a word. The URL carries the sign-in code, so it is never logged.

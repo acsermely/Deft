@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
 /**
- * PARITY G11: the launcher components that stand in for an Android role on behalf of one web app.
+ * The launcher components that stand in for an Android role on behalf of one web app.
  * Each is declared disabled in AndroidManifest.xml and enabled only while some app holds [cap]
  * (an exclusive special grant), so Deft is not offered as a browser and so on for nothing.
  * Keep [className] in sync with the manifest.
@@ -37,13 +37,13 @@ enum class RoleComponent(val className: String, val cap: Capability) {
     IME_SERVICE("app.deft.ime.DeftInputMethodService", Capability.IME),
 
     /**
-     * PARITY F7b: the call screening service. While it is disabled Android does not bind it (the
+     * The call screening service. While it is disabled Android does not bind it (the
      * default dialer screens nothing through the launcher) and takes the call screening role back.
      */
     CALL_SCREENING_SERVICE("app.deft.telephony.DeftCallScreeningService", Capability.CALLS_SCREEN),
 
     /**
-     * PARITY B4: the payment-category card emulation service. While it is disabled Android does not
+     * The payment-category card emulation service. While it is disabled Android does not
      * offer the launcher as a payment app, and disabling it while it is the default makes Android
      * pick another payment app (or none).
      */
@@ -55,7 +55,7 @@ enum class RoleComponent(val className: String, val cap: Capability) {
     }
 }
 
-/** Pure rules for the role powers (PARITY G11). No Android types; unit tested. */
+/** Pure rules for the role powers. No Android types; unit tested. */
 object RoleSpec {
     /** Longest web address passed on to the browser holder. */
     const val MAX_URL = 8 * 1024
@@ -77,7 +77,7 @@ object RoleSpec {
         return rest.startsWith("//") && rest.length > 2 && rest[2] != '/'
     }
 
-    /** PARITY G11 `device.admin`: the shortest time between two `admin.lockNow` calls. */
+    /** The shortest time between two `admin.lockNow` calls. */
     const val LOCK_MIN_INTERVAL_MS = 30_000L
 
     /**
@@ -111,7 +111,7 @@ object RoleSpec {
     )
 
     /**
-     * PARITY G11: Android makes an assistant's recognizer the phone's default speech recognizer, so
+     * Android makes an assistant's recognizer the phone's default speech recognizer, so
      * the launcher's one forwards to another installed recognizer. [candidates] are flattened
      * component names (`package/class`); the launcher's own are never picked. Preferred packages
      * first, then the first by name. Null when there is none.
@@ -124,7 +124,7 @@ object RoleSpec {
         return others.firstOrNull()
     }
 
-    /** `intents.viewReceived` for a link from the browser role (same event as "Open with", PARITY E1). */
+    /** `intents.viewReceived` for a link from the browser role (same event as "Open with"). */
     fun browserPayload(url: String): String = buildJsonObject {
         put("type", JsonPrimitive("url"))
         put("url", JsonPrimitive(url))

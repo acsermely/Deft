@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "freedom-launcher-web",
+      "name": "deft-web",
       "devDependencies": {
         "@cloudflare/workers-types": "^5.20260908.1",
         "@sveltejs/adapter-cloudflare": "^7.2.9",

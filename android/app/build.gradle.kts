@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // PARITY G10: account type and sync authority follow the applicationId (debug has its own).
+        // Account type and sync authority follow the applicationId (debug has its own).
         resValue("string", "fl_account_type", "app.deft.account")
         resValue("string", "fl_sync_authority", "app.deft.sync")
     }
@@ -73,13 +73,15 @@ dependencies {
     implementation("androidx.webkit:webkit:1.14.0")
     // W5: isolate handlers of agent tools (no bridge, no network, heap limit).
     implementation("androidx.javascriptengine:javascriptengine:1.1.1")
-    // PARITY E3: Custom Tab for sign-in pages.
+    // Custom Tab for sign-in pages.
     implementation("androidx.browser:browser:1.8.0")
-    // PARITY D2: `periodic:N` background triggers. 2.11+ pulls Room 2.7 and Kotlin 2.1 stdlib.
+    // Credential Manager for passkeys (Android 14+ framework path). Not credentials-play-services-auth (GMS).
+    implementation("androidx.credentials:credentials:1.5.0")
+    // `periodic:N` background triggers. 2.11+ pulls Room 2.7 and Kotlin 2.1 stdlib.
     implementation("androidx.work:work-runtime-ktx:2.10.5")
-    // PARITY D4: MediaSessionCompat and MediaStyle notifications. 1.8.0 would pull kotlin-stdlib 2.1.
+    // MediaSessionCompat and MediaStyle notifications. 1.8.0 would pull kotlin-stdlib 2.1.
     implementation("androidx.media:media:1.7.1")
-    // PARITY D6: UnifiedPush (push without Google). 3.x pulls Tink 1.17 (clashes with
+    // UnifiedPush (push without Google). 3.x pulls Tink 1.17 (clashes with
     // security-crypto's tink-android) and 3.1+ Kotlin 2.2+ stdlib; 2.5.0 depends on kotlin-stdlib only.
     implementation("org.unifiedpush.android:connector:2.5.0")
 

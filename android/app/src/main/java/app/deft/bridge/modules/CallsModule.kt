@@ -12,8 +12,11 @@ import app.deft.telephony.ScreeningSpec
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// DEVICE-UNCHECKED (telephony extras (call screening, blocked numbers, SIM choice, USSD)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a spam-blocker sample rejects a listed number; SIM choice and a safe USSD code work.
+// Remove this note once checked.
 /**
- * `calls.*` (PARITY F7b, SPECIAL exclusive `calls.screen`): the holder's answer to a
+ * `calls.*` (SPECIAL exclusive `calls.screen`): the holder's answer to a
  * `calls.screening` event. Opens no screen, so background runs may call it. Only the app the call
  * was sent to may answer it, once, within [ScreeningSpec.DEADLINE_MS]; a late or unknown answer
  * returns `{applied: false}` and changes nothing (the call has already rung as usual).

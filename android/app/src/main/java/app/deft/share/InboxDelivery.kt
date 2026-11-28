@@ -18,7 +18,7 @@ import kotlinx.serialization.json.buildJsonObject
 
 /**
  * Copies incoming `content://` streams into an app's [ShareInbox] and delivers the event.
- * Used by share-in ([ShareToActivity], PARITY H6) and "Open with" (HandlerPickerActivity, PARITY E1),
+ * Used by share-in ([ShareToActivity]) and "Open with" (HandlerPickerActivity),
  * so both keep the same rules: content URIs that pass [accepts] only, [ShareInbox.MAX_ITEMS] items,
  * [ShareInbox.MAX_ITEM_BYTES] each.
  */
@@ -32,7 +32,7 @@ object InboxDelivery {
             uris.take(ShareInbox.MAX_ITEMS).mapNotNull { uri ->
                 // Only streams the sender granted to us. A file:// URI or the launcher's own provider
                 // could name its private files, and contacts, SMS or media URIs would be read with
-                // the launcher's permissions (PARITY H6, [UriIntake]).
+                // the launcher's permissions ([UriIntake]).
                 if (!accepts(context, uri)) return@mapNotNull null
                 runCatching {
                     resolver.openInputStream(uri)?.use { input ->

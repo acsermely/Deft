@@ -66,6 +66,27 @@ class HomeCanvasStoreTest {
     }
 
     @Test
+    fun upgradesUntouchedStylesFromTheFixedClearance() {
+        val dir = tmp.newFolder("canvas")
+        val store = HomeCanvasStore(dir)
+        store.ensureSeeded()
+        val current = store.read("styles.css")
+        val previous = current
+            .replace("/* The launcher sets --chrome-clearance to the height of its dock, harness bar and bottom system bar. */\n", "")
+            .replace(
+                "28px var(--chrome-clearance);",
+                "28px calc(var(--chrome-clearance) + env(safe-area-inset-bottom, 0px));",
+            )
+        File(dir, "styles.css").writeText(previous)
+        HomeCanvasStore(dir).ensureSeeded()
+        assertEquals(current, File(dir, "styles.css").readText())
+        // An edited copy is left alone.
+        File(dir, "styles.css").writeText(previous + "/* mine */\n")
+        HomeCanvasStore(dir).ensureSeeded()
+        assertTrue(File(dir, "styles.css").readText().endsWith("/* mine */\n"))
+    }
+
+    @Test
     fun globAndGrep() {
         val store = HomeCanvasStore(tmp.newFolder("canvas"))
         store.ensureSeeded()

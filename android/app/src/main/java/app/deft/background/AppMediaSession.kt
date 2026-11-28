@@ -13,8 +13,11 @@ import app.deft.bridge.MediaSessionSpec
 import app.deft.bridge.MediaSessionSpec.Action
 import app.deft.bridge.MediaSessionSpec.State
 
+// DEVICE-UNCHECKED (media session): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a podcast sample keeps playing and is controllable from the lock screen and a headset.
+// Remove this note once checked.
 /**
- * PARITY D4: one app's `MediaSessionCompat`. It exists only while that app's foreground service of
+ * One app's `MediaSessionCompat`. It exists only while that app's foreground service of
  * type `mediaPlayback` runs (see [AppForegroundService.media]) and is active the whole time, so
  * the lock screen, headsets and Bluetooth reach it. Buttons the app handles become `media.action`
  * events through [onAction]. Main thread only.

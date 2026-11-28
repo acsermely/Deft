@@ -1,4 +1,4 @@
-// Step count and light level (PARITY F1). Results go to #log and console ("PD ...").
+// Step count and light level. Results go to #log and console ("PD ...").
 
 import '/_deft/v1/motion.js';
 const $ = (id) => document.getElementById(id);

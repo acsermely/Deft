@@ -7,6 +7,7 @@ import android.webkit.WebResourceResponse
 import androidx.webkit.WebViewAssetLoader
 import app.deft.registry.DeftDependency
 import app.deft.registry.DeftManifestParser
+import app.deft.workspace.AssetPacks
 import app.deft.workspace.DepStore
 import app.deft.workspace.MergedAppTree
 import app.deft.workspace.OverlayStore
@@ -18,11 +19,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 class LocalOriginPathHandler(
     private val dir: File,
-    /** What the CSP allows; built by [CspBuilder] (PARITY G1). */
+    /** What the CSP allows; built by [CspBuilder]. */
     private val policy: CspPolicy = CspPolicy(),
     private val overlay: File? = null,
-    /** Dependency store root (spec 10.10); null disables /_deft/deps/ and the import map. */
+    /** Dependency store root; null disables /_deft/deps/ and the import map. */
     private val depStore: File? = null,
+    /** This app's installed asset packs ([AssetPacks.root]); null disables /_deft/packs/. */
+    private val packsRoot: File? = null,
 ) : WebViewAssetLoader.PathHandler {
     private val tree = MergedAppTree(dir, overlay)
     private var deletedAt = Long.MIN_VALUE
@@ -43,12 +46,8 @@ class LocalOriginPathHandler(
                 rel = rel.trimEnd('/') + if (rel.isEmpty()) "index.html" else "/index.html"
             }
             if (rel.contains("..")) return notFound()
-            // Apps made before the Deft rename load /_fl/v1/ and use fl- names: serve the same runtime,
-            // with its names translated back (legacyNames).
-            val legacy = rel.startsWith("_fl/v1/")
-            if (legacy) rel = "_deft/v1/" + rel.removePrefix("_fl/v1/")
             if (rel == "_deft/v1/theme.css" || rel.startsWith("_deft/v1/theme.css?")) {
-                val css = themeCss().let { if (legacy) legacyNames(it) else it }
+                val css = themeCss()
                 return WebResourceResponse(
                     "text/css",
                     "utf-8",
@@ -58,15 +57,15 @@ class LocalOriginPathHandler(
                     ByteArrayInputStream(css),
                 )
             }
-            // PARITY D1: the host page of a background run; generated from the manifest `background`.
+            // The host page of a background run; generated from the manifest `background`.
             if (rel == BACKGROUND_PAGE || rel.startsWith("$BACKGROUND_PAGE?")) return backgroundPage()
-            // W5: the host page of an agent tool run; only the tool runner loads it.
+            // The host page of an agent tool run; only the tool runner loads it.
             if (rel == TOOL_PAGE || rel.startsWith("$TOOL_PAGE?")) return toolPage()
             if (rel.startsWith("_deft/v1/")) {
                 val name = rel.removePrefix("_deft/v1/").substringBefore('?')
                 val flat = name.isNotEmpty() && !name.contains("..") && !name.contains('/')
                 if (flat || FONT_FILE.matches(name)) {
-                    val bytes = runtimeAsset(name)?.let { if (legacy) legacyNames(it, name) else it }
+                    val bytes = runtimeAsset(name)
                     if (bytes != null) {
                         val mime = guessMime(name)
                         return WebResourceResponse(
@@ -82,10 +81,9 @@ class LocalOriginPathHandler(
                 return notFound()
             }
             if (rel.startsWith("_deft/deps/")) return serveDep(rel.removePrefix("_deft/deps/").substringBefore('?'))
-            // Apps made before the rename import dependencies from /_fl/deps/: the same store, unchanged.
-            if (rel.startsWith("_fl/deps/")) return serveDep(rel.removePrefix("_fl/deps/").substringBefore('?'))
-            // Reserved: only /_fl/v1/ and /_fl/deps/ are served (above); other /_fl/ paths never reach app files.
-            if (rel.startsWith("_deft/") || rel.startsWith("_fl/")) return notFound()
+            if (rel.startsWith("_deft/packs/")) return servePack(rel.removePrefix("_deft/packs/").substringBefore('?'))
+            // Reserved: only /_deft/v1/ and /_deft/deps/ are served (above); other /_deft/ paths never reach app files.
+            if (rel.startsWith("_deft/")) return notFound()
             val file = tree.resolve(rel, deletedNow()) ?: return notFound()
             if (file.length() > MAX_BYTES) return notFound()
             val mime = guessMime(file.name)
@@ -124,7 +122,7 @@ class LocalOriginPathHandler(
     }
 
     /**
-     * PARITY D1: `<script type="module" src="<module>">` and nothing else, so the page runs under
+     * `<script type="module" src="<module>">` and nothing else, so the page runs under
      * the app's normal CSP without an inline script. 404 when the manifest declares no module.
      */
     private fun backgroundPage(): WebResourceResponse {
@@ -155,15 +153,17 @@ class LocalOriginPathHandler(
     /** `<host>/<path>` of a declared CDN URL, resolved only through this app's own manifest. */
     private fun serveDep(rest: String): WebResourceResponse {
         val store = depStore ?: return notFound()
-        if (rest.split('/').any { it.isEmpty() || it.startsWith(".") }) return notFound()
-        val file = DepStore.lookup(store, dependencies(), rest) ?: return notFound()
-        val name = rest.substringAfterLast('/')
-        val mime = when {
-            name.endsWith(".json") -> "application/json"
-            name.endsWith(".wasm") -> "application/wasm"
-            else -> "text/javascript"
-        }
-        return WebResourceResponse(mime, "utf-8", 200, "OK", headers(mime), file.inputStream())
+        // A pinned `.wasm` dependency only for an app whose CSP allows WebAssembly (wasm declared and granted).
+        val served = DepStore.serve(store, dependencies(), rest, wasmAllowed = CspFlag.WASM in policy.flags) ?: return notFound()
+        return WebResourceResponse(served.mime, "utf-8", 200, "OK", headers(served.mime), served.file.inputStream())
+    }
+
+    /** `<name>/<path>` of an installed asset pack the served manifest declares. */
+    private fun servePack(rest: String): WebResourceResponse {
+        val root = packsRoot ?: return notFound()
+        val file = AssetPacks.serve(root, AssetPacks.packsIn(tree.manifestFile()), rest) ?: return notFound()
+        val mime = guessMime(file.name)
+        return WebResourceResponse(mime, null, 200, "OK", headers(mime), file.inputStream())
     }
 
     /** Inserts the host import map first in <head> and allows exactly that inline script by hash. */
@@ -229,28 +229,12 @@ class LocalOriginPathHandler(
         )
 
     companion object {
-        private val LEGACY_TEXT = Regex("\\.(css|js|mjs|json|html|svg)$")
-        private val LEGACY_LAYER = Regex("\\bdeft\\.(reset|base|layout|components|utilities|theme)\\b")
-        private val LEGACY_DATASET = Regex("\\bdataset\\.deft(?=[A-Z])")
-
-        /** The runtime as it was named before the Deft rename: deft- → fl-, /_deft/ → /_fl/, deft.* layers → fl.*, dataset.deftX → dataset.flX (it reads data-fl-x). */
-        fun legacyNames(text: String): String = text
-            .replace("/_deft/", "/_fl/")
-            .replace(Regex("(?<![A-Za-z0-9_])deft-(?=[a-z0-9])"), "fl-")
-            .replace(LEGACY_LAYER) { "fl." + it.groupValues[1] }
-            .replace(LEGACY_DATASET, "dataset.fl")
-
-        internal fun legacyNames(bytes: ByteArray, name: String): ByteArray =
-            if (LEGACY_TEXT.containsMatchIn(name)) legacyNames(String(bytes, Charsets.UTF_8)).toByteArray(Charsets.UTF_8) else bytes
-
-        internal fun legacyNames(css: ByteArray): ByteArray = legacyNames(css, "theme.css")
-
         private const val MAX_BYTES = 32L * 1024 * 1024
 
-        /** PARITY D1: path (without the leading slash) of the background host page. */
+        /** Path (without the leading slash) of the background host page. */
         const val BACKGROUND_PAGE = "_deft/v1/background.html"
 
-        /** W5: the page an agent tool run loads (see [toolHtml]). */
+        /** The page an agent tool run loads (see [toolHtml]). */
         const val TOOL_PAGE = "_deft/v1/tool.html"
 
         fun toolHtml(): String =
@@ -268,14 +252,15 @@ class LocalOriginPathHandler(
             policy: CspPolicy = CspPolicy(),
             overlay: File? = null,
             depStore: File? = null,
+            packsRoot: File? = null,
         ): WebViewAssetLoader =
             WebViewAssetLoader.Builder()
                 .setDomain(host)
                 .setHttpAllowed(false)
-                .addPathHandler("/", LocalOriginPathHandler(dir, policy, overlay, depStore))
+                .addPathHandler("/", LocalOriginPathHandler(dir, policy, overlay, depStore, packsRoot))
                 .build()
 
-        private val ELEMENTS_REF = Regex("/_(?:deft|fl)/v1/elements\\.js|deft-runtime/v1/elements\\.js|/_(?:deft|fl)/v1/motion\\.js")
+        private val ELEMENTS_REF = Regex("/_deft/v1/elements\\.js|deft-runtime/v1/elements\\.js|/_deft/v1/motion\\.js")
         private const val ELEMENTS_TAG = "<script type=\"module\" src=\"/_deft/v1/elements.js\"></script>"
 
         /**
@@ -295,8 +280,8 @@ class LocalOriginPathHandler(
 
         private val HEAD_TAG = Regex("<head\\b[^>]*>", RegexOption.IGNORE_CASE)
 
-        private val BASE_CSS = Regex("/_(?:deft|fl)/v1/base\\.css|deft-runtime/v1/base\\.css")
-        private val FONT_PRELOAD_MARK = Regex("rel=\"preload\"[^>]*/_(?:deft|fl)/v1/fonts/")
+        private val BASE_CSS = Regex("/_deft/v1/base\\.css|deft-runtime/v1/base\\.css")
+        private val FONT_PRELOAD_MARK = Regex("rel=\"preload\"[^>]*/_deft/v1/fonts/")
         private val FONT_FILE = Regex("fonts/[a-z0-9-]+\\.woff2")
         private val HTML_TAG = Regex("<html\\b[^>]*>", RegexOption.IGNORE_CASE)
 

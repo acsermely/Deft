@@ -20,8 +20,8 @@ else
   exit 1
 fi
 
-BUCKET="freedom-launcher-apk"
-KEY="freedom-launcher.apk"
+BUCKET="deft-apk"
+KEY="deft.apk"
 
 cd "$ROOT/web"
 
@@ -31,4 +31,4 @@ bunx wrangler r2 bucket create "$BUCKET" 2>/dev/null || true
 echo "Uploading $(basename "$FILE") → r2://$BUCKET/$KEY"
 bunx wrangler r2 object put "$BUCKET/$KEY" --file "$FILE" --remote
 
-echo "Done. The landing page serves it at /freedom-launcher.apk"
+echo "Done. The landing page serves it at /deft.apk"

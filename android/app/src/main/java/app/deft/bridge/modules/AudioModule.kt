@@ -16,7 +16,10 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
-/** `audio.*` (PARITY F5a): volumes, ringer mode and output routing, only while the app is on screen. */
+// DEVICE-UNCHECKED (audio control and Do Not Disturb): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an alarm sample raises the alarm volume; DND read/set works after policy access.
+// Remove this note once checked.
+/** `audio.*`: volumes, ringer mode and output routing, only while the app is on screen. */
 class AudioModule(private val context: Context) : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         HostSurfaces.forRequest(request)

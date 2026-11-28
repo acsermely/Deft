@@ -126,7 +126,7 @@ document.getElementById('expand').addEventListener('click', () => morph(() => {
 <div class="deft-card" id="expanded" data-deft-morph="hero" hidden>...</div>
 ```
 
-Only elements with `data-deft-morph` move; everything else cross-fades. Under reduced motion only the root cross-fade remains. Browsers without View Transitions just run the change.
+Only elements with `data-deft-morph` move; everything else cross-fades, except `.deft-tabbar`, which stays still (one tab bar per page). Under reduced motion only the root cross-fade remains. Browsers without View Transitions just run the change.
 
 ## Toasts: `deft.toast`
 

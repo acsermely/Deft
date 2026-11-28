@@ -25,8 +25,11 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.ByteArrayOutputStream
 
+// DEVICE-UNCHECKED (app list, launch, usage stats and per-app device id): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a screen-time sample shows per-app usage.
+// Remove this note once checked.
 /**
- * `apps.*` (PARITY G7, SPECIAL `apps.list`): the launchable apps on this phone (`apps.list`), an
+ * `apps.*` (SPECIAL `apps.list`): the launchable apps on this phone (`apps.list`), an
  * app's icon as base64 PNG (`apps.icon`), and opening another app (`apps.launch`, which refuses
  * the launcher itself). All of them need the app on screen.
  */

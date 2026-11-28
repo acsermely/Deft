@@ -3,7 +3,7 @@ package app.deft.bridge
 import android.hardware.Sensor
 import kotlin.math.roundToInt
 
-/** PARITY F1: the sensor types `sensors.*` accepts and how fast they may report. */
+/** The sensor types `sensors.*` accepts and how fast they may report. */
 object SensorSpec {
     const val MAX_SUBSCRIPTIONS = 4
     const val DEFAULT_RATE_HZ = 5

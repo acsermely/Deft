@@ -25,9 +25,9 @@ class CanvasWidgetsTest {
     }
 
     @Test
-    fun readsWidgetsOfAHomePageMadeBeforeTheRename() {
+    fun ignoresTheOldFlWidgetTag() {
         val html = """<div class="fl-widgets"><fl-widget app="myapp:steps" size="1x1"></fl-widget></div>"""
-        assertEquals(listOf(WidgetPlacement("myapp:steps", "1x1")), CanvasWidgets.placements(html))
+        assertEquals(emptyList<WidgetPlacement>(), CanvasWidgets.placements(html))
     }
 
     @Test
@@ -137,8 +137,8 @@ class CanvasWidgetsTest {
     fun reloadJsListsOriginsAndFramesAnswerThemeAndReload() {
         val js = CanvasWidgets.reloadFramesJs(listOf("https://a.app.deft.internal"))
         assertTrue(js.contains("[\"https://a.app.deft.internal\"]"))
-        assertTrue(js.contains("deft:reload") && js.contains("fl:reload"))
-        assertTrue(CanvasWidgets.THEME_FRAMES_JS.contains("deft:theme") && CanvasWidgets.THEME_FRAMES_JS.contains("fl:theme"))
+        assertTrue(js.contains("deft:reload") && !js.contains("fl:reload"))
+        assertTrue(CanvasWidgets.THEME_FRAMES_JS.contains("deft:theme") && !CanvasWidgets.THEME_FRAMES_JS.contains("fl:theme"))
         val frame = WidgetRouting.frameScript("/*c*/", "https://canvas.app.deft.internal", "n")
         assertTrue(frame.contains("m==='deft:theme'") && frame.contains("location.reload()") && frame.contains("e.source!==parent"))
     }

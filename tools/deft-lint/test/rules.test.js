@@ -368,19 +368,19 @@ test("FL003 flags paths that contain .. or _deft/", () => {
   expect(hits.every((d) => d.severity === "error")).toBe(true);
 });
 
-test("FL003 also reserves the pre-rename _fl/ paths, but /_fl/v1/ runtime refs still load", () => {
+test("FL003 reserves only _deft/: _fl/ is an ordinary folder", () => {
   const diags = lint({
-    "ok.js": "import '/_fl/v1/dom.js';\nimport x from './_fl/x.js';\n",
-    "_fl/hack.js": "export const n = 1;\n",
+    "ok.js": "import x from './_fl/x.js';\n",
+    "_fl/x.js": "export const n = 1;\n",
   });
-  expect(ofId(diags, "FL003").map((d) => `${d.path}:${d.line}`)).toEqual(["_fl/hack.js:1", "ok.js:2"]);
+  expect(ofId(diags, "FL003")).toHaveLength(0);
   const bg = lint({ "manifest.json": bgManifest({ module: "/_fl/bg.js", triggers: ["sms"] }) });
-  expect(ofId(bg, "FL713").length).toBe(1);
+  expect(ofId(bg, "FL713")).toHaveLength(0);
 });
 
-test("FL701 accepts the pre-rename fl key", () => {
+test("FL701 wants the deft key; the old fl key does not count", () => {
   const diags = lint({ "manifest.json": JSON.stringify({ fl: 1, id: "notes", name: "Notes", start_url: "./index.html" }) });
-  expect(ofId(diags, "FL701")).toHaveLength(0);
+  expect(ofId(diags, "FL701").some((d) => d.message.includes("deft"))).toBe(true);
 });
 
 test("FL003 allows relative files that stay inside the app", () => {
@@ -1150,7 +1150,7 @@ test("FL722 flags code files in a theme package", () => {
   });
 });
 
-// PARITY G2: WebAssembly needs the wasm capability; a .wasm file must be in the package or a hash-pinned dependency.
+// WebAssembly needs the wasm capability; a .wasm file must be in the package or a hash-pinned dependency.
 const wasmManifest = (caps, deps = {}) =>
   JSON.stringify({
     deft: 1, id: "wasm-app", name: "Wasm", version: "1.0.0", start_url: "./index.html",
@@ -1200,7 +1200,82 @@ test("FL202 and FL710 check a .wasm dependency: declared and hash-pinned", () =>
   expect(ofId(ok, "FL710")).toEqual([]);
 });
 
-// PARITY G14: manifest embeds for web.embed; FL205 accepts approved-list origins only with the capability.
+test("FL710 accepts a pinned .wasm dependency loaded from /_deft/deps and rejects an unpinned remote one", () => {
+  const url = "https://cdn.example.com/add@1.0.0/add.wasm";
+  const served = "/_deft/deps/cdn.example.com/add@1.0.0/add.wasm";
+  const network = (deps) => JSON.stringify({
+    deft: 1, id: "wasm-app", name: "Wasm", version: "1.0.0", start_url: "./index.html",
+    capabilities: WASM_CAP, dependencies: deps, network: ["https://cdn.example.com"],
+  });
+  const ok = lint({
+    "manifest.json": wasmManifest(WASM_CAP, { [url]: WASM_SRI }),
+    "main.js": `const r = await fetch("${served}");\nawait WebAssembly.instantiate(await r.arrayBuffer());\n`,
+  });
+  expect(ofId(ok, "FL710")).toEqual([]);
+  expect(ofId(ok, "FL202")).toEqual([]);
+
+  // A remote .wasm in code is not pinned, even when its origin is in manifest.network.
+  const remote = lint({
+    "manifest.json": network({}),
+    "main.js": `WebAssembly.instantiateStreaming(fetch("https://cdn.example.com/other.wasm?v=2"));\n`,
+  });
+  expect(ofId(remote, "FL710")[0]).toMatchObject({
+    severity: "error", path: "main.js", line: 1,
+    message: "WebAssembly from https://cdn.example.com/other.wasm must be a hash-pinned dependency in manifest.json",
+  });
+
+  // The pinned URL itself in code: the page must load the served copy.
+  const direct = lint({
+    "manifest.json": wasmManifest(WASM_CAP, { [url]: WASM_SRI }),
+    "main.js": `WebAssembly.instantiateStreaming(fetch("${url}"));\n`,
+  });
+  expect(ofId(direct, "FL710")[0]).toMatchObject({ severity: "warn", message: `load the pinned WebAssembly dependency from ${served}, not from ${url}` });
+
+  // An unpinned dependency stays an error in the manifest, and its URL in code too.
+  const unpinned = lint({
+    "manifest.json": wasmManifest(WASM_CAP, { [url]: null }),
+    "main.js": `fetch("${url}");\n`,
+  });
+  expect(ofId(unpinned, "FL710").map((d) => d.path).sort()).toEqual(["main.js", "manifest.json"]);
+  expect(ofId(unpinned, "FL710").every((d) => d.severity === "error")).toBe(true);
+});
+
+// Manifest assetPacks; packs count against the package cap.
+const packManifest = (packs, caps = []) =>
+  JSON.stringify({ deft: 1, id: "maps", name: "Maps", version: "1.0.0", start_url: "./index.html", capabilities: caps, assetPacks: packs });
+const PACK = { name: "europe", url: "https://cdn.example.com/maps@1.0.0/europe.zip", sha256: "a".repeat(64), size: 1000 };
+
+test("FL723 accepts a valid asset pack and rejects bad fields", () => {
+  expect(ofId(lint({ "manifest.json": packManifest([PACK]) }), "FL723")).toEqual([]);
+  const bad = lint({
+    "manifest.json": packManifest([
+      { ...PACK, name: "Europe" },
+      { ...PACK, name: "b", url: "https://cdn.example.com/b.tar" },
+      { ...PACK, name: "c", sha256: "A".repeat(64) },
+      { ...PACK, name: "d", size: 0 },
+      { ...PACK, name: "d" },
+    ]),
+  });
+  expect(ofId(bad, "FL723").map((d) => d.message)).toEqual([
+    "asset pack name must be 1-32 chars [a-z0-9-]",
+    "asset pack b url must be an https .zip URL without query or fragment",
+    "asset pack c sha256 must be 64 lowercase hex characters",
+    "asset pack d size must be 1 to 2147483648 bytes",
+    "asset pack d is listed twice",
+  ]);
+  expect(ofId(lint({ "manifest.json": packManifest({}) }), "FL723")[0].message).toBe("assetPacks must be an array of {name, url, sha256, size}");
+});
+
+test("FL723 counts packs against the package cap and points at storage.large", () => {
+  const big = { ...PACK, size: 200 * 1024 * 1024 };
+  const over = lint({ "manifest.json": packManifest([big]) }, { limits: { packageBytes: 25 * 1024 * 1024 } });
+  expect(ofId(over, "FL723")[0].message).toMatch(/over the 26214400 byte cap; declare storage.large for more$/);
+  const large = [{ id: "storage.large", reason: "Keep offline maps for the whole region" }];
+  const granted = lint({ "manifest.json": packManifest([big], large) }, { limits: { packageBytes: 1024 * 1024 * 1024 } });
+  expect(ofId(granted, "FL723")).toEqual([]);
+});
+
+// Manifest embeds for web.embed; FL205 accepts approved-list origins only with the capability.
 const embedManifest = (embeds, caps = [{ id: "web.embed", reason: "Show the Stripe card form for checkout" }], extra = {}) =>
   JSON.stringify({
     deft: 1, id: "pay", name: "Pay", version: "1.0.0", start_url: "./index.html",
@@ -1283,7 +1358,7 @@ test("FL205 is skipped when the app declares network.open", () => {
   expect(ofId(closed, "FL205")).toHaveLength(1);
 });
 
-// PARITY D1: manifest background {module, triggers}; needs the background capability.
+// Manifest background {module, triggers}; needs the background capability.
 const bgManifest = (background, caps = [{ id: "background", reason: "Reply to messages while the app is closed" }], extra = {}) =>
   JSON.stringify({
     deft: 1, id: "bg", name: "Bg", version: "1.0.0", start_url: "./index.html",
@@ -1323,7 +1398,7 @@ test("FL713 requires the background capability; canvas forbids background", () =
   expect(ofId(canvas, "FL706").some((d) => d.message.includes("background"))).toBe(true);
 });
 
-// PARITY E1: manifest handles {mimeTypes?, schemes?, links?}; mimeTypes need share.receive.
+// Manifest handles {mimeTypes?, schemes?, links?}; mimeTypes need share.receive.
 const handlesManifest = (handles, caps = [{ id: "share.receive", reason: "Open pictures other apps send here" }], extra = {}) =>
   JSON.stringify({
     deft: 1, id: "hh", name: "Hh", version: "1.0.0", start_url: "./index.html",
@@ -1335,8 +1410,8 @@ test("FL714 accepts valid handles and FL705 knows the field", () => {
   expect(ofId(diags, "FL714")).toHaveLength(0);
   expect(ofId(diags, "FL705")).toHaveLength(0);
   expect(ofId(lint({ "manifest.json": handlesManifest({ schemes: ["web+deft"] }, []) }), "FL714")).toHaveLength(0);
-  // The pre-rename scheme still reaches the app.
-  expect(ofId(lint({ "manifest.json": handlesManifest({ schemes: ["web+fl"] }, []) }), "FL714")).toHaveLength(0);
+  // The old web+fl scheme no longer reaches the app.
+  expect(ofId(lint({ "manifest.json": handlesManifest({ schemes: ["web+fl"] }, []) }), "FL714").map((d) => d.severity)).toEqual(["warn"]);
 });
 
 test("FL714 rejects bad entries and more than 16", () => {
@@ -1362,7 +1437,7 @@ test("FL714 requires share.receive for mimeTypes and warns about inert schemes a
   expect(ofId(canvas, "FL706").some((d) => d.message === "canvas profile cannot declare handles")).toBe(true);
 });
 
-// PARITY G11: manifest wallpaper {page}; needs the wallpaper capability.
+// Manifest wallpaper {page}; needs the wallpaper capability.
 const wpManifest = (wallpaper, caps = [{ id: "wallpaper", reason: "Draw a clock as your home screen wallpaper" }], extra = {}) =>
   JSON.stringify({
     deft: 1, id: "wp", name: "Wp", version: "1.0.0", start_url: "./index.html",
@@ -1406,7 +1481,7 @@ test("FL303 treats the manifest wallpaper page as an entry point", () => {
   expect(ofId(lint(files), "FL303").map((d) => d.path)).toEqual(["stray.js"]);
 });
 
-// PARITY G11: manifest keyboard {page}; needs the ime capability.
+// Manifest keyboard {page}; needs the ime capability.
 const kbManifest = (keyboard, caps = [{ id: "ime", reason: "Type with a simple keyboard in any app" }], extra = {}) =>
   JSON.stringify({
     deft: 1, id: "kb", name: "Kb", version: "1.0.0", start_url: "./index.html",
@@ -1844,4 +1919,37 @@ test("FL637 warns on a canvas page with deft-widget that never loads elements.js
   const page = (head) => ({ "index.html": `<!doctype html><html lang="en"><head>${head}</head><body><deft-widget app="myapp:a" size="2x1"></deft-widget></body></html>` });
   expect(ofId(lint(page(""), { profile: "canvas" }), "FL637")).toHaveLength(1);
   expect(ofId(lint(page('<script type="module" src="/_deft/v1/elements.js"></script>'), { profile: "canvas" }), "FL637")).toHaveLength(0);
+});
+
+// Manifest passkeys {rpIds} for the webauthn bridge.
+const passkeysManifest = (passkeys, caps = [{ id: "webauthn", reason: "Sign in to your account with a passkey" }], extra = {}) =>
+  JSON.stringify({
+    deft: 1, id: "pk", name: "Pk", version: "1.0.0", start_url: "./index.html",
+    capabilities: caps, network: [], ...(passkeys === undefined ? {} : { passkeys }), ...extra,
+  });
+
+test("FL719 accepts valid passkeys and FL705 knows the field", () => {
+  const diags = lint({ "manifest.json": passkeysManifest({ rpIds: ["example.com", "login.example.co.uk"] }) });
+  expect(ofId(diags, "FL719")).toHaveLength(0);
+  expect(ofId(diags, "FL705")).toHaveLength(0);
+});
+
+test("FL719 rejects bad rpIds, more than 4, and a missing pair", () => {
+  const bad = [
+    { rpIds: ["Example.com"] }, { rpIds: ["localhost"] }, { rpIds: ["10.0.0.1"] }, { rpIds: ["example"] },
+    { rpIds: ["abc.app.deft.internal"] }, { rpIds: ["printer.local"] }, { rpIds: ["foo.test"] }, { rpIds: ["a.localhost"] },
+    { rpIds: ["https://example.com"] }, { rpIds: ["-x.com"] }, { rpIds: [3] }, { rpIds: [] }, { rpIds: "example.com" }, [],
+    { rpIds: ["a.com", "b.com", "c.com", "d.com", "e.com"] },
+  ];
+  for (const passkeys of bad) {
+    expect(ofId(lint({ "manifest.json": passkeysManifest(passkeys) }), "FL719").length).toBeGreaterThan(0);
+  }
+  // passkeys without the capability, and the capability without passkeys.
+  expect(ofId(lint({ "manifest.json": passkeysManifest({ rpIds: ["example.com"] }, []) }), "FL719")).toHaveLength(1);
+  expect(ofId(lint({ "manifest.json": passkeysManifest(undefined) }), "FL719")).toHaveLength(1);
+});
+
+test("FL706 canvas cannot declare passkeys", () => {
+  const diags = lint({ "manifest.json": passkeysManifest({ rpIds: ["example.com"] }, [], { profile: "canvas" }) });
+  expect(ofId(diags, "FL706").length).toBeGreaterThan(0);
 });

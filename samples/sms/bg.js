@@ -1,4 +1,4 @@
-// Background module (PARITY D2). Runs in a hidden page when a text arrives, even with the app
+// Background module . Runs in a hidden page when a text arrives, even with the app
 // closed: posts "New message from <sender>" that opens the app at the thread. It never sends
 // anything; sending always needs the app on screen.
 function digits(s) { return String(s || '').replace(/\D/g, ''); }

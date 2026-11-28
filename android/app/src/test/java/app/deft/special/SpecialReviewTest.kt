@@ -85,9 +85,7 @@ class SpecialReviewTest {
             "location.background" to null,
             "nfc.hce.payment" to "hce-payment",
         )
-        // PARITY G7: apps.list and usage.read have modules now; PARITY G12: so does clipboard.watch.
-        // PARITY G5: location.background too; PARITY G10: accounts.read; PARITY G8: notifications.listen;
-        // PARITY G9: accessibility; PARITY B4: nfc.hce.payment. All of them have modules now.
+        // Every capability in this list has a module.
         val live = setOf(
             "apps.list", "usage.read", "clipboard.watch", "location.background", "accounts.read", "notifications.listen",
             "accessibility", "nfc.hce.payment",
@@ -104,7 +102,7 @@ class SpecialReviewTest {
 
     @Test
     fun imeWarningSaysTheAppSeesWhatYouType() {
-        // PARITY G11: plain words: everything typed, the password exception, and the app being typed in.
+        // Plain words: everything typed, the password exception, and the app being typed in.
         val warning = Capability.IME.warning
         assertTrue("sees everything you type" in warning)
         assertTrue("Password fields are the exception" in warning)
@@ -113,7 +111,7 @@ class SpecialReviewTest {
 
     @Test
     fun paymentWarningSaysTappingMayPay() {
-        // PARITY B4: plain words: a card at payment terminals, tapping may pay, one app, how to undo it.
+        // Plain words: a card at payment terminals, tapping may pay, one app, how to undo it.
         val cap = Capability.NFC_HCE_PAYMENT
         assertTrue("act as a contactless card at payment terminals" in cap.warning)
         assertTrue("tapping your phone may pay with it" in cap.warning)
@@ -125,14 +123,13 @@ class SpecialReviewTest {
 
     @Test
     fun rolesAreExclusiveSpecialCapabilities() {
-        // PARITY G11: one holder per role, refused (not replaced) while another app has it.
+        // One holder per role, refused (not replaced) while another app has it.
         val expected = mapOf(
             "role.browser" to "role-browser",
             "role.assistant" to "role-assistant",
             "device.admin" to "device-admin",
             "wallpaper" to "role-wallpaper",
             "ime" to "role-ime",
-            // PARITY F7b
             "calls.screen" to "role-call-screening",
         )
         for ((id, group) in expected) {
@@ -151,7 +148,7 @@ class SpecialReviewTest {
 
     @Test
     fun callScreeningWarningSaysWhatTheAppCanDo() {
-        // PARITY F7b: plain words: who calls, silent rejection, the number rule, the 4 seconds, emergency calls.
+        // Plain words: who calls, silent rejection, the number rule, the 4 seconds, emergency calls.
         val warning = Capability.CALLS_SCREEN.warning
         assertTrue("sees who calls you" in warning)
         assertTrue("silently reject calls" in warning)

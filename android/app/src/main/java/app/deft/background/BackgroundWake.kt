@@ -8,8 +8,11 @@ import app.deft.catalog.isGranted
 import app.deft.data.AppRepository
 import app.deft.data.InstalledWebApp
 
+// DEVICE-UNCHECKED (background triggers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an SMS auto-reply sample works with the app closed; boot, periodic and charging triggers fire.
+// Remove this note once checked.
 /**
- * PARITY D2: finds the apps a trigger wakes and hands it to [BackgroundRunner.trigger]. Apps
+ * Finds the apps a trigger wakes and hands it to [BackgroundRunner.trigger]. Apps
  * that do not declare the trigger or lack the `background` grant are skipped here, so a system
  * event does not write an audit row for every installed app; the runner checks again anyway.
  */

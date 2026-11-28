@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 /**
- * PARITY G11: the launcher's own small keyboard, used where the web keyboard must not or cannot
+ * The launcher's own small keyboard, used where the web keyboard must not or cannot
  * be: password fields (the holder app sees nothing typed there), while the page loads, and when no
  * app holds `ime` or its page failed. Letters, digits and common symbols, Enter, backspace, space
  * and a key to switch to another keyboard. What is typed goes straight to the field; nothing is

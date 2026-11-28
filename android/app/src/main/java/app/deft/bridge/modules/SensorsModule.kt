@@ -31,7 +31,10 @@ import kotlinx.serialization.json.buildJsonObject
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-/** `sensors.*` (PARITY F1): motion and environment sensors, only while the app is on screen. */
+// DEVICE-UNCHECKED (sensors): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a pedometer sample counts steps.
+// Remove this note once checked.
+/** `sensors.*`: motion and environment sensors, only while the app is on screen. */
 class SensorsModule(private val context: Context) : BridgeModule {
     private class Subscription(
         val id: String,
@@ -188,7 +191,7 @@ class SensorsModule(private val context: Context) : BridgeModule {
         private val subscriptions = ConcurrentHashMap<String, Subscription>()
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-        /** PARITY F1: leaving the app's screen stops its sensors. Called from the host activity's onStop. */
+        /** Leaving the app's screen stops its sensors. Called from the host activity's onStop. */
         fun stopFor(webAppId: String) {
             synchronized(subscriptions) {
                 val mine = subscriptions.values.filter { it.webAppId == webAppId }

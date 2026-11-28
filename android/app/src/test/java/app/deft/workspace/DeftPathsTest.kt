@@ -28,10 +28,8 @@ class DeftPathsTest {
     }
 
     @Test
-    fun rejectsLegacyRuntimeDir() {
-        val err = runCatching { DeftPaths.parse("_fl/v1/core.js") }.exceptionOrNull()
-        assertTrue(err is IllegalArgumentException)
-        assertTrue(runCatching { DeftPaths.parse("a/_FL/x.js") }.exceptionOrNull() is IllegalArgumentException)
+    fun oldRuntimeDirIsAnOrdinaryFolder() {
+        assertTrue(runCatching { DeftPaths.parse("_fl/v1/core.js") }.isSuccess)
     }
 
     @Test
@@ -44,7 +42,7 @@ class DeftPathsTest {
 
     @Test
     fun wasmIsABinaryWithTheBinaryCap() {
-        // PARITY G2: a .wasm file is a binary asset and counts against the binary size cap.
+        // A .wasm file is a binary asset and counts against the binary size cap.
         DeftPaths.active = DeftPaths.defaultLimits()
         val wasm = DeftPaths.parse("lib/add.wasm")
         assertTrue(wasm.isBinary)
@@ -94,7 +92,7 @@ class DeftPathsTest {
 
     @Test
     fun largeCapsAreFreeSpaceBoundedAndNeverBelowNormal() {
-        // PARITY G3: min(free - 1 GiB, 2 GiB) for the package, 200 MiB per binary.
+        // min(free - 1 GiB, 2 GiB) for the package, 200 MiB per binary.
         val gib = 1024L * 1024 * 1024
         DeftPaths.active = DeftPaths.defaultLimits()
         assertEquals(2 * gib, DeftPaths.largeCaps(freeBytes = 10 * gib).packageBytes)

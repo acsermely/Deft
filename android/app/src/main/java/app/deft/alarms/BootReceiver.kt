@@ -22,7 +22,7 @@ class BootReceiver : BroadcastReceiver() {
                 val repo = DeftApp.instance.repository
                 val now = System.currentTimeMillis()
                 val appContext = context.applicationContext
-                // PARITY G0: alarms do not survive a reboot; re-arm the daily special-access review.
+                // Alarms do not survive a reboot; re-arm the daily special-access review.
                 // The process start that delivered this broadcast has already run today's check.
                 step("special review") { app.deft.special.SpecialReviewRunner.ensureScheduled(appContext) }
                 // One failing alarm (or a refused service start) does not cost the others or the steps below.
@@ -36,9 +36,9 @@ class BootReceiver : BroadcastReceiver() {
                         }
                     }
                 }
-                // PARITY G5: Android forgets proximity alerts on reboot; register the geofences again.
+                // Android forgets proximity alerts on reboot; register the geofences again.
                 step("geofences") { app.deft.location.BackgroundLocation.restoreGeofences(appContext, repo) }
-                // PARITY D2: `boot` trigger. BOOT_COMPLETED is exempt from Android 12+ background
+                // `boot` trigger. BOOT_COMPLETED is exempt from Android 12+ background
                 // start limits, so the service may be started from here.
                 step("boot trigger") {
                     app.deft.background.BackgroundWake.wake(

@@ -22,8 +22,11 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 
+// DEVICE-UNCHECKED (telephony extras (call screening, blocked numbers, SIM choice, USSD)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a spam-blocker sample rejects a listed number; SIM choice and a safe USSD code work.
+// Remove this note once checked.
 /**
- * PARITY F7b: the launcher's call screening service, for the one web app holding `calls.screen`.
+ * The launcher's call screening service, for the one web app holding `calls.screen`.
  * Declared disabled; `RoleComponents` enables it only while a holder exists. As the default dialer
  * the launcher gets every incoming call here; otherwise it needs Android's call screening role,
  * which the special-access sheet asks for.

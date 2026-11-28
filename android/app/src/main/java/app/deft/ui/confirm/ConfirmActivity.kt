@@ -39,7 +39,7 @@ class ConfirmActivity : FragmentActivity() {
         val message = intent.getStringExtra(EXTRA_MESSAGE).orEmpty()
         // The window title names the requesting app, never just "Deft".
         intent.getStringExtra(EXTRA_APP_NAME)?.takeIf { it.isNotBlank() }?.let { setTitle(it) }
-        // PARITY G0: special access must be confirmed with the screen lock; no plain Allow button.
+        // Special access must be confirmed with the screen lock; no plain Allow button.
         val requireAuth = intent.getBooleanExtra(EXTRA_REQUIRE_AUTH, false)
         val useBiometric = requireAuth || intent.getBooleanExtra(EXTRA_USE_BIOMETRIC, false)
         val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or

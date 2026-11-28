@@ -4,18 +4,18 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- PARITY F8: a multicast lock keeps mDNS (service discovery) answers arriving on Wi-Fi. -->
+    <!-- A multicast lock keeps mDNS (service discovery) answers arriving on Wi-Fi. -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <!-- PARITY G6: Wi-Fi scan and info (ACCESS_WIFI_STATE), network suggestions (CHANGE_WIFI_STATE). -->
+    <!-- Wi-Fi scan and info (ACCESS_WIFI_STATE), network suggestions (CHANGE_WIFI_STATE). -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!-- PARITY G6: runtime on Android 13 and newer; not neverForLocation, because scans give locations. -->
+    <!-- Runtime on Android 13 and newer; not neverForLocation, because scans give locations. -->
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
     <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-    <!-- PARITY D3: the types an app may keep running with fgs.start. -->
+    <!-- The types an app may keep running with fgs.start. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
@@ -25,7 +25,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- PARITY G5: "Allow all the time", asked from the special-access sheet for location.background only. -->
+    <!-- "Allow all the time", asked from the special-access sheet for location.background only. -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
@@ -66,7 +66,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <!-- PARITY G7: usage stats for usage.stats; the user turns it on in the system Usage access screen. -->
+    <!-- Usage stats for usage.stats; the user turns it on in the system Usage access screen. -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -78,7 +78,7 @@
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
-    <!-- PARITY G11: the live wallpaper (role wallpaper) is optional. -->
+    <!-- The live wallpaper (role wallpaper) is optional. -->
     <uses-feature android:name="android.software.live_wallpaper" android:required="false" />
 
     <queries>
@@ -109,7 +109,7 @@
         <intent>
             <action android:name="android.settings.SETTINGS" />
         </intent>
-        <!-- W7: the special-access screens SpecialAccessFlow checks with resolveActivity -->
+        <!-- The special-access screens SpecialAccessFlow checks with resolveActivity -->
         <intent>
             <action android:name="android.settings.ACCESSIBILITY_SETTINGS" />
         </intent>
@@ -238,7 +238,7 @@
             android:theme="@style/Theme.Deft.Dialog"
             android:taskAffinity="" />
 
-        <!-- PARITY E3: the sign-in redirect from the Custom Tab. Scheme is <applicationId>.auth (debug: .debug.auth).
+        <!-- The sign-in redirect from the Custom Tab. Scheme is <applicationId>.auth (debug: .debug.auth).
              It has no screen and finishes at once; it runs in its own task so the app's task is untouched. -->
         <activity
             android:name=".ui.auth.AuthRedirectActivity"
@@ -257,7 +257,7 @@
             </intent-filter>
         </activity>
 
-        <!-- PARITY G0: special-access grant sheet, opened from the dashboard app card. -->
+        <!-- Special-access grant sheet, opened from the dashboard app card. -->
         <activity
             android:name=".ui.special.SpecialGrantActivity"
             android:excludeFromRecents="true"
@@ -301,7 +301,7 @@
             android:theme="@style/Theme.Deft.Dialog"
             android:taskAffinity="" />
 
-        <!-- PARITY E1: "Open with" from other apps. One picker; the aliases below are the fixed set of
+        <!-- "Open with" from other apps. One picker; the aliases below are the fixed set of
              filters (intent filters are static). All start disabled; HandlerAliases enables one only while
              an installed app's manifest `handles` it. Keep the names in sync with ui/handlers/HandlerAlias. -->
         <activity
@@ -443,22 +443,7 @@
             </intent-filter>
         </activity-alias>
 
-        <!-- Pre-rename scheme, kept so apps that declare web+fl still receive those links. -->
-        <activity-alias
-            android:name=".ui.handlers.ViewWebFl"
-            android:enabled="false"
-            android:exported="true"
-            android:label="@string/handler_open_label"
-            android:targetActivity=".ui.handlers.HandlerPickerActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="web+fl" />
-            </intent-filter>
-        </activity-alias>
-
-        <!-- PARITY G11: role components. No screen (translucent: it waits for the database before it
+        <!-- Role components. No screen (translucent: it waits for the database before it
              finishes, which Theme.NoDisplay does not allow); each alias below is disabled until a web app holds
              the role's special grant (RoleComponents), so the launcher only qualifies for the Android role
              while someone uses it. Keep the names in sync with roles/RoleComponent. -->
@@ -470,7 +455,7 @@
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- PARITY G11: role.browser. Meets ROLE_BROWSER (VIEW, BROWSABLE, any http/https link). -->
+        <!-- Browser role. Meets ROLE_BROWSER (VIEW, BROWSABLE, any http/https link). -->
         <activity-alias
             android:name=".ui.roles.BrowserView"
             android:enabled="false"
@@ -486,7 +471,7 @@
             </intent-filter>
         </activity-alias>
 
-        <!-- PARITY G11: role.assistant, for phones that start an activity for the assistant (ACTION_ASSIST). -->
+        <!-- Assistant role, for phones that start an activity for the assistant (ACTION_ASSIST). -->
         <activity-alias
             android:name=".ui.roles.AssistEntry"
             android:enabled="false"
@@ -582,7 +567,7 @@
                 android:resource="@xml/apduservice" />
         </service>
 
-        <!-- PARITY B4: payment-category card emulation. Declared disabled; RoleComponents turns it on
+        <!-- Payment-category card emulation. Declared disabled; RoleComponents turns it on
              only while a web app holds nfc.hce.payment (disabling it makes Android pick another payment app). -->
         <service
             android:name=".nfc.DeftPaymentApduService"
@@ -606,7 +591,7 @@
                 android:value="Keeps hosted web apps alive and delivers SMS, MMS, contact, telephony, alarm, and Bluetooth events to granted origins." />
         </service>
 
-        <!-- PARITY D3: keeps an app's page running with its own notification after the user leaves it. -->
+        <!-- Keeps an app's page running with its own notification after the user leaves it. -->
         <service
             android:name=".background.AppForegroundService"
             android:exported="false"
@@ -624,7 +609,7 @@
                 android:value="true" />
         </service>
 
-        <!-- PARITY F7b: call screening for the web app holding calls.screen. Starts disabled; RoleComponents
+        <!-- Call screening for the web app holding calls.screen. Starts disabled; RoleComponents
              turns it on only while a web app holds the grant (also what qualifies for ROLE_CALL_SCREENING). -->
         <service
             android:name=".telephony.DeftCallScreeningService"
@@ -677,7 +662,7 @@
             android:name=".alarms.AlarmReceiver"
             android:exported="false" />
 
-        <!-- PARITY D6: UnifiedPush distributor broadcasts. Exported so the distributor app can
+        <!-- UnifiedPush distributor broadcasts. Exported so the distributor app can
              reach it; the connector drops any broadcast without the instance's secret token. -->
         <receiver
             android:name=".push.PushReceiver"
@@ -690,12 +675,12 @@
             </intent-filter>
         </receiver>
 
-        <!-- PARITY G0: daily special-access review and its Keep / Remove buttons. -->
+        <!-- Daily special-access review and its Keep / Remove buttons. -->
         <receiver
             android:name=".special.SpecialReviewReceiver"
             android:exported="false" />
 
-        <!-- PARITY G5: proximity alerts for app geofences; only the launcher's own PendingIntent reaches it. -->
+        <!-- Proximity alerts for app geofences; only the launcher's own PendingIntent reaches it. -->
         <receiver
             android:name=".location.GeofenceReceiver"
             android:exported="false" />
@@ -708,7 +693,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- PARITY G10: the launcher's account type (accounts.own). Only the system may call it. -->
+        <!-- The launcher's account type (accounts.own). Only the system may call it. -->
         <service
             android:name=".account.DeftAuthenticatorService"
             android:exported="true">
@@ -720,7 +705,7 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!-- PARITY G10: one sync adapter for every app's accounts; wakes the app with trigger sync. -->
+        <!-- One sync adapter for every app's accounts; wakes the app with trigger sync. -->
         <service
             android:name=".account.DeftSyncService"
             android:exported="true">
@@ -732,7 +717,7 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-        <!-- PARITY G8: notification listener (notifications.listen). Only the system may bind it;
+        <!-- Notification listener (notifications.listen). Only the system may bind it;
              it does anything only after the user turns on Notification access for the launcher. -->
         <service
             android:name=".notifications.DeftNotificationListener"
@@ -744,7 +729,7 @@
             </intent-filter>
         </service>
 
-        <!-- PARITY G9: accessibility service (accessibility). Only the system may bind it; it does
+        <!-- Accessibility service (accessibility). Only the system may bind it; it does
              anything only after the user turns it on under Accessibility, and only for the one web
              app holding the grant. -->
         <service
@@ -760,7 +745,7 @@
                 android:resource="@xml/accessibility_service" />
         </service>
 
-        <!-- PARITY G11: device.admin. Lock the screen only (xml/device_admin.xml). Only the system may send to it;
+        <!-- Device admin. Lock the screen only (xml/device_admin.xml). Only the system may send to it;
              it does nothing until the user activates it from the special-access sheet, and removing the grant
              deactivates it. -->
         <receiver
@@ -776,7 +761,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- PARITY G11: wallpaper. Starts disabled; RoleComponents turns it on only while a web app holds the
+        <!-- Wallpaper. Starts disabled; RoleComponents turns it on only while a web app holds the
              grant, so Deft's live wallpaper is offered only then, and turning it off makes Android
              show its default wallpaper. Only the system may bind it. -->
         <service
@@ -793,7 +778,7 @@
                 android:resource="@xml/wallpaper" />
         </service>
 
-        <!-- PARITY G11: ime. Starts disabled; RoleComponents turns it on only while a web app holds the grant,
+        <!-- IME. Starts disabled; RoleComponents turns it on only while a web app holds the grant,
              so Deft's keyboard is listed under keyboards only then, and turning it off makes Android
              switch to another keyboard. Only the system may bind it. -->
         <service
@@ -810,7 +795,7 @@
                 android:resource="@xml/method" />
         </service>
 
-        <!-- PARITY G11: role.assistant. All three start disabled; RoleComponents turns them on only while a web
+        <!-- Assistant role. All three start disabled; RoleComponents turns them on only while a web
              app holds the grant, so Deft is listed as a digital assistant only then. Only the system
              may bind the assistant services. The recognizer only hands speech on to another recognizer. -->
         <service

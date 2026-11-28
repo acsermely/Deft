@@ -1,7 +1,7 @@
 package app.deft.bridge
 
 /**
- * PARITY F6: argument rules and MediaStore columns for `media.*`, free of Android types so they
+ * Argument rules and MediaStore columns for `media.*`, free of Android types so they
  * can be unit tested. The column names are the MediaStore names.
  */
 object MediaSpec {

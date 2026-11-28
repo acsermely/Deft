@@ -1,6 +1,6 @@
 package app.deft.bridge
 
-/** PARITY F5a: argument rules for `audio.*`, free of Android types so they can be unit tested. */
+/** Argument rules for `audio.*`, free of Android types so they can be unit tested. */
 object AudioSpec {
     /** The volume streams an app may name, as the method's `stream` argument spells them. */
     val STREAMS: Set<String> = setOf("music", "ring", "alarm", "notification", "voiceCall")

@@ -4,8 +4,11 @@ import android.Manifest
 import android.content.pm.ServiceInfo
 import app.deft.catalog.Capability
 
+// DEVICE-UNCHECKED (typed foreground services): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a workout sample records a GPS track with the screen off, notification visible.
+// Remove this note once checked.
 /**
- * PARITY D3: the kinds of work an app may keep running with `fgs.start`, what each needs and how
+ * The kinds of work an app may keep running with `fgs.start`, what each needs and how
  * Android calls it. Pure, unit tested.
  */
 enum class FgsType(

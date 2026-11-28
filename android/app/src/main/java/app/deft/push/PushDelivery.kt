@@ -13,8 +13,11 @@ import app.deft.bridge.PushSpec
 import app.deft.catalog.Capability
 import app.deft.catalog.isGranted
 
+// DEVICE-UNCHECKED (UnifiedPush): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an ntfy-backed sample receives a push with the app closed.
+// Remove this note once checked.
 /**
- * PARITY D6: hands a push message to its app, following [PushSpec.route]. Each message is an
+ * Hands a push message to its app, following [PushSpec.route]. Each message is an
  * audit row `push.message` with the route and the size in bytes; never the contents.
  */
 object PushDelivery {

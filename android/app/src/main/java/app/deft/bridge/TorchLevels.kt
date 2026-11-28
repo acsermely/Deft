@@ -1,6 +1,6 @@
 package app.deft.bridge
 
-/** PARITY F4: the strength a `torch.set` call asks for. */
+/** The strength a `torch.set` call asks for. */
 object TorchLevels {
     /**
      * A missing level means the strongest light. A level that is not a whole number from 1 to

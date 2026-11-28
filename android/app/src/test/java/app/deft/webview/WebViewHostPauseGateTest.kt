@@ -42,7 +42,7 @@ class WebViewHostPauseGateTest {
         assertEquals(0, gate.resumedHosts)
     }
 
-    // PARITY D1: background runs need the process-wide timers while no host is in front.
+    // Background runs need the process-wide timers while no host is in front.
     @Test
     fun backgroundRunResumesTimersOnlyWhenNoHost() {
         val gate = WebViewHostPauseGate()
@@ -72,7 +72,7 @@ class WebViewHostPauseGateTest {
         assertEquals(WebViewHostPauseGate.Action.PAUSE_ALL, gate.pause())
     }
 
-    // PARITY D3: an app running with a foreground service keeps every host view and the timers.
+    // An app running with a foreground service keeps every host view and the timers.
     @Test
     fun foregroundServiceKeepsViewsWhenTheHostLeaves() {
         val gate = WebViewHostPauseGate()

@@ -3,8 +3,11 @@ package app.deft.background
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (background triggers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an SMS auto-reply sample works with the app closed; boot, periodic and charging triggers fire.
+// Remove this note once checked.
 /**
- * PARITY D2: which apps a system event wakes, and the payloads of the events that have no UI
+ * Which apps a system event wakes, and the payloads of the events that have no UI
  * counterpart. Pure, unit tested; the Android side is [BackgroundWake], [SystemTriggers] and
  * [PeriodicTriggers].
  */
@@ -17,29 +20,29 @@ object BackgroundTriggers {
     const val NETWORK = "network"
     const val CHARGING = "charging"
 
-    /** PARITY D6: a UnifiedPush message for a closed app; payload `{base64}`. */
+    /** A UnifiedPush message for a closed app; payload `{base64}`. */
     const val PUSH = "push"
 
-    /** PARITY G5: one of the app's geofences was entered or left; payload `{id, entering}`. */
+    /** One of the app's geofences was entered or left; payload `{id, entering}`. */
     const val GEOFENCE = "geofence"
 
-    /** PARITY G10: Android runs a sync for one of the app's accounts; payload `{account}`. */
+    /** Android runs a sync for one of the app's accounts; payload `{account}`. */
     const val SYNC = "sync"
 
     /**
-     * PARITY G8: another app posted a (not ongoing) notification while the `notifications.listen`
+     * Another app posted a (not ongoing) notification while the `notifications.listen`
      * holder was closed; payload is the `notifications.posted` event.
      */
     const val NOTIFICATION = "notification"
 
     /**
-     * PARITY F7b: a call to screen came in while the `calls.screen` holder was closed; payload is
+     * A call to screen came in while the `calls.screen` holder was closed; payload is
      * the `calls.screening` event. Urgent ([urgentMs]): the answer is only useful within seconds.
      */
     const val SCREENING = "screening"
 
     /**
-     * PARITY F7b: how long an urgent trigger may wait to start, or null for an ordinary one. An
+     * How long an urgent trigger may wait to start, or null for an ordinary one. An
      * urgent trigger goes ahead of the waiting ones, joins a run already going (see
      * `BackgroundRunner`) and is dropped, not run, once its time is up.
      */
@@ -98,7 +101,7 @@ object BackgroundTriggers {
 }
 
 /**
- * PARITY D2: reports a state only after it has stayed the same for [quietMs], and only when it
+ * Reports a state only after it has stayed the same for [quietMs], and only when it
  * differs from the last one reported (or the [baseline]). Not thread-safe; [SystemTriggers]
  * uses it on the main thread. Times are any monotonic clock in milliseconds.
  */

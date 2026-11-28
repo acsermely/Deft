@@ -5,7 +5,7 @@
  *   bun scripts/deft.ts keygen secrets/author.key
  *   bun scripts/deft.ts pack samples/clock build/clock.deftpkg secrets/author.key [--no-deps]
  *
- * pack adds every manifest dependency as deps/<algo>-<hex> (spec 10.10),
+ * pack adds every manifest dependency as deps/<algo>-<hex>,
  * downloaded from its CDN URL and checked against its SRI hash.
  *   bun scripts/deft.ts verify build/clock.deftpkg
  */
@@ -106,8 +106,7 @@ async function fileBytes(entry: unknown): Promise<Buffer> {
 async function verifyPkg(file: string) {
   const zip = new Archive(readFileSync(file));
   const files = await zip.files();
-  // fl-package.json: packages made before the Deft rename.
-  const raw = files.get("deft-package.json") ?? files.get("fl-package.json");
+  const raw = files.get("deft-package.json");
   if (!raw) fail("missing deft-package.json");
   const doc = JSON.parse((await fileBytes(raw)).toString("utf8"));
   const payload = Buffer.from(jcs(doc.manifest));

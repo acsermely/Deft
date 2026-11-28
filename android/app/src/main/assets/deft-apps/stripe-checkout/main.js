@@ -1,4 +1,4 @@
-// Stripe test checkout (PARITY G14). Stripe forbids self-hosting Stripe.js, so the app lists its
+// Stripe test checkout . Stripe forbids self-hosting Stripe.js, so the app lists its
 // origins in manifest `embeds` and declares `web.embed`; the user approves each origin.
 // The publishable key comes from ./config.json, which is not committed (copy config.example.json).
 // Without a clientSecret the form only creates a test PaymentMethod; with the client secret of a

@@ -9,7 +9,10 @@ import app.deft.bridge.jsonArg
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** PARITY A4/A5/A8: screen controls for the app that is on screen. */
+// DEVICE-UNCHECKED (screen privacy): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: screenshots of a secure screen come out black; an overlay app cannot draw over it.
+// Remove this note once checked.
+/** Screen controls for the app that is on screen. */
 class DisplayModule : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         val surface = HostSurfaces.forRequest(request)

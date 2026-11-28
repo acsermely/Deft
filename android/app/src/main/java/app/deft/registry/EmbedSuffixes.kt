@@ -1,7 +1,7 @@
 package app.deft.registry
 
 /**
- * PARITY G14: a wildcard embed (`*.` followed by a base host) must not cover a whole public suffix, where
+ * A wildcard embed (`*.` followed by a base host) must not cover a whole public suffix, where
  * every subdomain belongs to someone else (`*.github.io`, `*.co.uk`, `*.herokuapp.com`).
  *
  * The full Public Suffix List is ~10 000 rules; this compact rule catches the cases that matter

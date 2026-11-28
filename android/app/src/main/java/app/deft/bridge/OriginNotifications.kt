@@ -14,7 +14,7 @@ import app.deft.R
 import app.deft.ui.host.WebViewHostActivity
 
 /**
- * Notifications posted for web apps (PARITY C1/C2). Each app gets its own channel group in system
+ * Notifications posted for web apps. Each app gets its own channel group in system
  * settings; channel ids and notification tags carry the app id, so apps only see their own.
  */
 object OriginNotifications {

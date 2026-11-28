@@ -50,7 +50,7 @@ class BackgroundPolicyTest {
         assertFalse(needs("background.done"))
         assertFalse(needs("device.id"))
         assertFalse(needs("auth.prepare"))
-        // PARITY D3: a run may change or end the app's service, never start one.
+        // A run may change or end the app's service, never start one.
         assertFalse(needs("fgs.update"))
         assertFalse(needs("fgs.stop"))
     }

@@ -5,12 +5,12 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** PARITY G1: the CSP is the main sandbox boundary, so every combination is pinned to the byte. */
+/** The CSP is the main sandbox boundary, so every combination is pinned to the byte. */
 class CspBuilderTest {
     private val a = "https://api.example.com"
     private val b = "https://cdn.example.org:8443"
 
-    /** The string `LocalOriginPathHandler.cspWith` produced before G1, kept verbatim for comparison. */
+    /** The string `LocalOriginPathHandler.cspWith` produced before the Block network switch existed, kept verbatim for comparison. */
     private fun beforeG1(connectSrc: String, workerSrc: String, extraScript: String = ""): String =
         buildString {
             append("default-src 'none'; script-src 'self'$extraScript; style-src 'self'; ")
@@ -54,7 +54,7 @@ class CspBuilderTest {
             "frame-ancestors 'none'; base-uri 'none'; form-action 'none'; " +
             "require-trusted-types-for 'script'; trusted-types deft"
 
-    /** PARITY G2: `'wasm-unsafe-eval'` is appended to script-src, after 'self' and any import-map hash. */
+    /** `'wasm-unsafe-eval'` is appended to script-src, after 'self' and any import-map hash. */
     private fun wasm(csp: String): String = csp.replace("script-src 'self';", "script-src 'self' 'wasm-unsafe-eval';")
 
     @Test
@@ -65,9 +65,9 @@ class CspBuilderTest {
 
     @Test
     fun withoutNewGrantsOnlyImgAndMediaChange() {
-        // No origins: byte-for-byte what the host served before G1.
+        // No origins: byte-for-byte what the host served before the Block network switch.
         assertEquals(beforeG1("'self'", "'self'"), CspBuilder.build(CspPolicy()))
-        // Consented origins: identical except that img-src and media-src gain the same origins (P2).
+        // Consented origins: identical except that img-src and media-src gain the same origins.
         val old = beforeG1("'self' $a $b", "'self'")
         val expected = old
             .replace("img-src 'self' data: blob:;", "img-src 'self' data: blob: $a $b;")
@@ -147,6 +147,15 @@ class CspBuilderTest {
             setOf(CspFlag.OPEN_NETWORK, CspFlag.WASM) to wasm(open),
             setOf(CspFlag.NO_NETWORK, CspFlag.WASM) to wasm(offline),
             setOf(CspFlag.OPEN_NETWORK, CspFlag.NO_NETWORK, CspFlag.WASM) to wasm(offline),
+            // "Block network" drops every remote origin; NO_NETWORK still wins (no workers either).
+            setOf(CspFlag.BLOCKED) to noGrants,
+            setOf(CspFlag.BLOCKED, CspFlag.OPEN_NETWORK) to noGrants,
+            setOf(CspFlag.BLOCKED, CspFlag.NO_NETWORK) to offline,
+            setOf(CspFlag.BLOCKED, CspFlag.OPEN_NETWORK, CspFlag.NO_NETWORK) to offline,
+            setOf(CspFlag.BLOCKED, CspFlag.WASM) to wasm(noGrants),
+            setOf(CspFlag.BLOCKED, CspFlag.OPEN_NETWORK, CspFlag.WASM) to wasm(noGrants),
+            setOf(CspFlag.BLOCKED, CspFlag.NO_NETWORK, CspFlag.WASM) to wasm(offline),
+            setOf(CspFlag.BLOCKED, CspFlag.OPEN_NETWORK, CspFlag.NO_NETWORK, CspFlag.WASM) to wasm(offline),
         )
         // Fails when a flag is added without deciding its output here.
         assertEquals(1 shl CspFlag.entries.size, expected.size)
@@ -191,7 +200,7 @@ class CspBuilderTest {
     private val stripe = "https://js.stripe.com"
     private val stripeFrames = "https://*.js.stripe.com"
 
-    /** PARITY G14: the exact policy for an app with two approved embed origins and nothing else. */
+    /** The exact policy for an app with two approved embed origins and nothing else. */
     private val twoEmbeds =
         "default-src 'none'; script-src 'self' https://js.stripe.com https://*.js.stripe.com; style-src 'self'; " +
             "img-src 'self' data: blob: https://js.stripe.com https://*.js.stripe.com; font-src 'self'; " +
@@ -212,7 +221,7 @@ class CspBuilderTest {
         val csp = CspBuilder.build(listOf(a, stripe), emptySet(), listOf(stripe, stripeFrames))
         assertTrue(csp, csp.contains("connect-src 'self' $a $stripe $stripeFrames;"))
         assertTrue(csp, csp.contains("img-src 'self' data: blob: $a $stripe $stripeFrames;"))
-        // media-src follows consented origins only (P2); embeds do not widen it.
+        // media-src follows consented origins only; embeds do not widen it.
         assertTrue(csp, csp.contains("media-src 'self' blob: mediastream: $a $stripe;"))
         assertTrue(csp, csp.contains("script-src 'self' $stripe $stripeFrames;"))
         assertTrue(csp, csp.contains("frame-src $stripe $stripeFrames;"))
@@ -292,7 +301,7 @@ class CspBuilderTest {
         for (bits in 0 until (1 shl CspFlag.entries.size)) {
             val flags = CspFlag.entries.filterIndexed { i, _ -> bits and (1 shl i) != 0 }.toSet()
             val csp = CspBuilder.build(listOf(a), flags, listOf(stripe, stripeFrames))
-            if (CspFlag.NO_NETWORK in flags) {
+            if (CspFlag.NO_NETWORK in flags || CspFlag.BLOCKED in flags) {
                 assertEquals(csp, CspBuilder.build(listOf(a), flags), csp)
                 continue
             }
@@ -302,7 +311,7 @@ class CspBuilderTest {
             assertTrue(csp, csp.contains("object-src 'none'"))
             assertTrue(csp, csp.contains("base-uri 'none'; form-action 'none';"))
             assertFalse(csp, csp.replace("'wasm-unsafe-eval'", "").contains("unsafe"))
-            // Without embeds the same flags give exactly the pre-G14 policy.
+            // Without embeds the same flags gives exactly the policy with no embed origins.
             val plain = CspBuilder.build(listOf(a), flags)
             assertTrue(plain, plain.contains("frame-src 'none'") && plain.endsWith("trusted-types deft"))
         }
@@ -388,5 +397,25 @@ class CspBuilderTest {
         assertEquals(offline.replace("frame-ancestors 'none'", "frame-ancestors https://home.app.deft.internal"), csp)
         assertTrue(CspBuilder.build(CspPolicy(flags = flags, frameAncestors = listOf("https://evil.example.com"))).contains("frame-ancestors 'none'"))
         assertTrue(CspBuilder.build(CspPolicy(flags = flags)).contains("frame-ancestors 'none'"))
+    }
+
+    // The "Block network" switch.
+
+    @Test
+    fun blockedHasNoRemoteOriginButKeepsSelf() {
+        val blocked = CspBuilder.build(
+            CspPolicy(
+                connectOrigins = listOf(a, b),
+                flags = setOf(CspFlag.BLOCKED, CspFlag.OPEN_NETWORK),
+                embedOrigins = listOf("https://js.stripe.com"),
+            ),
+        )
+        assertEquals(noGrants, blocked)
+        assertFalse(blocked.contains("https:"))
+    }
+
+    @Test
+    fun blockedKeepsWasm() {
+        assertEquals(wasm(noGrants), CspBuilder.build(listOf(a), setOf(CspFlag.BLOCKED, CspFlag.WASM)))
     }
 }

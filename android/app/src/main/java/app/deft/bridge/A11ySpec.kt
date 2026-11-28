@@ -11,7 +11,7 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.put
 
 /**
- * PARITY G9: `a11y.*` (capability `accessibility`) rules. Pure, unit tested; the Android side is
+ * `a11y.*` (capability `accessibility`) rules. Pure, unit tested; the Android side is
  * `a11y.DeftAccessibilityService`, `a11y.A11yGuard` and `bridge.modules.A11yModule`.
  *
  * - One holder (exclusive group [GROUP]); events reach only an open page of it, never queued.

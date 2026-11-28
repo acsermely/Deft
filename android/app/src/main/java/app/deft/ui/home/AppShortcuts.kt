@@ -25,7 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** PARITY C3: launcher shortcuts from the app's (merged) manifest. */
+/** Launcher shortcuts from the app's (merged) manifest. */
 object AppShortcuts {
     fun load(context: Context, app: WebAppEntity): List<DeftShortcut> {
         val base = app.workspaceSlug?.let { DeftApp.instance.myApps.projectDir(it) }

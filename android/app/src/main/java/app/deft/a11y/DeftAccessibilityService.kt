@@ -29,8 +29,11 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlin.coroutines.resume
 
+// DEVICE-UNCHECKED (accessibility service): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an automation sample taps a button in another app; grant screens stay unreadable.
+// Remove this note once checked.
 /**
- * PARITY G9: the launcher's accessibility service (capability `accessibility`). Android binds it
+ * The launcher's accessibility service (capability `accessibility`). Android binds it
  * once the user turns it on under Accessibility; the FL grant decides which one web app (the
  * holder of exclusive group `a11y`) gets anything.
  *

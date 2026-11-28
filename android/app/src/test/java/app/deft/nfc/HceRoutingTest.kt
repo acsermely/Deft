@@ -14,7 +14,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
-/** PARITY B3/B4: routing state and the payment service's static rules. */
+/** Routing state and the payment service's static rules. */
 class HceRoutingTest {
     @Test
     fun onlyTheAppThatGotTheCommandAnswersItOnce() = runBlocking {

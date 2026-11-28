@@ -4,7 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-/** Rules for NFC host card emulation (PARITY B3, B4), free of Android types for testing. */
+/** Rules for NFC host card emulation, free of Android types for testing. */
 object HceRouting {
     /** No app answered in time, or none is holding card emulation. ISO 7816 "no precise diagnosis". */
     val SW_NO_ANSWER = byteArrayOf(0x6F, 0x00)
@@ -17,7 +17,7 @@ object HceRouting {
     /** Placeholder AID in the static service XML ("FL" in the proprietary F0 range). */
     const val PLACEHOLDER_AID = "F0464C00000001"
 
-    /** PARITY B4: placeholder AID of the payment service's static XML; never the same as [PLACEHOLDER_AID]. */
+    /** Placeholder AID of the payment service's static XML; never the same as [PLACEHOLDER_AID]. */
     const val PAYMENT_PLACEHOLDER_AID = "F0464C00000002"
 
     /** Smallest response: just the 2-byte status word. */
@@ -49,7 +49,7 @@ object HceRouting {
 }
 
 /**
- * PARITY B3/B4: reader commands waiting for the holder's answer, one registry per card emulation
+ * Reader commands waiting for the holder's answer, one registry per card emulation
  * service. Only the app a command was sent to may answer it, and only once.
  */
 class HcePending {

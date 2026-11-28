@@ -89,7 +89,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 interface BridgeEventSink {
     val webAppId: String
 
-    /** W2: a home-widget frame. It never counts as the app being open, never consumes queued events (see [WidgetEvents]). */
+    /** A home-widget frame. It never counts as the app being open, never consumes queued events (see [WidgetEvents]). */
     val isWidget: Boolean get() = false
 
     /** Whether the sink listens for [event] now. Only a widget sink is asked; a page's queue-or-deliver logic is its own. */
@@ -115,10 +115,10 @@ class BridgeService : Service() {
     lateinit var repository: AppRepository
         private set
 
-    /** PARITY D1: host-scheduled background runs; [BackgroundRunner.trigger] is the entry point. */
+    /** Host-scheduled background runs; [BackgroundRunner.trigger] is the entry point. */
     val background: BackgroundRunner by lazy { BackgroundRunner(this) }
 
-    /** PARITY D2: `network` and `charging` triggers, watched while the service runs. */
+    /** `network` and `charging` triggers, watched while the service runs. */
     private val systemTriggers by lazy { SystemTriggers(this) { name, payload -> wakeBackground(name, payload) } }
     private var observingContacts = false
 
@@ -131,7 +131,7 @@ class BridgeService : Service() {
             ensureModules()
             maybeObserveContacts()
         }
-        // PARITY B1: an unplugged USB device closes its connections and tells the app.
+        // An unplugged USB device closes its connections and tells the app.
         androidx.core.content.ContextCompat.registerReceiver(
             this,
             usbDetached,
@@ -222,30 +222,20 @@ class BridgeService : Service() {
             modules["widgets"] = WidgetsModule(this)
             modules["net"] = NetModule(this)
             modules["wifi"] = WifiModule(this)
-            // PARITY G7
             modules["apps"] = AppsModule(this)
             modules["usage"] = UsageModule(this)
             modules["device"] = DeviceModule(this)
-            // PARITY E3
             modules["auth"] = AuthModule(this)
-            // PARITY D1
+            modules["passkeys"] = app.deft.bridge.modules.PasskeysModule(this)
             modules["background"] = BackgroundModule(this)
-            // PARITY D3
             modules["fgs"] = ForegroundModule(this)
-            // PARITY D6
             modules["push"] = PushModule(this)
-            // PARITY G5
             modules["location"] = LocationModule(this)
-            // PARITY G10
             modules["accounts"] = AccountsModule(this)
-            // PARITY G8
             modules["notifications"] = NotificationsModule(this)
-            // PARITY G9
             modules["a11y"] = A11yModule(this)
-            // PARITY G11
             modules["admin"] = app.deft.bridge.modules.AdminModule(this)
             modules["ime"] = app.deft.bridge.modules.ImeModule()
-            // PARITY F7b
             modules["calls"] = app.deft.bridge.modules.CallsModule()
         }
     }
@@ -279,17 +269,17 @@ class BridgeService : Service() {
 
     fun unregisterSink(sink: BridgeEventSink) {
         sinks.remove(sink)
-        // PARITY F8/G4: sockets and discovery stop as soon as the app has no open bridge.
+        // Sockets and discovery stop as soon as the app has no open bridge.
         if (!hasSink(sink.webAppId)) releaseNetwork(sink.webAppId)
     }
 
-    /** PARITY D1: ends the app's background run now and drops its waiting triggers. */
+    /** Ends the app's background run now and drops its waiting triggers. */
     fun cancelBackground(webAppId: String) {
         background.cancel(webAppId)
     }
 
     /**
-     * PARITY D2: hands trigger [name] to the runner for every app that declares it and holds
+     * Hands trigger [name] to the runner for every app that declares it and holds
      * `background` ([only]: just that app, e.g. the SMS holder). Extra to the UI event, never
      * instead of it.
      */
@@ -299,16 +289,16 @@ class BridgeService : Service() {
         }
     }
 
-    /** PARITY F8/G4: closes the app's sockets and stops its discovery (also on revoke and uninstall). */
+    /** Closes the app's sockets and stops its discovery (also on revoke and uninstall). */
     fun releaseNetwork(webAppId: String) {
         (modules["net"] as? NetModule)?.releaseApp(webAppId)
     }
 
-    /** W2: a home-widget frame calls with `background = true` and [RunContext.WIDGET]: the app's grants, `needs_foreground` rules, no run grant. */
+    /** A home-widget frame calls with `background = true` and [RunContext.WIDGET]: the app's grants, `needs_foreground` rules, no run grant. */
     private fun isWidgetContext(context: RunContext) = context == RunContext.WIDGET
 
     /**
-     * W5: an agent-tool run ([RunContext.TOOL], the agent screen is in front). Like a widget frame it needs no run grant and
+     * An agent-tool run ([RunContext.TOOL], the agent screen is in front). Like a widget frame it needs no run grant and
      * never asks for access, but confirm-each actions still show their dialog (see [BackgroundPolicy.needsForegroundForTool]).
      */
     private fun isToolContext(context: RunContext) = context == RunContext.TOOL
@@ -327,7 +317,7 @@ class BridgeService : Service() {
         args: JsonObject,
         webViewOrigin: String?,
         background: Boolean = false,
-        /** PARITY G11: the grant a [background] page needs on every call (`wallpaper` for the live wallpaper, `ime` for the keyboard page). */
+        /** The grant a [background] page needs on every call (`wallpaper` for the live wallpaper, `ime` for the keyboard page). */
         runCapability: Capability = Capability.BACKGROUND,
         /** Widget frame or agent tool run; never decided by a page and never a capability (see [RunContext]). */
         context: RunContext = RunContext.RUN,
@@ -346,7 +336,7 @@ class BridgeService : Service() {
             repository.log(app.id, "bridge", capability.id, method, BridgeErrors.UNSUPPORTED)
             return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "Use the standard web API for ${capability.id}")
         }
-        // PARITY G11: ime.* only from the keyboard page the launcher's keyboard shows, never from the
+        // Ime.* only from the keyboard page the launcher's keyboard shows, never from the
         // app's own pages, its background runs or its wallpaper page.
         if (!ImeSpec.methodAllowed(method, background && runCapability == Capability.IME)) {
             repository.log(app.id, "bridge", capability.id, method, BridgeErrors.UNSUPPORTED)
@@ -366,7 +356,7 @@ class BridgeService : Service() {
             return BridgeOutcome.Err(BridgeErrors.NOT_GRANTED, "${capability.id} is not declared")
         }
         var grant = repository.grantLevel(app.id, capability)
-        // PARITY G0: a capability the app declares and the user has not turned off opens the launcher's point-of-use
+        // A capability the app declares and the user has not turned off opens the launcher's point-of-use
         // ask right here (special: the sheet and its screen lock; plain: the consent screen for this capability).
         // The call goes on only once the grant is held.
         if (grant == GrantLevel.DENIED) {
@@ -388,9 +378,9 @@ class BridgeService : Service() {
             logGrantRefusal(app.id, capability.id, BridgeErrors.NOT_GRANTED)
             return BridgeOutcome.Err(BridgeErrors.NOT_GRANTED, "${capability.id} is revoked")
         }
-        // PARITY D1: a background run needs the background grant on every call (kill switch), and
+        // A background run needs the background grant on every call (kill switch), and
         // gets needs_foreground for anything that would show a screen or ask the user.
-        // PARITY G11: the live wallpaper's page follows the same rules, with `wallpaper` as its kill switch.
+        // The live wallpaper's page follows the same rules, with `wallpaper` as its kill switch.
         val source = sourceOf(background, runCapability, context)
         if (background) {
             if (!isWidgetContext(context) && !isToolContext(context) && (runCapability !in declared || !repository.grantLevel(app.id, runCapability).isGranted())) {
@@ -435,7 +425,7 @@ class BridgeService : Service() {
             ?: return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "No module for $prefix")
         val request = BridgeRequest(app.id, app.origin, method, args, background, runCapability.takeIf { background && context == RunContext.RUN }, context.takeIf { background } ?: RunContext.RUN)
         var result = module.invoke(request)
-        // PARITY G0: Android's own access behind the capability is off (or Do Not Disturb). The sheet opens on that
+        // Android's own access behind the capability is off (or Do Not Disturb). The sheet opens on that
         // step only; the call runs once more if the access is on now, and never opens a second sheet.
         if (result is BridgeOutcome.Err && result.code == BridgeErrors.OS_PERMISSION_MISSING && SystemAccess.forAsk(capability) != null) {
             // Only a sheet that ran earns a second call; a call already satisfied keeps its own result.
@@ -454,7 +444,7 @@ class BridgeService : Service() {
             is BridgeOutcome.Ok -> "ok"
             is BridgeOutcome.Err -> result.code
         }
-        // PARITY G11: typing is one call per key; successful key calls are logged at most once a
+        // Typing is one call per key; successful key calls are logged at most once a
         // minute per app, so the audit log does not become a record of when each key was pressed.
         if (outcome == "ok" && method in ImeSpec.TYPING_METHODS) {
             val now = System.currentTimeMillis()
@@ -501,7 +491,7 @@ class BridgeService : Service() {
         return result
     }
 
-    /** PARITY G11: when a typing call of each app was last written to the audit log. */
+    /** When a typing call of each app was last written to the audit log. */
     private val imeTypingLogged = java.util.concurrent.ConcurrentHashMap<String, Long>()
 
 
@@ -519,7 +509,7 @@ class BridgeService : Service() {
     }
 
     /**
-     * PARITY G9: like [emit], but only to an open page of [webAppId]; never queued (for content
+     * Like [emit], but only to an open page of [webAppId]; never queued (for content
      * the launcher must not store, such as another app's screen). False when no page is open.
      */
     suspend fun emitLive(webAppId: String, event: String, payloadJson: String): Boolean {
@@ -737,16 +727,16 @@ class BridgeService : Service() {
         const val EXTRA_BACKGROUND_PAYLOAD = "backgroundPayload"
 
         /**
-         * PARITY D1: wakes the service (if needed) and hands [name] to [BackgroundRunner.trigger].
-         * For callers without a service reference: the dashboard's "Run now", receivers in D2.
+         * Wakes the service (if needed) and hands [name] to [BackgroundRunner.trigger].
+         * For callers without a service reference: the dashboard's "Run now", and the receivers that fire triggers.
          *
-         * PARITY D2: a running service gets the trigger directly. Otherwise the service is
+         * A running service gets the trigger directly. Otherwise the service is
          * started, which Android 12+ allows from the background only in exempt moments (boot,
          * an exact alarm, a notification action, an incoming SMS or call, the home screen on
          * show); when Android refuses, the trigger is dropped with the audit outcome
          * [BackgroundRunner.OUTCOME_SERVICE_BLOCKED].
          *
-         * PARITY D6: returns false when Android refused to start the service.
+         * Returns false when Android refused to start the service.
          */
         fun backgroundTrigger(context: Context, webAppId: String, name: String, payloadJson: String = "{}"): Boolean {
             instance?.let {

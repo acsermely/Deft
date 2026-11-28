@@ -1,5 +1,8 @@
 package app.deft.telephony
 
+// DEVICE-UNCHECKED (telephony extras (call screening, blocked numbers, SIM choice, USSD)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a spam-blocker sample rejects a listed number; SIM choice and a safe USSD code work.
+// Remove this note once checked.
 /**
  * Carrier codes such as *100#: start with * or #, end with #, digits, * and # between.
  *

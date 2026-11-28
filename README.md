@@ -1,48 +1,40 @@
 # Deft
 
-Stock-Android HOME launcher that hosts ordinary web apps (HTML/JS) as first-class apps. The launcher holds OS permissions and roles. Web apps call `window.deftBridge` only for capabilities the web platform does not provide (SMS, contacts, calls, files, calendar, alarms, NFC/BT/USB, native notify, intents). Camera, mic, and GPS stay as WebView APIs.
+Deft is an Android home screen that runs web apps as real apps. An app is a folder of HTML, CSS and JavaScript, and it can do what a native app does (text, call, read contacts, use Bluetooth and NFC, run in the background), as long as it says what it needs and you allow it.
 
-This is **not** a custom ROM, not root, and not a first-party native messenger/dialer/file manager. Sideload-only: Play will not accept default SMS without a special program.
+It is one ordinary Android app: no root, no custom ROM. The launcher holds the Android permissions and gives each web app only the access you approved, one capability at a time. Each app runs in its own sandbox, and the dashboard shows what every app may do and logs what it did.
 
-Landing page (SvelteKit, Cloudflare Pages): **[web/](web/)** — `cd web && npm run dev`, then `npm run deploy`. Publish the APK with `./scripts/publish-apk.sh`.
+It is installed by hand (sideloaded), not from the Play Store: Play doesn't accept an app that is both the default SMS app and the default dialer.
 
-**New to Android Studio?** Start with **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)**: open the `android` folder, install SDK 35, run on an emulator or phone, set as Home, open a bundled sample.
+## What's in it
 
-**Direction.** The goal is native parity: a web app in the launcher should be able to do anything a sideloaded Android app can, as long as it declares it and the user grants it (decision D7). The plan is **[docs/PARITY.md](docs/PARITY.md)**.
+- A home screen with your web apps, the regular Android app drawer, widgets and a customizable home page.
+- Sample apps built in: Messages, Phone, Contacts, Calendar, Clock, Files, Gallery, a Bluetooth mesh chat, a podcast player, a run tracker and more. Copy one to your apps to change it.
+- A consent screen, per-app grants you can revoke, confirmation before an app sends a text or places a call, and a log of every call an app made.
+- An assistant on the phone that writes and edits web apps for you. It can't grant an app any access.
+- A small runtime and design system that every app can use, and a linter that checks apps the same way on your computer and on the phone.
 
-## What is implemented
-
-- HOME with web apps and the Android app drawer, Settings, a transparency dashboard (grants and usage log), and an on-device agent that writes and edits web apps
-- Sample web apps bundled in the APK (read-only; **Copy to my apps** to edit): Contacts, Files, Messages, Calendar, Clock, Phone, Mesh, Three TPS and more. There is no install-by-URL
-- Signed zip import/export for local apps; per-app origins `https://<id>.app.deft.internal` with CSP and per-app WebView profiles
-- Consent screen (standard web API vs launcher bridge), per-capability grants, confirm sheets for sends and calls, optional biometric confirm
-- `WebViewHost` per app, origin-locked bridge, `BridgeService` foreground service with an honest persistent notification
-- Bridge modules: contacts, SMS/MMS (`ROLE_SMS`), telephony + in-call (`ROLE_DIALER`), files (SAF), calendar, alarms, notify, intents, share-in, NFC read, Bluetooth Classic + full BLE, USB (open only)
-- Camera, mic and geolocation through the normal web APIs behind the install-time grant
-- `deft-lint` (bundled into the APK) and the `/_deft/v1/` runtime
-
-## JS API
+## A taste of the API
 
 ```js
 import { ready, call, on } from '/_deft/v1/bridge.js';
 
 await ready();
 const people = await call('contacts.list', { limit: 50 });
-const off = on('sms.received', (msg) => {});
+const stop = on('sms.received', (message) => { /* ... */ });
 ```
 
-The method must be declared in `manifest.json` and granted by the user. Full method and event list: [android/app/src/main/assets/agent/skills/js-bridge.md](android/app/src/main/assets/agent/skills/js-bridge.md). `window.deftBridge.invoke(...)` is the legacy fallback.
-
-Location: `navigator.geolocation` only. Camera/mic: `navigator.mediaDevices.getUserMedia` only. There is no `geolocation` or `camera` bridge method.
+The app must list `contacts.read` and `sms.read` in its manifest, and the user must allow them.
 
 ## Docs
 
-- [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md): build, emulator or phone, samples
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how the pieces fit
-- [docs/PARITY.md](docs/PARITY.md): **the forward plan**: hardening, then native-parity gaps and phases
-- [docs/UNIMPLEMENTED.md](docs/UNIMPLEMENTED.md): what Android makes impossible, and rejected designs
-- [docs/spec/](docs/spec/): app platform spec ([PLATFORM.md](docs/spec/PLATFORM.md)), decisions ([DECISIONS.md](docs/spec/DECISIONS.md)), platform roadmap ([ROADMAP.md](docs/spec/ROADMAP.md))
-- [docs/SIDELOAD.md](docs/SIDELOAD.md), [docs/GMS.md](docs/GMS.md), [docs/REPRODUCIBLE.md](docs/REPRODUCIBLE.md), [docs/spec-trace.md](docs/spec-trace.md)
-- [scripts/debloat.sh](scripts/debloat.sh): ADB helper, dry-run by default, **not** in the launcher UI
+- [Getting started](docs/GETTING_STARTED.md): build it, put it on a phone or emulator, try the samples.
+- [How it works](docs/how-it-works.md): how apps are kept apart, how access is granted, and what Android doesn't allow.
+- [Writing an app](docs/writing-apps.md): the manifest, capabilities, the bridge, the runtime, and getting an app onto the phone.
+- [Bridge reference](android/app/src/main/assets/agent/skills/js-bridge.md): every method and event, generated from the launcher's catalog.
+- [Design system](skill/deft-design/SKILL.md): building screens that fit in.
+- [Security](SECURITY.md): reporting a problem.
 
-Local gate: `bun scripts/check.ts` (add `--device` for instrumented tests on a connected phone).
+## For contributors
+
+`bun scripts/check.ts` runs every test and check; add `--device` to also run the tests on a connected phone (this can wipe the debug app's data). The landing page is in [web/](web/).

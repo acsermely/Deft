@@ -35,8 +35,8 @@ data class AlarmEntity(
 
 /**
  * Network origins the user allowed (see [NetworkConsent]): on the consent screen
- * ([NetworkConsent.SOURCE_MANIFEST]) or typed on the dashboard ([NetworkConsent.SOURCE_USER], PARITY P3),
- * and embed origins approved or refused one by one ([EmbedConsent], PARITY G14).
+ * ([NetworkConsent.SOURCE_MANIFEST]) or typed on the dashboard ([NetworkConsent.SOURCE_USER]),
+ * and embed origins approved or refused one by one ([EmbedConsent]).
  */
 @Entity(tableName = "network_consent", primaryKeys = ["webAppId", "origin", "source"])
 data class NetworkConsentEntity(
@@ -50,7 +50,7 @@ data class GrantEntity(
     val webAppId: String,
     val capability: String,
     val level: String,
-    /** PARITY G0: when this row was last written or kept; drives the special-access review. */
+    /** When this row was last written or kept; drives the special-access review. */
     @ColumnInfo(defaultValue = "0") val grantedAt: Long = System.currentTimeMillis(),
     /**
      * Special rows only: the user turned the grant off (dashboard, or the review's removal). A DENIED

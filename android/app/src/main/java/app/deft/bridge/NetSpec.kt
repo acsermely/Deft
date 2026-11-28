@@ -3,7 +3,7 @@ package app.deft.bridge
 import java.net.InetAddress
 import java.util.Base64
 
-/** PARITY F8/G4: argument rules and address admission for `net.*`, free of Android types. */
+/** Argument rules and address admission for `net.*`, free of Android types. */
 object NetSpec {
     const val MAX_SOCKETS_PER_APP = 8
     const val MAX_SEND_BYTES = 64 * 1024

@@ -30,6 +30,9 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (outbound intents and results): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a sample opens the system camera via IMAGE_CAPTURE and gets the photo back.
+// Remove this note once checked.
 class IntentsModule(
     private val context: Context,
 ) : BridgeModule {
@@ -58,7 +61,7 @@ class IntentsModule(
         val intent = Intent(Intent.ACTION_VIEW, uri).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        // PARITY G11: the launcher's own browser-role entry is left out, so a link never loops back.
+        // The launcher's own browser-role entry is left out, so a link never loops back.
         context.startActivity(
             app.deft.roles.RoleComponents.excludeSelf(
                 context,
@@ -69,7 +72,7 @@ class IntentsModule(
     }
 
     /**
-     * PARITY A6: `navigator.share` / `intents.share {title?, text?, url?, files?: [{name, mime, base64}]}`.
+     * `navigator.share` / `intents.share {title?, text?, url?, files?: [{name, mime, base64}]}`.
      * Always a system chooser; the app never learns which app received it.
      */
     private fun share(request: BridgeRequest): BridgeOutcome {
@@ -126,7 +129,7 @@ class IntentsModule(
     }
 
     /**
-     * PARITY E2: `intents.start` / `intents.startForResult {action, type?, data?, extras?}`. The args are
+     * `intents.start` / `intents.startForResult {action, type?, data?, extras?}`. The args are
      * checked by [IntentSpec] first. The system chooser always shows, so the app never learns which app ran.
      */
     private suspend fun start(request: BridgeRequest, forResult: Boolean): BridgeOutcome {
@@ -143,7 +146,7 @@ class IntentsModule(
                 ?.let { return it }
         }
         if (!forResult) {
-            // PARITY G11: never the launcher's own browser-role entries.
+            // Never the launcher's own browser-role entries.
             context.startActivity(
                 app.deft.roles.RoleComponents.excludeSelf(
                     context,
@@ -184,7 +187,7 @@ class IntentsModule(
         }
     }
 
-    /** One shared item from an `intents.shareReceived` event, read once (PARITY H6). */
+    /** One shared item from an `intents.shareReceived` event, read once. */
     private fun readShare(request: BridgeRequest): BridgeOutcome {
         val id = jsonArg(request.args, "id")
             ?: return BridgeOutcome.Err(BridgeErrors.INVALID_ARGS, "id required")

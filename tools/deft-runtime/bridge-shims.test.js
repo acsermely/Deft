@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // The host injects samples/deft-bridge.js at document start. These tests run it against a
-// fake page and check the PARITY Phase A shims route standard APIs to launcher methods.
+// fake page and check the platform shims route standard APIs to launcher methods.
 const SOURCE = readFileSync(join(import.meta.dir, "../../samples/deft-bridge.js"), "utf8");
 
 function page() {
@@ -14,6 +14,12 @@ function page() {
   Navigator.prototype.vibrate = (p) => { vibrated.push(p); return true; };
   const navigator = new Navigator();
   navigator.clipboard = { readText: () => Promise.resolve("native") };
+  const nativeCreds = [];
+  navigator.credentials = {
+    create: (o) => { nativeCreds.push(["create", o]); return Promise.reject(Object.assign(new Error("native"), { name: "NotAllowedError" })); },
+    get: (o) => { nativeCreds.push(["get", o]); return Promise.reject(Object.assign(new Error("native"), { name: "NotAllowedError" })); },
+  };
+  class PublicKeyCredential {}
   const docListeners = {};
   const document = {
     hidden: false,
@@ -33,6 +39,7 @@ function page() {
       addEventListener: (_name, fn) => listeners.push(fn),
     },
     PaymentRequest: class PaymentRequest {},
+    PublicKeyCredential,
   };
   const prevDoc = globalThis.document;
   globalThis.document = document;
@@ -49,7 +56,7 @@ function page() {
       deliver({ type: "result", id: m.id, ok: true, value: { text: "pasted" } });
     }
   };
-  return { win, sent, deliver, answer, vibrated };
+  return { win, sent, deliver, answer, vibrated, nativeCreds };
 }
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
@@ -197,6 +204,108 @@ describe("platform shims", () => {
     await tick();
     expect(p.sent.filter((m) => m.method === "media.setMetadata").length).toBe(before + 1);
     expect(p.sent.filter((m) => m.method === "media.setMetadata").at(-1).args).toEqual({ title: "Ep 2" });
+  });
+});
+
+// navigator.credentials maps to passkeys.* only with the webauthn grant.
+describe("navigator.credentials shim", () => {
+  const b64u = (bytes) => Buffer.from(bytes).toString("base64url");
+  const creation = () => ({
+    publicKey: {
+      rp: { id: "example.com", name: "Example" },
+      user: { id: new Uint8Array([1, 2, 3]), name: "a", displayName: "A" },
+      challenge: new Uint8Array([9, 9, 9, 9]).buffer,
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+      excludeCredentials: [{ type: "public-key", id: new Uint8Array([7, 7]) }],
+      timeout: undefined,
+    },
+  });
+  const answerWith = (p, value) => {
+    for (const m of p.sent.filter((m) => m.type === "invoke" && !m.answered)) {
+      m.answered = true;
+      p.deliver({ type: "result", id: m.id, ...value });
+    }
+  };
+
+  test("without the grant the native (disabled) behaviour stays and nothing is sent", async () => {
+    const p = page();
+    p.deliver({ type: "ready", allowed: ["intents.share"], caps: [] });
+    await expect(p.win.navigator.credentials.create(creation())).rejects.toMatchObject({ name: "NotAllowedError" });
+    await expect(p.win.navigator.credentials.get({ publicKey: { challenge: new Uint8Array([1]) } })).rejects.toMatchObject({ name: "NotAllowedError" });
+    expect(p.nativeCreds.map((c) => c[0])).toEqual(["create", "get"]);
+    expect(p.sent.filter((m) => m.type === "invoke")).toEqual([]);
+  });
+
+  test("create sends WebAuthn JSON to passkeys.create and returns a PublicKeyCredential", async () => {
+    const p = page();
+    p.deliver({ type: "ready", allowed: ["passkeys.create", "passkeys.get", "passkeys.status"], caps: ["webauthn"] });
+    const done = p.win.navigator.credentials.create(creation());
+    await tick();
+    const call = p.sent.find((m) => m.type === "invoke");
+    expect(call.method).toBe("passkeys.create");
+    const sentJson = JSON.parse(call.args.requestJson);
+    expect(sentJson).toEqual({
+      rp: { id: "example.com", name: "Example" },
+      user: { id: b64u([1, 2, 3]), name: "a", displayName: "A" },
+      challenge: b64u([9, 9, 9, 9]),
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+      excludeCredentials: [{ type: "public-key", id: b64u([7, 7]) }],
+    });
+    const responseJson = {
+      id: b64u([5, 6]), rawId: b64u([5, 6]), type: "public-key", authenticatorAttachment: "platform",
+      response: { clientDataJSON: b64u([123, 125]), attestationObject: b64u([1]), transports: ["internal"], publicKeyAlgorithm: -7 },
+      clientExtensionResults: { credProps: { rk: true } },
+    };
+    answerWith(p, { ok: true, value: { responseJson: JSON.stringify(responseJson) } });
+    const cred = await done;
+    expect(cred instanceof p.win.PublicKeyCredential).toBe(true);
+    expect(cred.id).toBe(b64u([5, 6]));
+    expect(new Uint8Array(cred.rawId)).toEqual(new Uint8Array([5, 6]));
+    expect(new Uint8Array(cred.response.clientDataJSON)).toEqual(new Uint8Array([123, 125]));
+    expect(cred.response.getTransports()).toEqual(["internal"]);
+    expect(cred.response.getPublicKeyAlgorithm()).toBe(-7);
+    expect(cred.getClientExtensionResults()).toEqual({ credProps: { rk: true } });
+    expect(cred.toJSON()).toEqual(responseJson);
+    expect(p.nativeCreds).toEqual([]);
+  });
+
+  test("get goes to passkeys.get, and bridge errors become WebAuthn errors", async () => {
+    const p = page();
+    p.deliver({ type: "ready", allowed: ["passkeys.get"], caps: ["webauthn"] });
+    const options = { publicKey: { rpId: "example.com", challenge: new Uint8Array([4]), allowCredentials: [{ type: "public-key", id: new Uint8Array([8]) }] } };
+    const cancelled = p.win.navigator.credentials.get(options);
+    await tick();
+    const call = p.sent.find((m) => m.type === "invoke");
+    expect(call.method).toBe("passkeys.get");
+    expect(JSON.parse(call.args.requestJson)).toEqual({ rpId: "example.com", challenge: b64u([4]), allowCredentials: [{ type: "public-key", id: b64u([8]) }] });
+    answerWith(p, { ok: false, error: { code: "cancelled", message: "closed" } });
+    await expect(cancelled).rejects.toMatchObject({ name: "NotAllowedError" });
+
+    const none = p.win.navigator.credentials.get(options);
+    await tick();
+    answerWith(p, { ok: false, error: { code: "unsupported", message: "no provider" } });
+    await expect(none).rejects.toMatchObject({ name: "NotSupportedError" });
+
+    // Conditional mediation and non-publicKey requests are not routed.
+    await expect(p.win.navigator.credentials.get({ ...options, mediation: "conditional" })).rejects.toMatchObject({ name: "NotSupportedError" });
+    await expect(p.win.navigator.credentials.get({ password: true })).rejects.toMatchObject({ name: "NotAllowedError" });
+    expect(p.nativeCreds.map((c) => c[0])).toEqual(["get"]);
+  });
+
+  test("parseCreationOptionsFromJSON and parseRequestOptionsFromJSON turn base64url into buffers", () => {
+    const p = page();
+    const PKC = p.win.PublicKeyCredential;
+    const created = PKC.parseCreationOptionsFromJSON({
+      rp: { id: "example.com", name: "E" }, user: { id: b64u([1]), name: "a", displayName: "A" },
+      challenge: b64u([2, 3]), pubKeyCredParams: [], excludeCredentials: [{ type: "public-key", id: b64u([4]) }],
+    });
+    expect(new Uint8Array(created.challenge)).toEqual(new Uint8Array([2, 3]));
+    expect(new Uint8Array(created.user.id)).toEqual(new Uint8Array([1]));
+    expect(new Uint8Array(created.excludeCredentials[0].id)).toEqual(new Uint8Array([4]));
+    expect(created.rp.id).toBe("example.com");
+    const request = PKC.parseRequestOptionsFromJSON({ rpId: "example.com", challenge: b64u([5]), allowCredentials: [{ type: "public-key", id: b64u([6]) }] });
+    expect(new Uint8Array(request.challenge)).toEqual(new Uint8Array([5]));
+    expect(new Uint8Array(request.allowCredentials[0].id)).toEqual(new Uint8Array([6]));
   });
 });
 

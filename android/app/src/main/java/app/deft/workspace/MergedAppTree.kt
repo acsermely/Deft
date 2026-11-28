@@ -3,7 +3,7 @@ package app.deft.workspace
 import java.io.File
 
 /**
- * The files an app actually consists of (PARITY H3): an overlay file wins over the base file,
+ * The files an app actually consists of: an overlay file wins over the base file,
  * and a path the overlay marks deleted is absent. This is a read model, not a third copy on
  * disk. The host, the agent preview, the verifier, lint and the network allow-list all read
  * through it, so they cannot disagree about what the app is.

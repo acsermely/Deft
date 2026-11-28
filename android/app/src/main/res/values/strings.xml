@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Deft</string>
-    <!-- PARITY G9: shown in Android's Accessibility settings. -->
+    <!-- Shown in Android's Accessibility settings. -->
     <string name="a11y_service_description">Lets one Deft app you choose read the screen and tap, type and scroll for you. You choose the app on its card in the launcher settings. Nothing happens until you do.</string>
     <string name="a11y_service_summary">Lets one app you choose read the screen and act for you</string>
     <string name="fgs_channel">Hosting</string>
@@ -26,12 +26,12 @@
     <string name="bt_radio_held">Held by %1$s</string>
     <string name="bt_radio_other_app">another app</string>
     <string name="hce_description">Deft web app card</string>
-    <!-- PARITY B4: shown in Android's Contactless payments list. -->
+    <!-- Shown in Android's Contactless payments list. -->
     <string name="hce_payment_description">Deft app payments</string>
-    <!-- PARITY G11: shown in Android's live wallpaper picker. -->
+    <!-- Shown in Android's live wallpaper picker. -->
     <string name="wallpaper_label">Deft app wallpaper</string>
     <string name="wallpaper_description">Shows the wallpaper page of the one Deft app you chose on its card in the launcher settings. Black until you choose one.</string>
-    <!-- PARITY G11: shown in Android's keyboard settings and picker. -->
+    <!-- Shown in Android's keyboard settings and picker. -->
     <string name="ime_label">Deft app keyboard</string>
     <string name="accounts_label">Deft apps</string>
     <!-- Point-of-use consent: asks again later. -->

@@ -35,9 +35,9 @@ object CanvasWidgets {
 
     private val comment = Regex("<!--[\\s\\S]*?(?:-->|$)")
     // The tag name must end at whitespace, `/` or `>` (not `deft-widget-x`); quoted values may contain `>`.
-    private val tag = Regex("<(?:deft|fl)-widget(?=[\\s/>])((?:\"[^\"]*\"|'[^']*'|[^>\"'])*)>", RegexOption.IGNORE_CASE)
+    private val tag = Regex("<deft-widget(?=[\\s/>])((?:\"[^\"]*\"|'[^']*'|[^>\"'])*)>", RegexOption.IGNORE_CASE)
     private val anyTag = Regex("<(/?)([a-zA-Z][\\w-]*)((?:\"[^\"]*\"|'[^']*'|[^>\"'])*)>")
-    private val gridClass = Regex("class\\s*=\\s*(?:\"[^\"]*\\b(?:deft|fl)-widgets\\b[^\"]*\"|'[^']*\\b(?:deft|fl)-widgets\\b[^']*')", RegexOption.IGNORE_CASE)
+    private val gridClass = Regex("class\\s*=\\s*(?:\"[^\"]*\\bdeft-widgets\\b[^\"]*\"|'[^']*\\bdeft-widgets\\b[^']*')", RegexOption.IGNORE_CASE)
     private val VOID = setOf("area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr")
     // Quoted or bare value; the name must follow whitespace, so `data-app` never counts as `app`.
     private val attr = Regex("(?<=\\s)(app|size)\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)'|([^\\s\"'>]+))", RegexOption.IGNORE_CASE)
@@ -54,18 +54,18 @@ object CanvasWidgets {
 
     private const val MY_APP_PREFIX = "myapp:"
 
-    /** Canvas JS: tell every widget frame to reload its theme.css (the frame script answers `deft:theme`; `fl:theme` is also posted for pre-rename listeners). */
+    /** Canvas JS: tell every widget frame to reload its theme.css (the frame script answers `deft:theme`). */
     const val THEME_FRAMES_JS =
-        "(function(){try{document.querySelectorAll('deft-widget iframe,fl-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:theme','*');f.contentWindow.postMessage('fl:theme','*');});}catch(e){}})();"
+        "(function(){try{document.querySelectorAll('deft-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:theme','*');});}catch(e){}})();"
 
     /** Canvas JS: elements.js drops its widget index and redraws (setup may have turned into ready while away). */
-    const val REDRAW_WIDGETS_JS = "try{window.dispatchEvent(new Event('deft:widgets'));window.dispatchEvent(new Event('fl:widgets'))}catch(e){}"
+    const val REDRAW_WIDGETS_JS = "try{window.dispatchEvent(new Event('deft:widgets'))}catch(e){}"
 
-    /** Canvas JS: ask the frames of these app origins to reload (the frame script answers `deft:reload`; `fl:reload` is also posted for pre-rename listeners). */
+    /** Canvas JS: ask the frames of these app origins to reload (the frame script answers `deft:reload`). */
     fun reloadFramesJs(origins: Collection<String>): String {
         val list = origins.joinToString(",", "[", "]") { JsonPrimitive(it).toString() }
-        return "(function(){try{var o=$list;document.querySelectorAll('deft-widget iframe,fl-widget iframe').forEach(function(f){" +
-            "if(o.some(function(x){return f.src.indexOf(x+'/')===0;})){f.contentWindow.postMessage('deft:reload','*');f.contentWindow.postMessage('fl:reload','*');}});}catch(e){}})();"
+        return "(function(){try{var o=$list;document.querySelectorAll('deft-widget iframe').forEach(function(f){" +
+            "if(o.some(function(x){return f.src.indexOf(x+'/')===0;})){f.contentWindow.postMessage('deft:reload','*');}});}catch(e){}})();"
     }
 
     /** A change signature of [files]: names, sizes and modification times. Order does not matter. */
@@ -80,8 +80,7 @@ object CanvasWidgets {
         if (old == null) emptySet() else now.filter { (k, v) -> old[k]?.let { it != v } == true }.keys
 
     /**
-     * The `<deft-widget>` elements of [html] in document order. Commented-out markup is ignored. A home page made
-     * before the rename uses `<fl-widget>` and `fl-widgets`; those count the same.
+     * The `<deft-widget>` elements of [html] in document order. Commented-out markup is ignored.
      */
     fun placements(html: String): List<WidgetPlacement> {
         val clean = comment.replace(html, " ")
@@ -92,7 +91,7 @@ object CanvasWidgets {
             val closing = m.groupValues[1].isNotEmpty()
             val name = m.groupValues[2].lowercase()
             val body = m.groupValues[3]
-            if (name == "deft-widget" || name == "fl-widget") {
+            if (name == "deft-widget") {
                 if (closing) continue
                 val attrs = mutableMapOf<String, String>()
                 for (a in attr.findAll(body)) {

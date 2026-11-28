@@ -16,7 +16,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Base64
 
-/** PARITY D4: state and action names, notification buttons, the artwork rule and argument limits. */
+/** State and action names, notification buttons, the artwork rule and argument limits. */
 class MediaSessionSpecTest {
     private val origin = "https://abc.app.deft.internal"
 

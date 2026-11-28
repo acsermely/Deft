@@ -4,6 +4,8 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import app.deft.bridge.BridgeErrors
+import app.deft.data.NetworkLog
+import app.deft.data.NetworkLogWriter
 import app.deft.bridge.BridgeModule
 import app.deft.bridge.BridgeOutcome
 import app.deft.bridge.BridgeRequest
@@ -35,8 +37,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.resume
 
+// DEVICE-UNCHECKED (LAN discovery and sockets): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a sample finds a device with NSD and talks to it over TCP/UDP on Wi-Fi.
+// Remove this note once checked.
 /**
- * `net.*` (PARITY F8 and G4): service discovery, TCP and UDP sockets. Only while the app is on
+ * `net.*`: service discovery, TCP and UDP sockets. Only while the app is on
  * screen (`net.discoverStop` and `net.close` also work to clean up).
  *
  * Every destination is resolved first, every resolved address is checked with [NetSpec.admit],
@@ -71,6 +76,11 @@ class NetModule(private val service: BridgeService) : BridgeModule {
         if (request.method != "net.close" && request.method != "net.discoverStop") {
             HostSurfaces.forRequest(request)
                 ?: return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, BridgeErrors.NOT_ON_SCREEN)
+            // The dashboard's "Block network" switch stops every new socket and discovery.
+            if (service.repository.networkBlocked(webAppId)) {
+                logBlockedTarget(request)
+                return BridgeOutcome.Err(BridgeErrors.NOT_GRANTED, NetworkLog.BLOCKED_MESSAGE)
+            }
         }
         return when (request.method) {
             "net.discover" -> discover(request)
@@ -204,7 +214,7 @@ class NetModule(private val service: BridgeService) : BridgeModule {
     }
 
     private fun multicastLock(): WifiManager.MulticastLock? = runCatching {
-        service.applicationContext.getSystemService(WifiManager::class.java)?.createMulticastLock("freedom-nsd")
+        service.applicationContext.getSystemService(WifiManager::class.java)?.createMulticastLock("deft-nsd")
     }.getOrNull()
 
     private fun nsdManager(): NsdManager? = service.getSystemService(NsdManager::class.java)
@@ -227,7 +237,11 @@ class NetModule(private val service: BridgeService) : BridgeModule {
         if (countFor(webAppId) >= NetSpec.MAX_SOCKETS_PER_APP) return tooManySockets()
         val addresses = lookup(host)
             ?: return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "Could not find $host")
-        checkAddresses(webAppId, addresses)?.let { return it }
+        checkAddresses(webAppId, addresses)?.let {
+            logTarget(webAppId, host, port, NetworkLog.KIND_TCP, allowed = false)
+            return it
+        }
+        logTarget(webAppId, host, port, NetworkLog.KIND_TCP, allowed = true)
         // Connect to the checked addresses themselves; the name is never looked up again.
         val socket = withContext(Dispatchers.IO) { connectFirst(addresses, port, timeout) }
             ?: return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "Could not connect to $host:$port")
@@ -296,7 +310,11 @@ class NetModule(private val service: BridgeService) : BridgeModule {
             ?: return BridgeOutcome.Err(BridgeErrors.INVALID_ARGS, "base64 must be at most 64 KiB")
         val addresses = lookup(host)
             ?: return BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "Could not find $host")
-        checkAddresses(webAppId, addresses)?.let { return it }
+        checkAddresses(webAppId, addresses)?.let {
+            logTarget(webAppId, host, port, NetworkLog.KIND_UDP, allowed = false)
+            return it
+        }
+        logTarget(webAppId, host, port, NetworkLog.KIND_UDP, allowed = true)
         return withContext(Dispatchers.IO) {
             runCatching {
                 val socket = DatagramSocket()
@@ -371,6 +389,23 @@ class NetModule(private val service: BridgeService) : BridgeModule {
         handles.remove(handle.id)
         handle.close()
         return BridgeOutcome.Ok()
+    }
+
+    // ---- network log (host and port only, never the data) ----
+
+    private fun logTarget(webAppId: String, host: String, port: Int, kind: String, allowed: Boolean) {
+        NetworkLogWriter.record(NetworkLog.socketEntry(webAppId, host, port, kind, allowed, System.currentTimeMillis()))
+    }
+
+    private fun logBlockedTarget(request: BridgeRequest) {
+        val kind = when (request.method) {
+            "net.tcpConnect" -> NetworkLog.KIND_TCP
+            "net.udpSend" -> NetworkLog.KIND_UDP
+            else -> return
+        }
+        val host = NetSpec.host(jsonArg(request.args, "host")) ?: return
+        val port = NetSpec.port(jsonArg(request.args, "port")) ?: return
+        logTarget(request.webAppId, host, port, kind, allowed = false)
     }
 
     /** Resolves a host name or IP literal. Blocking DNS runs off the main thread. */

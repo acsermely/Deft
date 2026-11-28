@@ -131,7 +131,7 @@ class MyAppsStore(private val context: Context) {
         File(context.filesDir, "deft/keys/${requireSlug(slug)}.pub").takeIf { it.isFile }?.readText()
 
     /**
-     * Deletes every per-app path for [slug] (PARITY H2): project, overlay and its metadata,
+     * Deletes every per-app path for [slug]: project, overlay and its metadata,
      * pinned key, rollback copy and its key. Grants, consent rows and the WebView profile go with
      * [app.deft.data.AppRepository.uninstall].
      */
@@ -161,7 +161,7 @@ class MyAppsStore(private val context: Context) {
 
     fun mutationRoot(slug: String): File = overlayDirIfPackaged(slug) ?: projectDir(slug)
 
-    /** What the app is made of: base plus overlay, minus deletions (PARITY H3). */
+    /** What the app is made of: base plus overlay, minus deletions. */
     fun tree(slug: String): MergedAppTree = MergedAppTree.of(context, projectDir(slug), webAppId(slug))
 
     private fun overlayDirIfPackaged(slug: String): File? {
@@ -266,11 +266,11 @@ class MyAppsStore(private val context: Context) {
         manifestWritten(rel.normalized, slug)
     }
 
-    /** PARITY D2/E1: a new manifest may add, change or drop the app's `periodic:N` trigger or `handles`. */
+    /** A new manifest may add, change or drop the app's `periodic:N` trigger or `handles`. */
     private fun manifestWritten(normalized: String, slug: String) {
         if (normalized == "manifest.json") {
             app.deft.background.PeriodicTriggers.syncSlugSoon(context, slug)
-            // PARITY E1: `handles` may have changed.
+            // `handles` may have changed.
             app.deft.ui.handlers.HandlerAliases.syncSoon(context)
         }
     }
@@ -287,21 +287,21 @@ class MyAppsStore(private val context: Context) {
     ) {
         /**
          * Text files for lint, keyed by path (dependency blobs and binaries excluded). A `.wasm`
-         * file is listed with empty text (PARITY G2): lint only needs its path.
+         * file is listed with empty text: lint only needs its path.
          */
         fun textFiles(): Map<String, String> = verified.files
             .filterKeys { !DepStore.isPackagePath(it) && (DeftPaths.isTextFileName(it.substringAfterLast('/')) || DeftPaths.isWasmFileName(it)) }
             .mapValues { if (DeftPaths.isWasmFileName(it.key)) "" else it.value.decodeToString() }
     }
 
-    /** The folder name an app id installs under (PARITY H5). */
+    /** The folder name an app id installs under. */
     private fun slugFor(appId: String): String =
         requireSlug(appId.lowercase().replace(Regex("[^a-z0-9-]"), "").take(40).ifBlank { "app" })
 
     /**
-     * PARITY H5, steps 1–3: signature, same-author key, no downgrade, path rules and quotas.
+     * Signature, same-author key, no downgrade, path rules and quotas.
      * Reads nothing but [bytes], the pinned key and [largeStorageSlugs]; writes nothing.
-     * [largeStorageSlugs] are the apps whose `storage.large` grant is on (PARITY G3). Only those
+     * [largeStorageSlugs] are the apps whose `storage.large` grant is on. Only those
      * apps get the larger caps, and only when their package declares `storage.large`; every other
      * package is checked against the normal caps.
      */
@@ -324,33 +324,29 @@ class MyAppsStore(private val context: Context) {
     }
 
     /**
-     * PARITY H5, step 5: extract into a staging folder, then swap it into place. If anything fails
+     * Extract into a staging folder, then swap it into place. If anything fails
      * before the swap, the previous version is still the live one, byte for byte.
      */
     fun commitInstall(prepared: PreparedInstall): String {
         val slug = prepared.slug
         val verified = prepared.verified
         val dir = projectDir(slug)
-        val staging = File(context.filesDir, "deft/staging/$slug-${System.nanoTime()}")
-        staging.parentFile?.mkdirs()
-        try {
-            ingestPackagedDependencies(verified.files)
-            DeftPackage.extract(verified, staging)
+        val stagingRoot = File(context.filesDir, "deft/staging")
+        if (!verified.signed) {
+            // A plain zip becomes a local app: no key pin, no version, no rollback copy.
+            if (dir.exists() && dir.list()?.isNotEmpty() == true) throw IllegalArgumentException("app $slug already exists")
+            DeftPackage.swapInto(verified, dir, stagingRoot)
+            bumpPreview()
+            return slug
+        }
+        ingestPackagedDependencies(verified.files)
+        DeftPackage.swapInto(verified, dir, stagingRoot) {
             if (File(dir, "manifest.json").isFile) {
                 val backup = File(context.filesDir, "deft/rollback/$slug")
                 backup.deleteRecursively()
                 dir.copyRecursively(backup, overwrite = true)
                 prepared.previousKey?.let { File(context.filesDir, "deft/rollback/$slug.pub").writeText(it) }
             }
-            val retired = File(staging.parentFile, "${staging.name}.old")
-            if (dir.exists() && !dir.renameTo(retired)) throw IllegalStateException("could not move the old version aside")
-            if (!staging.renameTo(dir)) {
-                retired.takeIf { it.exists() }?.renameTo(dir)
-                throw IllegalStateException("could not move the new version into place")
-            }
-            retired.deleteRecursively()
-        } finally {
-            staging.deleteRecursively()
         }
         val keyFile = File(context.filesDir, "deft/keys/$slug.pub")
         keyFile.parentFile?.mkdirs()
@@ -369,7 +365,7 @@ class MyAppsStore(private val context: Context) {
         File(context.filesDir, "deft/keys/${requireSlug(slug)}.version").takeIf { it.isFile }?.readText()?.trim()
 
     /**
-     * Spec 10.10, source 1: `deps/<algo>-<hex>` files inside a signed package go into the store
+     * `deps/<algo>-<hex>` files inside a signed package go into the store
      * before any app file is written. Every dependency must be pinned; files nobody declares are rejected.
      */
     private fun ingestPackagedDependencies(files: Map<String, ByteArray>) {
@@ -436,19 +432,32 @@ class MyAppsStore(private val context: Context) {
         bumpPreview()
     }
 
-    fun importZip(slug: String, input: InputStream): AppArchive.ImportReport {
+    /**
+     * A plain (unsigned) zip as a new local app named [slug]. Same path as a signed
+     * package minus the signature: read into memory with the path rules and quotas, then [lint]
+     * (an error aborts), then staged and swapped into place by [commitInstall]. Nothing is written
+     * before the swap, so a bad zip leaves nothing behind. An existing app is never replaced.
+     */
+    fun prepareUnsigned(slug: String, bytes: ByteArray): PreparedInstall {
         val clean = requireSlug(slug)
         val dir = projectDir(clean)
         if (dir.exists() && dir.listFiles()?.isNotEmpty() == true) {
             throw IllegalArgumentException("app $clean already exists")
         }
-        val report = AppArchive.import(dir, input)
-        if (!File(dir, "manifest.json").isFile) {
-            dir.deleteRecursively()
-            throw IllegalArgumentException("package is missing manifest.json")
-        }
-        bumpPreview()
-        return report
+        return PreparedInstall(clean, DeftPackage.readUnsigned(bytes), previousKey = null)
+    }
+
+    suspend fun importZip(
+        slug: String,
+        input: InputStream,
+        lint: suspend (PreparedInstall) -> Unit = { InstallLint.requireClean(context, it) },
+    ): AppArchive.ImportReport {
+        val bytes = AppArchive.readBounded(input, DeftPaths.active.maxPackageBytes)
+            ?: throw IllegalArgumentException("package larger than ${DeftPaths.active.maxPackageBytes} bytes")
+        val prepared = prepareUnsigned(slug, bytes)
+        lint(prepared)
+        commitInstall(prepared)
+        return AppArchive.ImportReport(files = prepared.verified.files.size, skipped = prepared.verified.skipped)
     }
 
     fun edit(relative: String, old: String, new: String, slug: String) {
@@ -583,7 +592,7 @@ class MyAppsStore(private val context: Context) {
 
         fun webAppId(slug: String): String = ID_PREFIX + requireSlug(slug)
 
-        /** Legacy slug origin; only for rows created before PARITY H2 and the throwaway verifier. */
+        /** Legacy slug origin; only for rows created before and the throwaway verifier. */
         fun origin(slug: String): String = "https://${requireSlug(slug)}$HOST_SUFFIX"
 
         fun originFor(originId: String): String = "https://$originId$HOST_SUFFIX"
@@ -612,6 +621,6 @@ data class ParsedManifest(
     val capabilities: List<Capability>,
     /** Declared `network` origins (the manifest's, before any consent). */
     val network: List<String> = emptyList(),
-    /** W1: the declared widget page and sizes; null when the app has no widget. */
+    /** The declared widget page and sizes; null when the app has no widget. */
     val widget: app.deft.registry.DeftWidget? = null,
 )

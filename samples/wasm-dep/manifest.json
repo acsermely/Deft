@@ -1,0 +1,15 @@
+{
+  "deft": 1,
+  "id": "wasm-dep",
+  "name": "WASM Dependency",
+  "version": "1.0.0",
+  "profile": "myapp",
+  "start_url": "./index.html",
+  "capabilities": [
+    { "id": "wasm", "reason": "Run the add.wasm module this app pins as a dependency" }
+  ],
+  "network": [],
+  "dependencies": {
+    "https://app.acsermely.hu/deps/add@1.0.0.wasm": "sha384-vwinb6TdwgMOFRUR62m4EtnXcHD1dhBWeG+rdkgF9PuJTNpGAw2WqOfZugXGrE3G"
+  }
+}

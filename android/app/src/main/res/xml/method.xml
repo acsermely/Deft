@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY G11: Deft's keyboard (ime/DeftInputMethodService). No settings activity: the app
+<!-- Deft's keyboard (ime/DeftInputMethodService). No settings activity: the app
      whose keyboard page it shows is chosen on the app's card in the launcher. One subtype, no language:
      the page decides its own layout. -->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"

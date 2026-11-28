@@ -1,4 +1,4 @@
-# Theme: one accent and one appearance (docs/design/DESIGN-SYSTEM-PROPOSAL.md 8.1).
+# Theme: one accent and one appearance .
 # accent: a preset (ember, red, violet, frost, blue, pink, teal, amber), "wallpaper", #hex or oklch(L C H).
 # appearance: auto, light or dark.
 accent = "ember"

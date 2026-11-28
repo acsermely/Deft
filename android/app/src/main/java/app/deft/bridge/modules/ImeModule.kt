@@ -12,8 +12,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * `ime.*` (PARITY G11, SPECIAL exclusive `ime`): the keyboard page types into the focused field
+ * `ime.*` (SPECIAL exclusive `ime`): the keyboard page types into the focused field
  * of another app. Only the page the launcher's keyboard shows gets here (`BridgeService.invoke`
  * refuses `ime.*` from any other page; checked again below), and only while a normal field is
  * focused: in password fields the launcher's own keyboard shows and every typing call fails.

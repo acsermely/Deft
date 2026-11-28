@@ -17,8 +17,11 @@ import app.deft.bridge.jsonArg
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (torch): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a QR-scanner-style sample switches the torch on and off.
+// Remove this note once checked.
 /**
- * PARITY F4: the device has one flashlight, so remember which app lit it. Leaving that app
+ * The device has one flashlight, so remember which app lit it. Leaving that app
  * (its screen goes away) turns the light off.
  */
 object TorchState {
@@ -93,7 +96,7 @@ private fun flashCamera(context: Context): Flash? {
     }.getOrNull()
 }
 
-/** `torch.*` (PARITY F4): the camera flashlight, only while the app is on screen. */
+/** `torch.*`: the camera flashlight, only while the app is on screen. */
 class TorchModule(private val context: Context) : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         HostSurfaces.forRequest(request)

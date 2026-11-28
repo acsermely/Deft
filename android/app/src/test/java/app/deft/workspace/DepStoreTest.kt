@@ -108,4 +108,51 @@ class DepStoreTest {
             file.delete()
         }
     }
+
+    /** A hand-made module exporting add(a, b), the same bytes as samples/wasm-add/add.wasm. */
+    private val addWasm = byteArrayOf(
+        0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01,
+        0x7f, 0x03, 0x02, 0x01, 0x00, 0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00, 0x0a, 0x09,
+        0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b,
+    )
+    private val wasmUrl = "https://app.acsermely.hu/deps/add@1.0.0.wasm"
+
+    @Test
+    fun wasmDependencyIsVerifiedStoredAndServedOnlyWithTheGrant() {
+        val store = Files.createTempDirectory("deps").toFile()
+        try {
+            val sri = DepStore.sri("sha384", addWasm)
+            val wrong = DepStore.sri("sha384", addWasm + 0x00)
+            // Bytes that do not match the pin are never stored.
+            assertTrue(runCatching { DepStore.storeIn(store, wrong, addWasm) }.isFailure)
+            assertFalse(DepStore.has(store, wrong))
+            DepStore.storeIn(store, sri, addWasm)
+            assertTrue(DepStore.has(store, sri))
+
+            val deps = listOf(DeftDependency(wasmUrl, sri, null))
+            val rest = wasmUrl.removePrefix("https://")
+            val served = DepStore.serve(store, deps, rest, wasmAllowed = true)!!
+            assertEquals("application/wasm", served.mime)
+            assertTrue(served.file.readBytes().contentEquals(addWasm))
+            // Without the wasm grant, and for a URL the app does not declare, nothing is served.
+            assertNull(DepStore.serve(store, deps, rest, wasmAllowed = false))
+            assertNull(DepStore.serve(store, deps, "app.acsermely.hu/deps/other@1.0.0.wasm", wasmAllowed = true))
+            assertNull(DepStore.serve(store, deps, "app.acsermely.hu/deps/../add@1.0.0.wasm", wasmAllowed = true))
+            // A pinned URL whose bytes are not stored yet is not served either.
+            val unstored = listOf(DeftDependency(wasmUrl, wrong, null))
+            assertNull(DepStore.serve(store, unstored, rest, wasmAllowed = true))
+        } finally {
+            store.deleteRecursively()
+        }
+    }
+
+    @Test
+    fun wasmDependencyMustBePinned() {
+        assertTrue(DepStore.isWasm(DeftDependency(wasmUrl, null, null)))
+        assertFalse(DepStore.isWasm(DeftDependency(threeUrl, null, null)))
+        val thrown = runCatching { DepStore.requirePinnedWasm(listOf(DeftDependency(wasmUrl, null, null))) }.exceptionOrNull()
+        assertTrue(thrown?.message.orEmpty(), thrown?.message.orEmpty().contains("must be hash-pinned"))
+        // A pinned .wasm and an unpinned .js (pinned on first download for local apps) pass.
+        DepStore.requirePinnedWasm(listOf(DeftDependency(wasmUrl, DepStore.sri("sha384", addWasm), null), DeftDependency(threeUrl, null, null)))
+    }
 }

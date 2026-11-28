@@ -1,4 +1,4 @@
-// Run Tracker (PARITY G5 sample): records a run with the screen off. Starts a foreground service of
+// Run Tracker (sample): records a run with the screen off. Starts a foreground service of
 // type location (fgs.start), watches the location in the background (location.watchBackground),
 // draws the route as an SVG polyline and adds up the distance. The track is kept in localStorage.
 import '/_deft/v1/motion.js';

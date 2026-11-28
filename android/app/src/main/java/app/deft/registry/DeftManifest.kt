@@ -14,7 +14,7 @@ data class DeftCapabilityDecl(
 )
 
 /**
- * One CDN file from manifest.dependencies (spec 10.10). [integrity] is an SRI hash,
+ * One CDN file from manifest.dependencies. [integrity] is an SRI hash,
  * null until a local app pins it. [alias] is an optional bare import name.
  */
 data class DeftDependency(
@@ -26,6 +26,18 @@ data class DeftDependency(
     val path: String get() = url.removePrefix("https://").substringAfter('/', "")
 }
 
+/**
+ * Manifest `assetPacks[]`. A zip the launcher downloads after a consent line
+ * that shows [size], checks against [sha256] (lowercase hex of the zip) and serves same-origin
+ * under `/_deft/packs/<name>/`.
+ */
+data class DeftAssetPack(
+    val name: String,
+    val url: String,
+    val sha256: String,
+    val size: Long,
+)
+
 data class DeftManifest(
     val deft: Int,
     val id: String,
@@ -35,56 +47,60 @@ data class DeftManifest(
     val startUrl: String,
     val capabilities: List<Pair<Capability, String>>,
     val network: List<String>,
-    /** PARITY G14: third-party origins for `web.embed` ([DeftManifestParser.validEmbedOrigin]). */
+    /** Third-party origins for `web.embed` ([DeftManifestParser.validEmbedOrigin]). */
     val embeds: List<String> = emptyList(),
     val dependencies: List<DeftDependency> = emptyList(),
     val shortcuts: List<DeftShortcut> = emptyList(),
-    /** PARITY D1: the module the host may run when the app is closed; null when not declared. */
+    /** The module the host may run when the app is closed; null when not declared. */
     val background: DeftBackground? = null,
-    /** PARITY E1: what other Android apps may open in this app ("Open with"); null when not declared. */
+    /** What other Android apps may open in this app ("Open with"); null when not declared. */
     val handles: DeftHandles? = null,
-    /** PARITY G11: the page the launcher's live wallpaper shows (role `wallpaper`); null when not declared. */
+    /** The page the launcher's live wallpaper shows (role `wallpaper`); null when not declared. */
     val wallpaper: DeftWallpaper? = null,
-    /** PARITY G11: the page the launcher's keyboard shows (role `ime`); null when not declared. */
+    /** The page the launcher's keyboard shows (role `ime`); null when not declared. */
     val keyboard: DeftKeyboard? = null,
-    /** W1: the page the home canvas shows as an `deft-widget` (role `widget`); null when not declared. */
+    /** The page the home canvas shows as an `deft-widget` (role `widget`); null when not declared. */
     val widget: DeftWidget? = null,
-    /** W5: tools the on-device agent may call ([DeftToolsParser]); empty when none are declared. */
+    /** Tools the on-device agent may call ([DeftToolsParser]); empty when none are declared. */
     val tools: List<DeftTool> = emptyList(),
+    /** Websites (relying party ids) whose passkeys the app may use ([app.deft.bridge.PasskeyPolicy]); empty when none. */
+    val passkeyRpIds: List<String> = emptyList(),
+    /** Asset packs ([DeftManifestParser.parseAssetPacks]); empty when none. */
+    val assetPacks: List<DeftAssetPack> = emptyList(),
     val license: String?,
     val source: String?,
 )
 
 /**
- * PARITY D1: manifest `background`. [module] is an absolute same-origin path ("/bg.js"; "./bg.js"
+ * Manifest `background`. [module] is an absolute same-origin path ("/bg.js"; "./bg.js"
  * in the manifest is stored without the dot). [triggers] are the declared names, `periodic:N`
  * kept as written.
  */
 data class DeftBackground(val module: String, val triggers: List<String>)
 
 /**
- * PARITY G11: manifest `wallpaper`. [page] is an absolute same-origin path ("/wallpaper.html";
+ * Manifest `wallpaper`. [page] is an absolute same-origin path ("/wallpaper.html";
  * "./wallpaper.html" in the manifest is stored without the dot).
  */
 data class DeftWallpaper(val page: String)
 
 /**
- * PARITY G11: manifest `keyboard`. [page] is an absolute same-origin path ("/keyboard/index.html";
+ * Manifest `keyboard`. [page] is an absolute same-origin path ("/keyboard/index.html";
  * "./keyboard/index.html" in the manifest is stored without the dot). Same path rule as [DeftWallpaper].
  */
 data class DeftKeyboard(val page: String)
 
 /**
- * W1: manifest `widget`. [page] is an absolute same-origin path ("/widget.html"; "./widget.html" in the
+ * Manifest `widget`. [page] is an absolute same-origin path ("/widget.html"; "./widget.html" in the
  * manifest is stored without the dot), the same rule as [DeftWallpaper]. [sizes] are the grid sizes the
  * page adapts to, from [DeftManifestParser.WIDGET_SIZES].
  */
 data class DeftWidget(val page: String, val sizes: List<String>)
 
 /**
- * PARITY E1: manifest `handles`. [mimeTypes] are `type/subtype` or a whole type (`image/` + star), never star/star,
+ * Manifest `handles`. [mimeTypes] are `type/subtype` or a whole type (`image/` + star), never star/star,
  * [schemes] `web+name` or `mailto`, [links] https origins. Only the launcher's fixed aliases reach
- * an app (see `ui/handlers/HandlerAlias`): a declared `web+foo` other than `web+deft` (or the pre-rename `web+fl`) and every
+ * an app (see `ui/handlers/HandlerAlias`): a declared `web+foo` other than `web+deft` and every
  * `links` entry are accepted but inert, because Android intent filters are static.
  */
 data class DeftHandles(
@@ -95,7 +111,7 @@ data class DeftHandles(
     fun isEmpty(): Boolean = mimeTypes.isEmpty() && schemes.isEmpty() && links.isEmpty()
 }
 
-/** PARITY C3: a launcher shortcut: long-press the app icon, pick it, the app opens at [url]. */
+/** A launcher shortcut: long-press the app icon, pick it, the app opens at [url]. */
 data class DeftShortcut(val id: String, val name: String, val url: String)
 
 object DeftManifestParser {
@@ -121,7 +137,7 @@ object DeftManifestParser {
     const val MAX_EMBEDS = 16
 
     /**
-     * PARITY G14: a manifest `embeds` entry. Same rule as [validNetworkOrigin], plus `*.` allowed as
+     * A manifest `embeds` entry. Same rule as [validNetworkOrigin], plus `*.` allowed as
      * the whole leftmost label (`*.paypal.com`) with at least two labels after it that are not a
      * public suffix ([EmbedSuffixes]: no `*.github.io`, `*.co.uk`). Kept identical to deft-lint
      * FL712 (`validEmbedOrigin` in tools/deft-lint/src/index.js).
@@ -136,7 +152,7 @@ object DeftManifestParser {
         return true
     }
 
-    /** PARITY G14: `embeds`, an array of at most [MAX_EMBEDS] origins; duplicates are kept once. */
+    /** `embeds`, an array of at most [MAX_EMBEDS] origins; duplicates are kept once. */
     fun parseEmbeds(element: kotlinx.serialization.json.JsonElement?): List<String> {
         if (element == null || element is kotlinx.serialization.json.JsonNull) return emptyList()
         val list = element as? kotlinx.serialization.json.JsonArray
@@ -158,8 +174,7 @@ object DeftManifestParser {
                 "requiredCapabilities is rejected. Use capabilities: [{id, reason}] with ids from the bridge catalog.",
             )
         }
-        // "fl" is the pre-Deft key; apps made before the rename still install.
-        val version1 = (root["deft"] ?: root["fl"])?.jsonPrimitive?.content?.toIntOrNull()
+        val version1 = root["deft"]?.jsonPrimitive?.content?.toIntOrNull()
             ?: throw IllegalArgumentException("manifest.json is missing deft (must be 1)")
         if (version1 != 1) throw IllegalArgumentException("unsupported deft version $version1")
         val id = root.str("id")
@@ -227,6 +242,14 @@ object DeftManifestParser {
         if (profile == "canvas" && tools.isNotEmpty()) {
             throw IllegalArgumentException("canvas forbids tools")
         }
+        val passkeyRpIds = app.deft.bridge.PasskeyPolicy.parseManifest(root["passkeys"]).orEmpty()
+        if (profile == "canvas" && passkeyRpIds.isNotEmpty()) {
+            throw IllegalArgumentException("canvas forbids passkeys")
+        }
+        val assetPacks = parseAssetPacks(root["assetPacks"])
+        if (profile == "canvas" && assetPacks.isNotEmpty()) {
+            throw IllegalArgumentException("canvas forbids assetPacks")
+        }
         return DeftManifest(
             deft = version1,
             id = id,
@@ -245,24 +268,26 @@ object DeftManifestParser {
             keyboard = keyboard,
             widget = widget,
             tools = tools,
+            passkeyRpIds = passkeyRpIds,
+            assetPacks = assetPacks,
             license = root["license"]?.jsonPrimitive?.content,
             source = root["source"]?.jsonPrimitive?.content,
         )
     }
 
-    /** PARITY D1: trigger names a manifest may declare, besides `periodic:N`. */
+    /** Trigger names a manifest may declare, besides `periodic:N`. */
     val BACKGROUND_TRIGGERS = setOf("alarms", "sms", "calls", "notify.action", "boot", "network", "charging", "push", "geofence", "sync", "notification", "screening")
     const val MIN_PERIODIC_MINUTES = 15
     const val MAX_PERIODIC_MINUTES = 10_080
     private val periodic = Regex("^periodic:([0-9]{1,5})$")
     private val modulePath = Regex("^\\.?/[A-Za-z0-9._~/-]+\\.m?js$")
 
-    /** Host paths an app may not claim: the runtime `/_deft/` and the pre-rename `/_fl/` (LocalOriginPathHandler serves /_fl/v1/). */
-    internal fun reservedPath(absolute: String): Boolean = absolute.lowercase().let { it.startsWith("/_deft/") || it.startsWith("/_fl/") }
+    /** Host paths an app may not claim: the runtime `/_deft/`. */
+    internal fun reservedPath(absolute: String): Boolean = absolute.lowercase().startsWith("/_deft/")
 
     /**
-     * PARITY D1: `background.module`, a same-origin script path such as `./bg.js`: starts with
-     * `./` or `/`, only `[A-Za-z0-9._~/-]`, ends in `.js` or `.mjs`, no `..`, `//`, `/_deft/` or `/_fl/`.
+     * `background.module`, a same-origin script path such as `./bg.js`: starts with
+     * `./` or `/`, only `[A-Za-z0-9._~/-]`, ends in `.js` or `.mjs`, no `..`, `//` or `/_deft/`.
      * Kept identical to deft-lint FL713 (`validBackgroundModule` in tools/deft-lint/src/index.js).
      */
     fun validBackgroundModule(path: String): Boolean = normalizeModulePath(path) != null
@@ -282,7 +307,7 @@ object DeftManifestParser {
         return normalized
     }
 
-    /** PARITY D1: one of [BACKGROUND_TRIGGERS] or `periodic:N` with N from 15 to 10080 minutes. */
+    /** One of [BACKGROUND_TRIGGERS] or `periodic:N` with N from 15 to 10080 minutes. */
     fun validBackgroundTrigger(value: String): Boolean {
         if (value in BACKGROUND_TRIGGERS) return true
         val minutes = periodic.matchEntire(value)?.groupValues?.get(1)?.toIntOrNull() ?: return false
@@ -320,7 +345,7 @@ object DeftManifestParser {
     private val pagePath = Regex("^\\.?/[A-Za-z0-9._~/-]+\\.html?$")
 
     /**
-     * PARITY G11: `wallpaper.page`, a same-origin page path such as `./wallpaper.html`: the same
+     * `wallpaper.page`, a same-origin page path such as `./wallpaper.html`: the same
      * rules as [validBackgroundModule], ending in `.html` or `.htm`.
      * Kept identical to deft-lint FL715 (`validWallpaperPage` in tools/deft-lint/src/index.js).
      */
@@ -345,7 +370,7 @@ object DeftManifestParser {
     }
 
     /**
-     * PARITY G11: `keyboard.page`, the page the launcher's keyboard (role `ime`) shows; the same path
+     * `keyboard.page`, the page the launcher's keyboard (role `ime`) shows; the same path
      * rule as [validWallpaperPage]. Kept identical to deft-lint FL716 (`scanKeyboard` in tools/deft-lint/src/index.js).
      */
     fun parseKeyboard(element: kotlinx.serialization.json.JsonElement?): DeftKeyboard? {
@@ -360,11 +385,11 @@ object DeftManifestParser {
         return DeftKeyboard(page.removePrefix("."))
     }
 
-    /** W1: the grid sizes a widget may declare (columns x rows). */
+    /** The grid sizes a widget may declare (columns x rows). */
     val WIDGET_SIZES = setOf("1x1", "2x1", "2x2", "4x1", "4x2")
 
     /**
-     * W1: `widget {page, sizes}`, the same page rule as [parseWallpaper] and a non-empty array of
+     * `widget {page, sizes}`, the same page rule as [parseWallpaper] and a non-empty array of
      * [WIDGET_SIZES]. Kept identical to deft-lint FL717 (`scanWidget` in tools/deft-lint/src/index.js).
      */
     fun parseWidget(element: kotlinx.serialization.json.JsonElement?): DeftWidget? {
@@ -392,14 +417,14 @@ object DeftManifestParser {
     private val handleMime = Regex("^[a-z0-9][a-z0-9.+-]{0,62}/(\\*|[a-z0-9][a-z0-9.+-]{0,126})$")
     private val handleScheme = Regex("^web\\+[a-z]{1,32}$")
 
-    /** PARITY E1: `type/subtype` or `type/` + star, lowercase; star/star is refused. Kept identical to deft-lint FL714. */
+    /** `type/subtype` or `type/` + star, lowercase; star/star is refused. Kept identical to deft-lint FL714. */
     fun validHandleMime(value: String): Boolean = handleMime.matches(value)
 
-    /** PARITY E1: `web+name` (lowercase letters) or `mailto`. Kept identical to deft-lint FL714. */
+    /** `web+name` (lowercase letters) or `mailto`. Kept identical to deft-lint FL714. */
     fun validHandleScheme(value: String): Boolean = value == "mailto" || handleScheme.matches(value)
 
     /**
-     * PARITY E1: `handles {mimeTypes?, schemes?, links?}`, each an array of at most [MAX_HANDLES]
+     * `handles {mimeTypes?, schemes?, links?}`, each an array of at most [MAX_HANDLES]
      * strings; duplicates are kept once. An object with no entries is null. Kept identical to
      * deft-lint FL714 (`scanHandles` in tools/deft-lint/src/index.js).
      */
@@ -457,6 +482,41 @@ object DeftManifestParser {
     private val sri = Regex("^sha(256|384|512)-[A-Za-z0-9+/]+={0,2}$")
     private val alias = Regex("^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$")
 
+    /** At most this many packs per app. */
+    const val MAX_ASSET_PACKS = 8
+    private val packName = Regex("^[a-z0-9][a-z0-9-]{0,31}$")
+    private val packSha = Regex("^[0-9a-f]{64}$")
+
+    /**
+     * `assetPacks: [{name, url, sha256, size}]`. Same URL rule as
+     * dependencies, ending in `.zip`; `sha256` is the lowercase hex of the zip; `size` its byte
+     * count, at most the `storage.large` package cap. Names are unique. Deft-lint FL720 mirrors this.
+     */
+    fun parseAssetPacks(element: kotlinx.serialization.json.JsonElement?): List<DeftAssetPack> {
+        if (element == null || element is kotlinx.serialization.json.JsonNull) return emptyList()
+        val list = element as? kotlinx.serialization.json.JsonArray
+            ?: throw IllegalArgumentException("assetPacks must be an array of {name, url, sha256, size}")
+        if (list.size > MAX_ASSET_PACKS) throw IllegalArgumentException("at most $MAX_ASSET_PACKS asset packs")
+        val seen = mutableSetOf<String>()
+        return list.map { el ->
+            val o = el as? JsonObject ?: throw IllegalArgumentException("each asset pack must be {name, url, sha256, size}")
+            val name = (o["name"] as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { it.isString }?.content.orEmpty()
+            val url = (o["url"] as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { it.isString }?.content.orEmpty()
+            val sha = (o["sha256"] as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { it.isString }?.content.orEmpty()
+            val size = (o["size"] as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { !it.isString }?.content?.toLongOrNull()
+            if (!packName.matches(name)) throw IllegalArgumentException("asset pack name must be 1-32 chars [a-z0-9-]")
+            if (!seen.add(name)) throw IllegalArgumentException("asset pack $name is listed twice")
+            if (url.length > 2048 || !depUrl.matches(url) || url.contains("..") || url.indexOf("//", 8) >= 0 || !url.endsWith(".zip")) {
+                throw IllegalArgumentException("asset pack $name url must be an https .zip URL without query or fragment")
+            }
+            if (!packSha.matches(sha)) throw IllegalArgumentException("asset pack $name sha256 must be 64 lowercase hex characters")
+            if (size == null || size < 1 || size > app.deft.workspace.DeftPaths.LARGE_PACKAGE_MAX_BYTES) {
+                throw IllegalArgumentException("asset pack $name size must be 1 to ${app.deft.workspace.DeftPaths.LARGE_PACKAGE_MAX_BYTES} bytes")
+            }
+            DeftAssetPack(name, url, sha, size)
+        }
+    }
+
     fun parseDependencies(element: kotlinx.serialization.json.JsonElement?): List<DeftDependency> {
         if (element == null) return emptyList()
         val obj = element as? JsonObject
@@ -468,7 +528,7 @@ object DeftManifestParser {
             val last = url.substringAfterLast('/')
             val ext = last.substringAfterLast('.', "").lowercase()
             // Only a letters-only suffix is an extension: `three@0.160.0` is extensionless JS.
-            // PARITY G2: a .wasm dependency is allowed; deft-lint requires its hash and the wasm capability.
+            // A .wasm dependency is allowed; deft-lint requires its hash and the wasm capability.
             if (ext.matches(Regex("[a-z]+")) && ext !in setOf("js", "mjs", "json", "wasm")) {
                 throw IllegalArgumentException("dependency $url must be a JavaScript module (.js, .mjs), .json or .wasm")
             }

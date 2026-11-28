@@ -3,7 +3,7 @@ package app.deft.ui.handlers
 import app.deft.registry.DeftHandles
 
 /**
- * PARITY E1: the launcher's fixed inbound filters. Each is an `activity-alias` of
+ * The launcher's fixed inbound filters. Each is an `activity-alias` of
  * [HandlerPickerActivity] in AndroidManifest.xml, disabled until at least one installed app
  * handles it ([HandlerMatch.enabledAliases]). Exactly one of [mime] / [scheme] is set.
  */
@@ -25,8 +25,6 @@ enum class HandlerAlias(
     VIEW_JSON("view-json", "app.deft.ui.handlers.ViewJson", mime = "application/json", label = "JSON files"),
     SENDTO_MAILTO("sendto-mailto", "app.deft.ui.handlers.SendToMailto", scheme = "mailto", label = "email links"),
     VIEW_WEB_DEFT("view-web-deft", "app.deft.ui.handlers.ViewWebDeft", scheme = "web+deft", label = "web+deft links"),
-    // Pre-rename scheme: apps that declare web+fl keep receiving those links.
-    VIEW_WEB_FL("view-web-fl", "app.deft.ui.handlers.ViewWebFl", scheme = "web+fl", label = "web+fl links"),
     ;
 
     companion object {
@@ -35,7 +33,7 @@ enum class HandlerAlias(
     }
 }
 
-/** Pure matching rules for inbound "Open with" requests (PARITY E1). No Android types. */
+/** Pure matching rules for inbound "Open with" requests. No Android types. */
 object HandlerMatch {
     const val MAX_URL = 2048
     private val mimeShape = Regex("^[a-z0-9][a-z0-9.+-]{0,62}/(\\*|[a-z0-9][a-z0-9.+-]{0,126})$")

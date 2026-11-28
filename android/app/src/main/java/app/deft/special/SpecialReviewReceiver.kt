@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-/** PARITY G0: daily review alarm and the reminder's Keep / Remove buttons. Not exported. */
+/** Daily review alarm and the reminder's Keep / Remove buttons. Not exported. */
 class SpecialReviewReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return

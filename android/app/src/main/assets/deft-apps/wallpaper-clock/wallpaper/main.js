@@ -1,4 +1,4 @@
-// Wallpaper Clock wallpaper page (PARITY G11, manifest wallpaper.page): drawn by the launcher's
+// Wallpaper Clock wallpaper page (manifest wallpaper.page): drawn by the launcher's
 // live wallpaper while the home or lock screen shows. Redraws once a second (plus while a tap
 // ripple fades), pans with the home screen pages (wallpaper.offsets) and shows a ripple where you
 // tap (wallpaper.touch).

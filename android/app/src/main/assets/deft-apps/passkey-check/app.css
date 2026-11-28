@@ -1,0 +1,4 @@
+/* Passkey Check: results keep their line breaks; long ids wrap. */
+@layer deft.components {
+  #log, #about { white-space: pre-wrap; overflow-wrap: anywhere; }
+}

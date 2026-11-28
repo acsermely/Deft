@@ -138,9 +138,9 @@ class DashboardActivity : ComponentActivity() {
             val installed = if (signed) {
                 val bytes = contentResolver.openInputStream(uri)?.use { it.readBytes() }
                     ?: error("Could not read the package")
-                // PARITY H5: verify, downgrade check, paths and quotas, then lint in memory.
+                // Verify, downgrade check, paths and quotas, then lint in memory.
                 // A lint error is an install error; nothing on disk changes.
-                // PARITY G3: the grant decides the larger caps; lint gets the same package cap.
+                // The grant decides the larger caps; lint gets the same package cap.
                 val largeSlugs = DeftApp.instance.repository.largeStorageSlugs()
                 val prepared = apps.prepareInstall(bytes, largeSlugs)
                 val raw = DeftLintEngine.run(
@@ -214,7 +214,7 @@ class DashboardActivity : ComponentActivity() {
                 fun applyGrant(app: WebAppEntity, cap: Capability, level: GrantLevel) {
                     scope.launch {
                         repo.setGrant(app.id, cap, level)
-                        // Review (PARITY G0): "Remove" on special access is audited like the other special changes.
+                        // Review: "Remove" on special access is audited like the other special changes.
                         SpecialReview.dashboardAudit(cap, level)?.let {
                             repo.log(app.id, "special", cap.id, null, it)
                         }

@@ -59,7 +59,7 @@ internal class PreviewHostSurface(
 
     /**
      * Like the host's onStop: sensors, listening, flashlight and the like stop, unless the open app holds it now or
-     * keeps running off screen with its foreground service (PARITY D3: the host stops them when the service ends).
+     * keeps running off screen with its foreground service.
      */
     fun stop() {
         if (stopsOnLeave(held, HostSurfaces.forApp(webAppId), AppForegroundService.isActive(webAppId))) {

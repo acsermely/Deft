@@ -21,8 +21,11 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
+// DEVICE-UNCHECKED (background location and geofences): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a run tracker records with the screen off; the notification stays visible.
+// Remove this note once checked.
 /**
- * `location.*` (PARITY G5, capability `location.background`, special): location while the app is
+ * `location.*` (capability `location.background`, special): location while the app is
  * not on screen, through Android's own LocationManager (no Google services). Foreground location
  * stays the standard `navigator.geolocation`. Every method also needs the `location` grant.
  *

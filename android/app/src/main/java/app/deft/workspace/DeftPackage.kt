@@ -21,23 +21,24 @@ object DeftPackage {
     /** The signature document inside a package. */
     const val PACKAGE_FILE = "deft-package.json"
 
-    /** Its name in packages made before the Deft rename (their signed list says `fl: 1`); still accepted. */
-    const val LEGACY_PACKAGE_FILE = "fl-package.json"
-
-    private fun isPackageFile(name: String) = name == PACKAGE_FILE || name == LEGACY_PACKAGE_FILE
+    private fun isPackageFile(name: String) = name == PACKAGE_FILE
 
     data class Verified(
         val id: String,
         val files: Map<String, ByteArray>,
         val publicKey: String,
         val version: String = "0.0.0",
-        /** PARITY G3: the caps this package was checked against. */
+        /** The caps this package was checked against. */
         val caps: DeftPaths.Caps = DeftPaths.normalCaps(),
+        /** False for a plain zip ([readUnsigned]); it has no key, no version pin and no signed file list. */
+        val signed: Boolean = true,
+        /** Entries of a plain zip that were left out (names the path rules refuse), with the reason. */
+        val skipped: List<String> = emptyList(),
     )
 
     /**
      * [largeCaps] answers, for an app id, the caps to use when the package declares `storage.large`
-     * (PARITY G3). Null means the app is not granted it, so the normal caps apply. The caller
+     *. Null means the app is not granted it, so the normal caps apply. The caller
      * decides the grant; the answer is only used once the signature and the id check pass.
      */
     fun verify(bytes: ByteArray, largeCaps: (appId: String) -> DeftPaths.Caps? = { null }): Verified {
@@ -64,7 +65,7 @@ object DeftPackage {
                 entries[name] = body
             }
         }
-        val raw = entries[PACKAGE_FILE] ?: entries[LEGACY_PACKAGE_FILE] ?: throw IllegalArgumentException("missing $PACKAGE_FILE")
+        val raw = entries[PACKAGE_FILE] ?: throw IllegalArgumentException("missing $PACKAGE_FILE")
         val doc = json.parseToJsonElement(raw.decodeToString()).jsonObject
         val manifest = doc["manifest"]?.jsonObject ?: throw IllegalArgumentException("missing manifest")
         val publicKey = doc["publicKey"]?.jsonPrimitive?.content ?: throw IllegalArgumentException("missing publicKey")
@@ -104,7 +105,7 @@ object DeftPackage {
         }
         val appId = appManifest?.get("id")?.let { runCatching { it.jsonPrimitive.content }.getOrNull() }
         val id = appId ?: manifest["id"]?.jsonPrimitive?.content ?: "app"
-        // PARITY G3: the large caps were chosen for the signed id; the id this package installs as must be the same one.
+        // The large caps were chosen for the signed id; the id this package installs as must be the same one.
         if (peek != null && id != peek.first) {
             throw IllegalArgumentException("manifest.json id does not match the signed id")
         }
@@ -113,7 +114,7 @@ object DeftPackage {
     }
 
     /**
-     * PARITY G3: the signed id and large caps when the package declares `storage.large` and
+     * The signed id and large caps when the package declares `storage.large` and
      * [largeCaps] grants it, else null. It runs before the signature check, so it is used only to
      * choose how much of the zip to read; [verify] then checks the signature and the id, and only
      * then applies the caps. A forged id gains nothing: the signature must match the pinned key.
@@ -146,7 +147,7 @@ object DeftPackage {
     }
 
     /**
-     * PARITY H5: path rules and quotas run on the verified bytes, before anything touches disk.
+     * Path rules and quotas run on the verified bytes, before anything touches disk.
      * Dependency blobs (`deps/...`) have their own hash check in [DepStore].
      */
     private fun requireRulesAndQuotas(files: Map<String, ByteArray>, binaryCap: Long) {
@@ -185,10 +186,83 @@ object DeftPackage {
         }
     }
 
-    /** PARITY H5: a same-key update may not go back to an older version. */
+    /** A same-key update may not go back to an older version. */
     fun requireNotDowngrade(previous: String?, incoming: String) {
         if (previous != null && compareVersions(incoming, previous) < 0) {
             throw IllegalArgumentException("downgrade rejected: installed $previous, package $incoming")
+        }
+    }
+
+    /**
+     * A plain (unsigned) app zip read into memory with the same rules as [verify],
+     * minus the signature: zip-slip, duplicates and the package cap are fatal; a name the path rules
+     * refuse is left out and reported in [Verified.skipped], as the old direct import did. Then the
+     * per-file quotas and file count run, and `manifest.json` must be there. Writes nothing.
+     */
+    fun readUnsigned(bytes: ByteArray, caps: DeftPaths.Caps = DeftPaths.normalCaps()): Verified {
+        val maxBytes = caps.packageBytes
+        if (bytes.size.toLong() > maxBytes) throw IllegalArgumentException("package larger than $maxBytes bytes")
+        val files = LinkedHashMap<String, ByteArray>()
+        val skipped = mutableListOf<String>()
+        var totalBytes = 0L
+        var entries = 0
+        try {
+            ZipInputStream(ByteArrayInputStream(bytes)).use { zip ->
+                while (true) {
+                    val entry = zip.nextEntry ?: break
+                    val name = entry.name.replace('\\', '/')
+                    if (entry.isDirectory) continue
+                    entries++
+                    if (name.startsWith("/") || name.contains("..")) throw IllegalArgumentException("zip-slip: $name")
+                    val body = AppArchive.readBounded(zip, maxBytes - totalBytes)
+                        ?: throw IllegalArgumentException("package larger than $maxBytes bytes")
+                    totalBytes += body.size
+                    val parsed = runCatching { DeftPaths.parse(name) }
+                    val rel = parsed.getOrNull()
+                    if (rel == null) {
+                        skipped += "$name: ${parsed.exceptionOrNull()?.message}"
+                        continue
+                    }
+                    if (rel.normalized in files) throw IllegalArgumentException("duplicate zip entry: ${rel.normalized}")
+                    if (DepStore.isPackagePath(rel.normalized)) {
+                        skipped += "$name: dependency files are only accepted in signed packages"
+                        continue
+                    }
+                    files[rel.normalized] = body
+                }
+            }
+        } catch (e: java.util.zip.ZipException) {
+            throw IllegalArgumentException("not a valid zip: ${e.message}", e)
+        }
+        if (entries == 0) throw IllegalArgumentException("empty package")
+        val manifest = files["manifest.json"] ?: throw IllegalArgumentException("package is missing manifest.json")
+        requireRulesAndQuotas(files, caps.binaryBytes)
+        val appManifest = runCatching { json.parseToJsonElement(manifest.decodeToString()).jsonObject }.getOrNull()
+        val id = appManifest?.get("id")?.let { runCatching { it.jsonPrimitive.content }.getOrNull() } ?: "app"
+        val version = appManifest?.get("version")?.let { runCatching { it.jsonPrimitive.content }.getOrNull() } ?: "0.0.0"
+        return Verified(id = id, files = files, publicKey = "", version = version, caps = caps, signed = false, skipped = skipped)
+    }
+
+    /**
+     * , the swap: extract [verified] into a fresh folder under [stagingRoot], then move it
+     * into [dir]. If anything fails before the swap, [dir] is untouched, byte for byte; if the
+     * final move fails, the old folder is moved back.
+     */
+    fun swapInto(verified: Verified, dir: java.io.File, stagingRoot: java.io.File, beforeSwap: () -> Unit = {}) {
+        val staging = java.io.File(stagingRoot, "${dir.name}-${System.nanoTime()}")
+        stagingRoot.mkdirs()
+        try {
+            extract(verified, staging)
+            beforeSwap()
+            val retired = java.io.File(stagingRoot, "${staging.name}.old")
+            if (dir.exists() && !dir.renameTo(retired)) throw IllegalStateException("could not move the old version aside")
+            if (!staging.renameTo(dir)) {
+                retired.takeIf { it.exists() }?.renameTo(dir)
+                throw IllegalStateException("could not move the new version into place")
+            }
+            retired.deleteRecursively()
+        } finally {
+            staging.deleteRecursively()
         }
     }
 

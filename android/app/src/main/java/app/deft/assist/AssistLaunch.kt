@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * PARITY G11: what the assistant does when the user asks for it (long-press Home, the assist
+ * What the assistant does when the user asks for it (long-press Home, the assist
  * gesture or button): open the one app holding `role.assistant` and tell it `assist.invoked
  * {source}`. The app gets no screen content and no voice. Shared by the voice interaction session
  * (`assist-gesture`, only the system can start it) and the exported ACTION_ASSIST entry (`intent`:

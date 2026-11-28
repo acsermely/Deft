@@ -173,7 +173,7 @@ class WidgetBridgeRoutingTest {
         val waiting = setOf("myapp:steps")
         val url = "deft://setup/myapp%3Asteps"
         assertEquals("myapp:steps", WidgetRouting.setupTarget(url, true, true, waiting))
-        assertEquals("myapp:steps", WidgetRouting.setupTarget("fl://setup/myapp%3Asteps", true, true, waiting)) // pre-rename form
+        assertNull(WidgetRouting.setupTarget("fl://setup/myapp%3Asteps", true, true, waiting)) // the old form is gone
         assertNull(WidgetRouting.setupTarget(url, false, true, waiting))
         assertNull(WidgetRouting.setupTarget(url, true, false, waiting))
         assertNull(WidgetRouting.setupTarget(url, true, true, emptySet()))

@@ -10,8 +10,11 @@ import android.nfc.cardemulation.CardEmulation
 import app.deft.DeftApp
 import app.deft.catalog.Capability
 
+// DEVICE-UNCHECKED (payment-category HCE): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a test terminal selects the payment AID and gets the app's answer (needs a payment terminal).
+// Remove this note once checked.
 /**
- * PARITY B4: payment-category card emulation for the one web app holding `nfc.hce.payment`.
+ * Payment-category card emulation for the one web app holding `nfc.hce.payment`.
  * Declared disabled; `RoleComponents` enables it only while a holder exists, and Android routes
  * payment AIDs to it only while the user picked Deft as the default payment app
  * (the special-access sheet asks). The static XML requires an unlocked phone.

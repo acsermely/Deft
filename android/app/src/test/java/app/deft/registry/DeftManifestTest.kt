@@ -192,7 +192,6 @@ class DeftManifestTest {
         assertTrue(error(withEmbeds("""["https://js.stripe.com"]""", profile = "canvas")).contains("canvas forbids embeds"))
     }
 
-    // PARITY D1
     private fun withBackground(background: String, profile: String = "myapp") =
         """{"deft":1,"id":"bg","name":"Bg","profile":"$profile","background":$background}"""
 
@@ -221,14 +220,13 @@ class DeftManifestTest {
     }
 
     @Test
-    fun legacyFlPathsAreReservedToo() {
-        // LocalOriginPathHandler serves /_fl/v1/ for pre-rename apps, so no manifest path may point under /_fl/.
-        for (b in listOf("/_fl/v1/bg.js", "./_fl/x.js", "./_FL/x.js", "/./_fl/x.js")) {
-            assertFalse(b, DeftManifestParser.validBackgroundModule(b))
-        }
-        assertFalse(DeftManifestParser.validWallpaperPage("/_fl/w.html"))
-        assertFalse(DeftManifestParser.validShortcutUrl("/_fl/x"))
-        assertTrue(DeftManifestParser.validBackgroundModule("./fl/bg.js"))
+    fun oldFlNamesAreNotSpecial() {
+        // Only /_deft/ is reserved; the old /_fl/ runtime is gone, so _fl is an ordinary folder name.
+        assertTrue(DeftManifestParser.validBackgroundModule("./_fl/bg.js"))
+        assertTrue(DeftManifestParser.validWallpaperPage("/_fl/w.html"))
+        // The old "fl" version key no longer counts as "deft".
+        val old = runCatching { DeftManifestParser.parse("""{"fl":1,"id":"notes","name":"Notes","version":"1.0.0","start_url":"./index.html","capabilities":[],"network":[]}""") }
+        assertTrue(old.exceptionOrNull()?.message.orEmpty().contains("missing deft"))
     }
 
     @Test
@@ -254,7 +252,7 @@ class DeftManifestTest {
         assertTrue(error(withBackground("""{"module":"./bg.js","triggers":["sms"]}""", profile = "canvas")).contains("canvas"))
     }
 
-    // PARITY G11: manifest wallpaper {page}.
+    // Manifest wallpaper {page}.
     private fun withWallpaper(wallpaper: String, profile: String = "myapp") =
         """{"deft":1,"id":"wp","name":"Wp","profile":"$profile","wallpaper":$wallpaper}"""
 
@@ -279,7 +277,7 @@ class DeftManifestTest {
         for (b in bad) assertFalse(b, DeftManifestParser.validWallpaperPage(b))
     }
 
-    // PARITY G11: manifest keyboard {page}.
+    // Manifest keyboard {page}.
     @Test
     fun parsesKeyboard() {
         fun withKeyboard(keyboard: String, profile: String = "myapp") =

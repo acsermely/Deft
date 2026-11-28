@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import app.deft.ui.theme.AppDeftTheme
 
 /**
- * First-run device setup. Personal substitute for the public M8 wizard:
+ * First-run device setup. Personal substitute for the public setup wizard:
  * default-home hint, then the permission note. `scripts/debloat.sh` still
  * covers the one-time ADB cleanup.
  */
@@ -60,7 +60,7 @@ class SetupActivity : ComponentActivity() {
                             if (level == 1) {
                                 Button(onClick = { requestRole(RoleManager.ROLE_SMS) }) { Text("SMS app") }
                                 Button(onClick = { requestRole(RoleManager.ROLE_DIALER) }) { Text("Phone app") }
-                                // PARITY G11: no Browser button; a web app becomes the browser from its dashboard card.
+                                // No Browser button; a web app becomes the browser from its dashboard card.
                             }
                             Button(onClick = { step = 2 }) { Text("Continue") }
                         }

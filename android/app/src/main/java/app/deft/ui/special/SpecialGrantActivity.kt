@@ -52,6 +52,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// DEVICE-UNCHECKED (special access tier): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a special grant only via the launcher sheet after the screen lock; use notification shown; 90-day review fires.
+// Remove this note once checked.
 private sealed interface Step {
     val app: InstalledWebApp?
 
@@ -82,13 +85,13 @@ private sealed interface AllowOutcome {
 }
 
 /**
- * PARITY G0: the only place a special-access capability is granted. Opened from the app's card
+ * The only place a special-access capability is granted. Opened from the app's card
  * on the dashboard, or by a bridge call when the app asks ([SpecialAsk]; the call then waits for its close). Names the app and origin, shows the manifest reason and a plain warning,
  * refuses while another app holds an exclusive group, and needs the screen lock to allow.
  * If Android has its own switch for the power, a second step opens that system screen once
  * and reads the state back when the user returns.
  *
- * PARITY G5: for `location.background` that second step is Android's "Allow all the time"
+ * For `location.background` that second step is Android's "Allow all the time"
  * location. Android 11+ asks it only on its own and only after precise or approximate location,
  * so the step asks location first (if needed), then background location, which opens the
  * launcher's location page in Settings. If Android no longer shows the request (asked and
@@ -104,7 +107,7 @@ class SpecialGrantActivity : ComponentActivity() {
     // The state is read back on resume (see LaunchedEffect(tick)); nothing to do with the result here.
     private val backgroundLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
-    // PARITY G11: Android's role request (and device admin activation) must be started for a result;
+    // Android's role request (and device admin activation) must be started for a result;
     // the state is read back on resume.
     private val roleRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
 
@@ -131,7 +134,7 @@ class SpecialGrantActivity : ComponentActivity() {
             }
             return true
         }
-        // PARITY G11: the keyboard is turned on in keyboard settings, then chosen in Android's picker.
+        // The keyboard is turned on in keyboard settings, then chosen in Android's picker.
         if (access == SystemAccess.IME) {
             if (app.deft.ime.DeftInputMethodService.isEnabled(this)) {
                 return showKeyboardPicker()
@@ -145,12 +148,12 @@ class SpecialGrantActivity : ComponentActivity() {
         return SpecialAccessFlow.start(this, access)
     }
 
-    /** PARITY G11: Android's keyboard picker (a system dialog over this sheet); false when it cannot be shown. */
+    /** Android's keyboard picker (a system dialog over this sheet); false when it cannot be shown. */
     private fun showKeyboardPicker(): Boolean = runCatching {
         getSystemService(android.view.inputmethod.InputMethodManager::class.java)!!.showInputMethodPicker()
     }.isSuccess
 
-    /** PARITY G11: the keyboard picker was shown once by itself after the user came back from keyboard settings. */
+    /** The keyboard picker was shown once by itself after the user came back from keyboard settings. */
     private var keyboardPickerShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -209,7 +212,7 @@ class SpecialGrantActivity : ComponentActivity() {
                     } else if (current.access == SystemAccess.IME &&
                         app.deft.ime.DeftInputMethodService.isEnabled(this@SpecialGrantActivity)
                     ) {
-                        // PARITY G11: on, but not chosen yet. Android's picker needs this window in
+                        // On, but not chosen yet. Android's picker needs this window in
                         // focus, so it opens a moment after the user is back (once by itself).
                         note = "Deft's keyboard is on. Now choose it as your keyboard: tap Choose keyboard, " +
                             "then pick Deft in the list."
@@ -223,23 +226,23 @@ class SpecialGrantActivity : ComponentActivity() {
                             "${current.app.name} has the permission, but it cannot work until you turn it on." +
                             when (current.access) {
                                 SystemAccess.BACKGROUND_LOCATION -> " In app settings, open Permissions, then Location."
-                                // PARITY G9: Android 13+ greys out the switch for apps not installed from a store.
+                                // Android 13+ greys out the switch for apps not installed from a store.
                                 SystemAccess.ACCESSIBILITY ->
                                     " If the switch is greyed out, open app settings, tap the menu at the top right, " +
                                         "choose \"Allow restricted settings\", then try again."
-                                // PARITY G11: most phones only let the user pick the assistant in Settings.
+                                // Most phones only let the user pick the assistant in Settings.
                                 SystemAccess.ROLE_ASSISTANT ->
                                     " Open default apps, then Digital assistant app, and choose Deft. " +
                                         "If it is not listed there, this phone does not let Deft be the assistant."
-                                // PARITY G11: the keyboard has its own switch in keyboard settings.
+                                // The keyboard has its own switch in keyboard settings.
                                 SystemAccess.IME ->
                                     " In keyboard settings, open the list of keyboards (On-screen keyboard or Manage keyboards) " +
                                         "and turn on Deft."
-                                // PARITY G11: Android's preview screen sets the wallpaper only with its own button.
+                                // Android's preview screen sets the wallpaper only with its own button.
                                 SystemAccess.WALLPAPER ->
                                     " On Android's preview screen, tap the button to set the wallpaper, then choose the home screen " +
                                         "(or home and lock screen). Tap Try again to open it once more."
-                                // PARITY B4: Android's payment app list is under NFC settings.
+                                // Android's payment app list is under NFC settings.
                                 SystemAccess.PAYMENT_DEFAULT ->
                                     " Open payment settings and choose Deft under Contactless payments " +
                                         "(on some phones: Connections, NFC, Contactless payments)."
@@ -302,7 +305,7 @@ class SpecialGrantActivity : ComponentActivity() {
                                     step = s.copy(stage = SpecialAccessFlow.open(s.stage))
                                     if (!openSystemStep(s.access)) {
                                         note = if (s.access.asksInPlace) {
-                                            // PARITY G11: some phones do not offer the role to other apps.
+                                            // Some phones do not offer the role to other apps.
                                             "This phone does not let Deft be its ${s.access.label.lowercase()}. " +
                                                 "${s.app.name} has the permission, but it cannot work on this phone."
                                         } else {
@@ -311,13 +314,13 @@ class SpecialGrantActivity : ComponentActivity() {
                                     }
                                 },
                                 onDefaultApps = {
-                                    // PARITY G11: the keyboard: settings again while it is off, then Android's picker.
+                                    // The keyboard: settings again while it is off, then Android's picker.
                                     if (s.access == SystemAccess.IME) {
                                         note = null
                                         if (!openSystemStep(s.access)) note = "This phone has no keyboard settings screen."
                                         return@SystemStep
                                     }
-                                    // PARITY G11: device admin and the live wallpaper have no list to pick from; ask Android again.
+                                    // Device admin and the live wallpaper have no list to pick from; ask Android again.
                                     if (s.access == SystemAccess.DEVICE_ADMIN || s.access == SystemAccess.WALLPAPER) {
                                         note = null
                                         if (!openSystemStep(s.access)) note = "This phone has no ${s.access.label.lowercase()} screen."
@@ -353,7 +356,7 @@ class SpecialGrantActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    // PARITY G11: Android's keyboard picker is a dialog, not an activity: the choice is read back
+    // Android's keyboard picker is a dialog, not an activity: the choice is read back
     // when this window gets the focus again.
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -382,15 +385,15 @@ class SpecialGrantActivity : ComponentActivity() {
         return when (result) {
             SpecialGrantResult.Granted -> {
                 withContext(Dispatchers.IO) { repo.log(s.app.id, "special", s.cap.id, null, "granted") }
-                // PARITY G8: a connected listener starts forwarding and shows "in use" now.
+                // A connected listener starts forwarding and shows "in use" now.
                 if (s.cap == Capability.NOTIFICATIONS_LISTEN) {
                     app.deft.notifications.DeftNotificationListener.syncUse(this)
                 }
-                // PARITY G9: a connected accessibility service starts forwarding and shows "in use" now.
+                // A connected accessibility service starts forwarding and shows "in use" now.
                 if (s.cap == Capability.ACCESSIBILITY) {
                     app.deft.a11y.DeftAccessibilityService.syncUse(this)
                 }
-                // PARITY G11: the role's launcher component must be on before Android's role request.
+                // The role's launcher component must be on before Android's role request.
                 withContext(Dispatchers.IO) { app.deft.roles.RoleComponents.sync(this@SpecialGrantActivity, repo) }
                 val access = SystemAccess.forCapability(s.cap)
                 if (access != null && !access.isGranted(this)) {
@@ -512,7 +515,7 @@ private fun SystemStep(
     )
     if (fromApp) Text("One more step", style = MaterialTheme.typography.titleSmall)
     if (s.stage == SpecialAccessFlow.Stage.RESTRICTED_HINT) {
-        // PARITY W7: shown once. Android 13+ locks the switch until "Allow restricted settings" is chosen in app info.
+        // Shown once. Android 13+ locks the switch until "Allow restricted settings" is chosen in app info.
         Text(RESTRICTED_STEPS, style = MaterialTheme.typography.bodyMedium)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             TextButton(onClick = onClose) { Text("Later") }
@@ -556,20 +559,20 @@ private fun SystemStep(
             Button(onClick = onDefaultApps) { Text(if (on) "Choose keyboard" else "Open keyboard settings") }
         } else if ((location || s.access == SystemAccess.ACCESSIBILITY) && note != null) {
             // Android stops showing the request after it was refused; Settings still has the switch.
-            // PARITY G9: app settings is also where Android 13+ allows restricted settings.
+            // App settings is also where Android 13+ allows restricted settings.
             Button(onClick = onAppSettings) { Text("Open app settings") }
         }
     }
 }
 
-/** PARITY W7: the one-time steps for "Allow restricted settings" (Android 13+, apps not from a store). */
+/** The one-time steps for "Allow restricted settings" (Android 13+, apps not from a store). */
 private const val RESTRICTED_STEPS = "Android 13 and newer keeps the accessibility switch locked for apps not installed from the " +
     "Play Store, until you allow restricted settings. Three steps:\n" +
     "1. Tap Open app settings.\n" +
     "2. Tap the menu (the three dots, top right) and choose Allow restricted settings.\n" +
     "3. Come back here and tap Accessibility settings. This is shown only once."
 
-/** PARITY G11: the two keyboard steps, what they mean for this app, and how to undo them. */
+/** The two keyboard steps, what they mean for this app, and how to undo them. */
 private fun imeStepText(s: Step.System): String =
     "Two steps in Android: turn on Deft's keyboard in keyboard settings, then choose it as your keyboard. " +
         "Android warns that a keyboard can collect everything you type. With this keyboard that is true for ${s.app.name}, " +
@@ -578,12 +581,12 @@ private fun imeStepText(s: Step.System): String =
         "To undo it, remove the permission from the app's card here: Android then goes back to another keyboard. " +
         "You can also switch keyboards any time with the keyboard button, or in Android Settings under Keyboard."
 
-/** PARITY G11: what Android's role step does for this app, and how to undo it in Android settings. */
+/** What Android's role step does for this app, and how to undo it in Android settings. */
 private fun roleStepText(s: Step.System): String {
     val what = when (s.access) {
         SystemAccess.ROLE_BROWSER -> "Android asks you to make Deft your default browser. Choose Deft. " +
             "Web links you tap in other apps then go to ${s.app.name}."
-        // PARITY F7b: only asked when Deft is not the phone app (that one screens calls already).
+        // Only asked when Deft is not the phone app (that one screens calls already).
         SystemAccess.CALL_SCREENING -> "Android asks you to make Deft your caller ID and spam app. " +
             "Choose Deft. Each incoming call then goes to ${s.app.name} first, which can let it ring, " +
             "ring silently or reject it; with no answer within 4 seconds it rings as usual."
@@ -599,7 +602,7 @@ private fun roleStepText(s: Step.System): String {
             "Only ${s.app.name} gets this through Deft; other apps in the launcher do not. " +
             "To undo it, remove the permission from the app's card here: Android then shows its default wallpaper. " +
             "Android does not keep your previous picture, so choose it again in Android Settings under Wallpaper."
-        // PARITY B4: Android's own question; undone under Contactless payments, not Default apps.
+        // Android's own question; undone under Contactless payments, not Default apps.
         SystemAccess.PAYMENT_DEFAULT -> return "Android asks you to make Deft your default payment app. " +
             "Choose Deft. When you then hold the unlocked phone to a card reader while ${s.app.name} is open, " +
             "${s.app.name} answers as your contactless card and may pay with it. " +

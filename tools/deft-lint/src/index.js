@@ -27,8 +27,8 @@ export function run(input) {
   setDependencies(dependencyNames(files["manifest.json"]));
 
   for (const path of Object.keys(files)) {
-    if (pathHasDotDotOrFl(path)) {
-      out.push(issue("FL003", "error", path, 1, 1, 'path must not contain "..", "_deft/" or "_fl/"'));
+    if (pathHasDotDotOrRuntime(path)) {
+      out.push(issue("FL003", "error", path, 1, 1, 'path must not contain ".." or "_deft/"'));
     }
     const source = files[path];
     if (typeof source !== "string") continue;
@@ -64,14 +64,13 @@ function basename(path) {
   return slash < 0 ? path : path.slice(slash + 1);
 }
 
-// Runtime files apps load by absolute URL (docs/spec/PLATFORM.md: one runtime, /_deft/v1/). FL005 checks the module names.
-// /_fl/v1/ is the pre-rename runtime path; the launcher still serves it for older apps.
-const RUNTIME_REF = /^\/_(?:deft|fl)\/v1\/[a-z0-9._\/-]+\.(?:js|css|svg)(?:[?#].*)?$/;
+// Runtime files apps load by absolute URL (one runtime, /_deft/v1/). FL005 checks the module names.
+const RUNTIME_REF = /^\/_deft\/v1\/[a-z0-9._\/-]+\.(?:js|css|svg)(?:[?#].*)?$/;
 
-function pathHasDotDotOrFl(value) {
+function pathHasDotDotOrRuntime(value) {
   if (typeof value !== "string") return false;
   if (RUNTIME_REF.test(value)) return false;
-  return value.includes("..") || value.includes("_deft/") || value.includes("_fl/");
+  return value.includes("..") || value.includes("_deft/");
 }
 
 function locator(source) {
@@ -269,15 +268,15 @@ function scanJs(path, source, out, allows, mode) {
     if (dotted) continue;
     if (t.value === "import") {
       const spec = importSpecifier(tokens, i);
-      if (spec && pathHasDotDotOrFl(spec.value)) {
+      if (spec && pathHasDotDotOrRuntime(spec.value)) {
         const pos = at(spec.index);
-        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
       }
     } else if (t.value === "export") {
       const spec = exportSpecifier(tokens, i);
-      if (spec && pathHasDotDotOrFl(spec.value)) {
+      if (spec && pathHasDotDotOrRuntime(spec.value)) {
         const pos = at(spec.index);
-        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
       }
     }
   }
@@ -601,9 +600,9 @@ function scanHtml(path, source, out, mode) {
       if (attr.name === "class" || attr.name === "classname") {
         scanBtnModifiers(path, attr.value, attr.valueStart, out, at);
       }
-      if ((attr.name === "src" || attr.name === "href") && pathHasDotDotOrFl(attr.value)) {
+      if ((attr.name === "src" || attr.name === "href") && pathHasDotDotOrRuntime(attr.value)) {
         const pos = at(attr.valueIndex);
-        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
       }
     }
   }
@@ -638,18 +637,18 @@ function scanCss(path, source, out, allows, mode) {
     }
     if (isCssUrl(source, i)) {
       const url = readCssUrl(source, i);
-      if (url && pathHasDotDotOrFl(url.value)) {
+      if (url && pathHasDotDotOrRuntime(url.value)) {
         const pos = at(url.valueIndex);
-        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
       }
       i = url ? url.end : i + 3;
       continue;
     }
     if (isCssImport(source, i)) {
       const imported = readImportPath(source, i);
-      if (imported && pathHasDotDotOrFl(imported.value)) {
+      if (imported && pathHasDotDotOrRuntime(imported.value)) {
         const pos = at(imported.valueIndex);
-        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+        out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
       }
       i = imported ? imported.end : i + 7;
       continue;
@@ -1122,7 +1121,7 @@ function scanDependencies(path, source, data, canvas, mode, at, out) {
     }
     const long = spec && typeof spec === "object";
     const integrity = long ? spec.integrity : spec;
-    // PARITY G2: a WebAssembly dependency is served only once its bytes are pinned by hash.
+    // A WebAssembly dependency is served only once its bytes are pinned by hash.
     if (/\.wasm$/i.test(last) && integrity == null) {
       out.push(issue("FL710", "error", path, where.line, where.col, `WebAssembly dependency ${url} must be hash-pinned`));
     }
@@ -1156,15 +1155,13 @@ function scanManifest(path, source, profile, catalog, out, mode) {
     return;
   }
   for (const key of REQUIRED_MANIFEST) {
-    // "fl" is the pre-rename key; packages made before the rename still install (DeftManifestParser accepts it too).
-    if (key === "deft" && !fieldMissing(data, "fl")) continue;
     if (fieldMissing(data, key)) {
       out.push(issue("FL701", "error", path, 1, 1, `manifest.json missing ${key}`));
     }
   }
-  if (typeof data.start_url === "string" && pathHasDotDotOrFl(data.start_url)) {
+  if (typeof data.start_url === "string" && pathHasDotDotOrRuntime(data.start_url)) {
     const pos = at(source.indexOf(data.start_url) < 0 ? 0 : source.indexOf(data.start_url));
-    out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain "..", "_deft/" or "_fl/"'));
+    out.push(issue("FL003", "error", path, pos.line, pos.col, 'path must not contain ".." or "_deft/"'));
   }
 
   const canvas = profile === "canvas" || data.profile === "canvas";
@@ -1191,6 +1188,11 @@ function scanManifest(path, source, profile, catalog, out, mode) {
     out.push(issue("FL706", "error", path, pos.line, pos.col, "canvas profile cannot declare handles"));
   }
   scanHandles(path, source, data, at, out);
+  if (canvas && data.passkeys != null) {
+    const pos = at(findKey(source, "passkeys"));
+    out.push(issue("FL706", "error", path, pos.line, pos.col, "canvas profile cannot declare passkeys"));
+  }
+  scanPasskeys(path, source, data, at, out);
   if (canvas && data.wallpaper != null) {
     const pos = at(findKey(source, "wallpaper"));
     out.push(issue("FL706", "error", path, pos.line, pos.col, "canvas profile cannot declare wallpaper"));
@@ -1241,12 +1243,12 @@ function scanManifest(path, source, profile, catalog, out, mode) {
     }
   }
   const knownFields = new Set([
-    "deft", "fl", "id", "name", "version", "description", "profile", "start_url", "icon",
+    "deft", "id", "name", "version", "description", "profile", "start_url", "icon",
     "license", "source", "authors", "capabilities", "network", "categories",
     "forked_from", "min_host", "large", "kind", "dependencies", "shortcuts", "embeds", "background",
-    "handles", "wallpaper", "keyboard", "widget", "tools",
+    "handles", "wallpaper", "keyboard", "widget", "tools", "passkeys",
   ]);
-  // PARITY C3: launcher shortcuts. Keep identical to DeftManifestParser.parseShortcuts (Kotlin).
+  // Launcher shortcuts. Keep identical to DeftManifestParser.parseShortcuts (Kotlin).
   if (data.shortcuts != null) {
     const list = Array.isArray(data.shortcuts) ? data.shortcuts : null;
     const pos = at(findKey(source, "shortcuts"));
@@ -1293,7 +1295,7 @@ function validShortcutUrl(url) {
   return !reservedPath(url);
 }
 
-// PARITY D1: manifest `background` {module, triggers}. Keep identical to
+// Manifest `background` {module, triggers}. Keep identical to
 // DeftManifestParser.parseBackground / validBackgroundModule / validBackgroundTrigger (Kotlin).
 const BACKGROUND_TRIGGERS = new Set(["alarms", "sms", "calls", "notify.action", "boot", "network", "charging", "push", "geofence", "sync", "notification", "screening"]);
 
@@ -1307,7 +1309,7 @@ function scanBackground(path, source, data, at, out) {
   }
   if (!validBackgroundModule(bg.module)) {
     out.push(issue("FL713", "error", path, pos.line, pos.col,
-      'background.module must be a same-origin .js or .mjs path like "./bg.js" (no "..", "//", "/_deft/" or "/_fl/")'));
+      'background.module must be a same-origin .js or .mjs path like "./bg.js" (no "..", "//" or "/_deft/")'));
   }
   if (!Array.isArray(bg.triggers)) {
     out.push(issue("FL713", "error", path, pos.line, pos.col, "background.triggers must be an array"));
@@ -1342,7 +1344,7 @@ function validBackgroundTrigger(value) {
   return minutes >= 15 && minutes <= 10080;
 }
 
-// PARITY G11: manifest `wallpaper` {page}, the page the launcher's live wallpaper shows. Keep identical to
+// Manifest `wallpaper` {page}, the page the launcher's live wallpaper shows. Keep identical to
 // DeftManifestParser.parseWallpaper / validWallpaperPage (Kotlin).
 function scanWallpaper(path, source, data, at, out) {
   if (data.wallpaper == null) return;
@@ -1354,7 +1356,7 @@ function scanWallpaper(path, source, data, at, out) {
   }
   if (!validWallpaperPage(wp.page)) {
     out.push(issue("FL715", "error", path, pos.line, pos.col,
-      'wallpaper.page must be a same-origin .html path like "./wallpaper.html" (no "..", "//", "/_deft/" or "/_fl/")'));
+      'wallpaper.page must be a same-origin .html path like "./wallpaper.html" (no "..", "//" or "/_deft/")'));
   }
   const declared = Array.isArray(data.capabilities) && data.capabilities.some((entry) =>
     (typeof entry === "string" ? entry : entry && entry.id) === "wallpaper");
@@ -1363,7 +1365,7 @@ function scanWallpaper(path, source, data, at, out) {
   }
 }
 
-// PARITY G11: manifest `keyboard` {page}, the page the launcher's keyboard (role `ime`) shows. Same path rule
+// Manifest `keyboard` {page}, the page the launcher's keyboard (role `ime`) shows. Same path rule
 // as wallpaper.page. Keep identical to DeftManifestParser.parseKeyboard (Kotlin).
 function scanKeyboard(path, source, data, at, out) {
   if (data.keyboard == null) return;
@@ -1375,7 +1377,7 @@ function scanKeyboard(path, source, data, at, out) {
   }
   if (!validWallpaperPage(kb.page)) {
     out.push(issue("FL716", "error", path, pos.line, pos.col,
-      'keyboard.page must be a same-origin .html path like "./keyboard/index.html" (no "..", "//", "/_deft/" or "/_fl/")'));
+      'keyboard.page must be a same-origin .html path like "./keyboard/index.html" (no "..", "//" or "/_deft/")'));
   }
   const declared = Array.isArray(data.capabilities) && data.capabilities.some((entry) =>
     (typeof entry === "string" ? entry : entry && entry.id) === "ime");
@@ -1398,7 +1400,7 @@ function scanWidget(path, source, data, at, out) {
   }
   if (!validWallpaperPage(wg.page)) {
     out.push(issue("FL717", "error", path, pos.line, pos.col,
-      'widget.page must be a same-origin .html path like "./widget.html" (no "..", "//", "/_deft/" or "/_fl/")'));
+      'widget.page must be a same-origin .html path like "./widget.html" (no "..", "//" or "/_deft/")'));
   }
   if (!Array.isArray(wg.sizes) || wg.sizes.length === 0) {
     out.push(issue("FL717", "error", path, pos.line, pos.col, "widget.sizes must be a non-empty array"));
@@ -1533,12 +1535,11 @@ function validWallpaperPage(value) {
   return !reservedPath(absolute);
 }
 
-// PARITY E1: manifest `handles` {mimeTypes?, schemes?, links?} for "Open with" from other apps.
+// Manifest `handles` {mimeTypes?, schemes?, links?} for "Open with" from other apps.
 // Keep identical to DeftManifestParser.parseHandles / validHandleMime / validHandleScheme (Kotlin).
 const MAX_HANDLES = 16;
 // Schemes and links the launcher's fixed Android filters actually deliver.
-// web+fl is the pre-rename scheme; the launcher still has an alias for it.
-const LIVE_SCHEMES = new Set(["web+deft", "web+fl", "mailto"]);
+const LIVE_SCHEMES = new Set(["web+deft", "mailto"]);
 
 function validHandleMime(value) {
   return typeof value === "string" && /^[a-z0-9][a-z0-9.+-]{0,62}\/(\*|[a-z0-9][a-z0-9.+-]{0,126})$/.test(value);
@@ -1584,7 +1585,7 @@ function scanHandles(path, source, data, at, out) {
   if (Array.isArray(h.schemes)) {
     for (const scheme of h.schemes) {
       if (!validHandleScheme(scheme) || LIVE_SCHEMES.has(scheme)) continue;
-      out.push(issue("FL714", "warn", path, pos.line, pos.col, `scheme ${JSON.stringify(scheme)} never reaches the app: Android only sends web+deft, web+fl and mailto to Deft`));
+      out.push(issue("FL714", "warn", path, pos.line, pos.col, `scheme ${JSON.stringify(scheme)} never reaches the app: Android only sends web+deft and mailto to Deft`));
     }
   }
   if (Array.isArray(h.links) && h.links.length > 0) {
@@ -1592,7 +1593,55 @@ function scanHandles(path, source, data, at, out) {
   }
 }
 
-// PARITY G14: manifest `embeds` (third-party scripts and frames for `web.embed`).
+// Manifest `passkeys: {rpIds}` for the `webauthn` bridge.
+// Keep identical to PasskeyPolicy.validRpId / parseManifest (Kotlin).
+const MAX_RP_IDS = 4;
+const RP_LABEL = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/;
+const RP_BLOCKED_TLDS = new Set(["internal", "local", "localhost", "test"]);
+
+export function validRpId(value) {
+  if (typeof value !== "string" || value.length === 0 || value.length > 253) return false;
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(value)) return false;
+  const labels = value.split(".");
+  if (labels.length < 2 || labels.some((l) => !RP_LABEL.test(l))) return false;
+  const last = labels[labels.length - 1];
+  if (/^\d+$/.test(last) || RP_BLOCKED_TLDS.has(last)) return false;
+  return true;
+}
+
+function scanPasskeys(path, source, data, at, out) {
+  const declared = Array.isArray(data.capabilities) && data.capabilities.some((entry) =>
+    (typeof entry === "string" ? entry : entry && entry.id) === "webauthn");
+  if (data.passkeys == null) {
+    if (declared) {
+      const pos = at(findKey(source, "capabilities"));
+      out.push(issue("FL719", "error", path, pos.line, pos.col, "webauthn needs passkeys: {rpIds: [\"example.com\"]} naming the app's own website"));
+    }
+    return;
+  }
+  const pos = at(findKey(source, "passkeys"));
+  const p = data.passkeys;
+  if (typeof p !== "object" || Array.isArray(p)) {
+    out.push(issue("FL719", "error", path, pos.line, pos.col, "passkeys must be {rpIds}"));
+    return;
+  }
+  if (!Array.isArray(p.rpIds) || p.rpIds.length === 0) {
+    out.push(issue("FL719", "error", path, pos.line, pos.col, "passkeys.rpIds must be a non-empty array"));
+    return;
+  }
+  if (p.rpIds.length > MAX_RP_IDS) {
+    out.push(issue("FL719", "error", path, pos.line, pos.col, `at most ${MAX_RP_IDS} passkeys.rpIds`));
+  }
+  for (const entry of p.rpIds) {
+    if (validRpId(entry)) continue;
+    out.push(issue("FL719", "error", path, pos.line, pos.col, `invalid passkeys.rpIds entry ${JSON.stringify(entry)}: a lowercase domain like example.com (no IP, localhost, .internal, .local, .localhost, .test)`));
+  }
+  if (!declared) {
+    out.push(issue("FL719", "error", path, pos.line, pos.col, "passkeys needs the webauthn capability"));
+  }
+}
+
+// Manifest `embeds` (third-party scripts and frames for `web.embed`).
 // Keep identical to DeftManifestParser.parseEmbeds / validEmbedOrigin (Kotlin).
 const MAX_EMBEDS = 16;
 

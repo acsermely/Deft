@@ -4187,7 +4187,7 @@
       "col": 12,
       "id": "FL113",
       "severity": "error",
-      "message": "access to host internal __fl*"
+      "message": "access to host internal __deft*"
     },
     {
       "app": "sms",

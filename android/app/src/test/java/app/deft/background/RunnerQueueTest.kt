@@ -116,7 +116,7 @@ class RunnerQueueTest {
         assertEquals(0L, q.remainingMs(1_000, 99_000))
     }
 
-    // PARITY F7b: urgent triggers (call screening) go first and are never started late.
+    // Urgent triggers (call screening) go first and are never started late.
 
     @Test
     fun urgentTriggerGoesAheadOfOrdinaryOnes() {

@@ -7,7 +7,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.doubleOrNull
 
 /**
- * PARITY G10: `accounts.*` rules. Pure, unit tested; the Android side is `account.DeftAccounts`,
+ * `accounts.*` rules. Pure, unit tested; the Android side is `account.DeftAccounts`,
  * `account.DeftAuthenticator`, `account.DeftSyncAdapter` and `bridge.modules.AccountsModule`.
  *
  * Every app's accounts share one Android account type (`<applicationId>.account`). An account

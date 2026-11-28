@@ -127,6 +127,7 @@ Checked for a canvas package and for a package with a manifest `widget`. The hom
 | FL716 | E | Bad `keyboard`. |
 | FL717 | E | Bad `widget` (page or sizes; canvas forbids it). |
 | FL718 | E/W | Bad `tools` (name, description, params schema subset, handler ref; canvas forbids them), or a handler file that is missing, does not export its function (W), or, for an `isolate` handler, is not a plain synchronous script. |
+| FL719 | E | Bad `passkeys` (rpIds: 1–4 lowercase domains, no IP, localhost, .internal, .local, .localhost, .test; canvas forbids it), `passkeys` without `webauthn`, or `webauthn` without `passkeys`. |
 | FL720 | E | Theme `palette.json` invalid. |
 | FL721 | E | Theme `palette.json` has a bad or missing value. |
 | FL722 | E | Theme package contains code or SVG. |

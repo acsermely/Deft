@@ -1,6 +1,6 @@
 package app.deft.bridge
 
-/** PARITY G7: limits and checks for `apps.*` and `usage.stats`, kept free of Android types for unit tests. */
+/** Limits and checks for `apps.*` and `usage.stats`, kept free of Android types for unit tests. */
 object AppsSpec {
     /** Edge length of the icon `apps.icon` returns (PNG, base64). */
     const val ICON_PX = 96

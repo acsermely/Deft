@@ -28,7 +28,7 @@ enum class Risk {
     HIGH,
 
     /**
-     * PARITY G0: Android-style "special access". Never granted at install or from the consent
+     * Android-style "special access". Never granted at install or from the consent
      * screen; only from the launcher's own sheet after the screen lock: from the app's card on the
      * dashboard, or opened at the point of use when the app asks.
      */
@@ -44,11 +44,11 @@ enum class Capability(
     val risk: Risk,
     val confirmEach: Boolean = false,
     val exclusiveGroup: String? = null,
-    /** PARITY G0: plain warning shown on the special-access sheet. Required for [Risk.SPECIAL]. */
+    /** Plain warning shown on the special-access sheet. Required for [Risk.SPECIAL]. */
     val warning: String = "",
-    /** PARITY G0: an ongoing "<App> is using <title>" notification shows while the power is in use. */
+    /** An ongoing "<App> is using <title>" notification shows while the power is in use. */
     val persistentWhileActive: Boolean = false,
-    /** PARITY G0: false until the module exists; the dashboard shows "Not available yet". */
+    /** False until the module exists; the dashboard shows "Not available yet". */
     val available: Boolean = true,
 ) {
     LOCATION(
@@ -357,7 +357,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY F5a: DND (F5b) is a separate capability.
+    // DND is a separate capability.
     AUDIO_CONTROL(
         id = "audio.control",
         kind = CapabilityKind.BRIDGE,
@@ -366,7 +366,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY F2: keys never leave the phone; the app only gets signatures and ciphertext back.
+    // Keys never leave the phone; the app only gets signatures and ciphertext back.
     KEYSTORE(
         id = "keystore",
         kind = CapabilityKind.BRIDGE,
@@ -375,7 +375,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY F6: all photos, videos and audio on the phone, not only what the user picks.
+    // All photos, videos and audio on the phone, not only what the user picks.
     MEDIA_READ(
         id = "media.read",
         kind = CapabilityKind.BRIDGE,
@@ -384,7 +384,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY E2: the app asks another app for something; the user picks which app, every time.
+    // The app asks another app for something; the user picks which app, every time.
     INTENTS_START(
         id = "intents.start",
         kind = CapabilityKind.BRIDGE,
@@ -393,7 +393,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY E5: web checkout that hands payment to an installed payment app.
+    // Web checkout that hands payment to an installed payment app.
     PAYMENTS_REQUEST(
         id = "payments.request",
         kind = CapabilityKind.STANDARD,
@@ -402,7 +402,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY F7a: blocked numbers need the dialer role (exclusive with the other call capabilities).
+    // Blocked numbers need the dialer role (exclusive with the other call capabilities).
     CALLS_BLOCK(
         id = "calls.block",
         kind = CapabilityKind.BRIDGE,
@@ -411,7 +411,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY F7a: carrier codes such as *100# can cost money, so every one asks first.
+    // Carrier codes such as *100# can cost money, so every one asks first.
     USSD(
         id = "telephony.ussd",
         kind = CapabilityKind.BRIDGE,
@@ -421,7 +421,7 @@ enum class Capability(
         risk = Risk.HIGH,
         confirmEach = true,
     ),
-    // PARITY G0: the first special-access powers. Entries only; their modules come in later items.
+    // Special-access powers. Entries only; the behavior lives in their modules.
     APPS_LIST(
         id = "apps.list",
         kind = CapabilityKind.BRIDGE,
@@ -501,13 +501,13 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.SPECIAL,
         exclusiveGroup = "hce-payment",
-        // PARITY B4: Android also asks to make Deft the default payment app.
+        // Android also asks to make Deft the default payment app.
         warning = "The app can act as a contactless card at payment terminals, and tapping your phone may pay with it. " +
             "Only one app at a time can have this. Android also asks you to make Deft your default payment app; " +
             "to undo it, remove the permission here, or pick another app in Android Settings under Contactless payments.",
         available = true,
     ),
-    // PARITY F5b: Do Not Disturb, a separate switch from volume. Reading and setting it needs the
+    // Do Not Disturb, a separate switch from volume. Reading and setting it needs the
     // system's notification policy access, which the launcher holds for all apps.
     DND(
         id = "dnd",
@@ -517,7 +517,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G1: network grants only widen the app's CSP (CspBuilder); there is no bridge method.
+    // Network grants only widen the app's CSP (CspBuilder); there is no bridge method.
     NETWORK_OPEN(
         id = "network.open",
         kind = CapabilityKind.STANDARD,
@@ -534,7 +534,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY G2: the app may compile the .wasm files it ships (CspFlag.WASM); there is no bridge method.
+    // The app may compile the .wasm files it ships (CspFlag.WASM); there is no bridge method.
     WASM(
         id = "wasm",
         kind = CapabilityKind.STANDARD,
@@ -543,7 +543,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY G14: approved manifest `embeds` origins join script/frame/connect/img-src (CspBuilder);
+    // Approved manifest `embeds` origins join script/frame/connect/img-src (CspBuilder);
     // each origin is approved on its own on the consent screen and the dashboard. No bridge method.
     WEB_EMBED(
         id = "web.embed",
@@ -554,7 +554,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G3: a larger package cap and 200 MiB binaries (DeftPaths.largeCaps). No bridge method.
+    // A larger package cap and 200 MiB binaries (DeftPaths.largeCaps). No bridge method.
     STORAGE_LARGE(
         id = "storage.large",
         kind = CapabilityKind.STANDARD,
@@ -563,7 +563,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.LOW,
     ),
-    // PARITY F8: devices on the local network only (RFC 1918, link-local, IPv6 ULA); no internet.
+    // Devices on the local network only (RFC 1918, link-local, IPv6 ULA); no internet.
     NET_LOCAL(
         id = "net.local",
         kind = CapabilityKind.BRIDGE,
@@ -572,7 +572,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G4: sockets to servers on the internet. Needs this grant and network.open, both declared.
+    // Sockets to servers on the internet. Needs this grant and network.open, both declared.
     NET_SOCKETS(
         id = "net.sockets",
         kind = CapabilityKind.STANDARD,
@@ -581,7 +581,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G6: scan results name nearby networks, so the app also needs Your location.
+    // Scan results name nearby networks, so the app also needs Your location.
     WIFI_SCAN(
         id = "wifi.scan",
         kind = CapabilityKind.BRIDGE,
@@ -590,7 +590,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G6: opens the Wi-Fi panel and suggests networks. Android does not let apps switch Wi-Fi on or off.
+    // Opens the Wi-Fi panel and suggests networks. Android does not let apps switch Wi-Fi on or off.
     WIFI_CONTROL(
         id = "wifi.control",
         kind = CapabilityKind.BRIDGE,
@@ -599,7 +599,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY G7: opens another launchable app. The launcher itself is refused.
+    // Opens another launchable app. The launcher itself is refused.
     APPS_LAUNCH(
         id = "apps.launch",
         kind = CapabilityKind.BRIDGE,
@@ -608,7 +608,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY G7: an id that is the same every time this app opens, unique per web origin.
+    // An id that is the same every time this app opens, unique per web origin.
     DEVICE_ID(
         id = "device.id",
         kind = CapabilityKind.BRIDGE,
@@ -617,7 +617,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY E3: sign in with a website in a Custom Tab; the result comes back to this app only.
+    // Sign in with a website in a Custom Tab; the result comes back to this app only.
     AUTH_SESSION(
         id = "auth.session",
         kind = CapabilityKind.BRIDGE,
@@ -626,7 +626,16 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY D1: host-scheduled, budgeted runs of the manifest `background` module.
+    // Credential Manager for the app's own website, only after that website opts in.
+    WEBAUTHN(
+        id = "webauthn",
+        kind = CapabilityKind.BRIDGE,
+        title = "Passkeys",
+        description = "Create and use passkeys for this app's own website, after the website allows it.",
+        defaultGrant = GrantLevel.WHILE_USING,
+        risk = Risk.MEDIUM,
+    ),
+    // Host-scheduled, budgeted runs of the manifest `background` module.
     BACKGROUND(
         id = "background",
         kind = CapabilityKind.BRIDGE,
@@ -635,7 +644,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY D3: a typed foreground service keeps the app's page running after the user leaves it.
+    // A typed foreground service keeps the app's page running after the user leaves it.
     FOREGROUND(
         id = "foreground",
         kind = CapabilityKind.BRIDGE,
@@ -644,7 +653,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.HIGH,
     ),
-    // PARITY D4: lock-screen, headset and Bluetooth controls for audio kept running by `foreground`.
+    // Lock-screen, headset and Bluetooth controls for audio kept running by `foreground`.
     MEDIA_SESSION(
         id = "media.session",
         kind = CapabilityKind.BRIDGE,
@@ -653,7 +662,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY D6: push messages through a UnifiedPush distributor app (no Google services).
+    // Push messages through a UnifiedPush distributor app (no Google services).
     PUSH(
         id = "push",
         kind = CapabilityKind.BRIDGE,
@@ -662,7 +671,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY G10: the app's own accounts in system Settings, with background sync.
+    // The app's own accounts in system Settings, with background sync.
     ACCOUNTS_OWN(
         id = "accounts.own",
         kind = CapabilityKind.BRIDGE,
@@ -671,7 +680,7 @@ enum class Capability(
         defaultGrant = GrantLevel.WHILE_USING,
         risk = Risk.MEDIUM,
     ),
-    // PARITY G11: the launcher becomes the phone's browser on behalf of one app; links reach it as data.
+    // The launcher becomes the phone's browser on behalf of one app; links reach it as data.
     ROLE_BROWSER(
         id = "role.browser",
         kind = CapabilityKind.BRIDGE,
@@ -682,7 +691,7 @@ enum class Capability(
         exclusiveGroup = "role-browser",
         warning = "Every web link you open from other apps, such as links in messages and email, goes to this app, so it sees those addresses. Only one app at a time can have this. Android also asks you to make Deft your browser; to undo that, choose another browser in Android Settings under Default apps.",
     ),
-    // PARITY G11: the launcher becomes the phone's assistant on behalf of one app, which opens on long-press Home.
+    // The launcher becomes the phone's assistant on behalf of one app, which opens on long-press Home.
     ROLE_ASSISTANT(
         id = "role.assistant",
         kind = CapabilityKind.BRIDGE,
@@ -693,7 +702,7 @@ enum class Capability(
         exclusiveGroup = "role-assistant",
         warning = "This app opens each time you call the assistant, instead of the phone's own assistant. It does not see your screen or hear you. Only one app at a time can have this. Android also asks you to make Deft your digital assistant; to undo that, choose another one in Android Settings under Default apps.",
     ),
-    // PARITY G11: the launcher's device admin, for one app; it can only lock the screen (no wipe).
+    // The launcher's device admin, for one app; it can only lock the screen (no wipe).
     DEVICE_ADMIN(
         id = "device.admin",
         kind = CapabilityKind.BRIDGE,
@@ -704,7 +713,7 @@ enum class Capability(
         exclusiveGroup = "device-admin",
         warning = "This app can lock your screen whenever it wants, at most every 30 seconds. Only one app at a time can have this. Android also asks you to activate Deft as a device admin app; while that is on, Android will not uninstall Deft. Removing this permission turns it off; you can also turn it off in Android Settings under Security, Device admin apps.",
     ),
-    // PARITY G11: the launcher's live wallpaper shows one app's wallpaper page. No ongoing
+    // The launcher's live wallpaper shows one app's wallpaper page. No ongoing
     // notification: the wallpaper itself shows that the app is running.
     WALLPAPER(
         id = "wallpaper",
@@ -716,7 +725,7 @@ enum class Capability(
         exclusiveGroup = "role-wallpaper",
         warning = "This app runs whenever your home screen or lock screen is visible, also when the app is closed, and that uses battery. It sees where you touch the home screen, but not what other apps show. Only one app at a time can have this. Android also asks you to set Deft's live wallpaper. Removing this permission turns it off and Android shows its default wallpaper; to get your own picture back, choose it again in Android Settings under Wallpaper.",
     ),
-    // PARITY G11: the launcher's keyboard (an Android input method) shows one app's keyboard page.
+    // The launcher's keyboard (an Android input method) shows one app's keyboard page.
     // Not persistentWhileActive: Android itself makes the keyboard visible whenever it is in use
     // (the keyboard is on screen, the keyboard switcher shows it) and warns when the user turns it
     // on; an ongoing notification would be there all day for nothing new.
@@ -730,7 +739,7 @@ enum class Capability(
         exclusiveGroup = "role-ime",
         warning = "This app sees everything you type with this keyboard in any app, such as messages, searches, addresses and card numbers, and it can type for you. Password fields are the exception: there Deft shows its own simple keyboard and the app sees nothing. It also learns which app you are typing in. Only one app at a time can have this. Android also asks you to turn on and choose Deft's keyboard. Removing this permission turns the keyboard off and Android goes back to another one; you can also switch keyboards in Android Settings under Keyboard.",
     ),
-    // PARITY F7b: the launcher's call screening service asks one app about each incoming call.
+    // The launcher's call screening service asks one app about each incoming call.
     CALLS_SCREEN(
         id = "calls.screen",
         kind = CapabilityKind.BRIDGE,

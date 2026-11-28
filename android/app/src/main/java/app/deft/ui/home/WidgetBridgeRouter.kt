@@ -116,11 +116,8 @@ object WidgetRouting {
     /** The reserved URL a "set up" placeholder in the canvas navigates to: `deft://setup/<encoded app id>`. */
     const val SETUP_PREFIX = "deft://setup/"
 
-    /** The pre-rename form of [SETUP_PREFIX], still accepted. */
-    const val LEGACY_SETUP_PREFIX = "fl://setup/"
-
-    /** True when [url] starts with [SETUP_PREFIX] or [LEGACY_SETUP_PREFIX]. */
-    fun isSetupUrl(url: String): Boolean = url.startsWith(SETUP_PREFIX) || url.startsWith(LEGACY_SETUP_PREFIX)
+    /** True when [url] starts with [SETUP_PREFIX]. */
+    fun isSetupUrl(url: String): Boolean = url.startsWith(SETUP_PREFIX)
 
     /**
      * The app id a tap on a setup placeholder may set up, or null. Accepted only for a navigation the page's own
@@ -163,16 +160,15 @@ object WidgetRouting {
     fun isBye(raw: String?): Boolean = raw == BYE
 
     /**
-     * Frame side of the canvas's `deft:theme` (reload theme.css, as themeCssJs does for a top document; apps made
-     * before the rename link /_fl/v1/theme.css, which is reloaded too) and
+     * Frame side of the canvas's `deft:theme` (reload theme.css, as themeCssJs does for a top document) and
      * `deft:reload` (the widget app's files changed) messages. Only the parent window is believed. On `pagehide`
      * the frame says [BYE], so a reloaded frame does not leave its old bridge (and its subscriptions) running.
      */
     const val FRAME_MESSAGES_JS =
         "addEventListener('message',function(e){if(e.source!==parent)return;var m=e.data;" +
-            "if(m==='deft:theme'){var r=Date.now();['/_deft/v1/theme.css','/_fl/v1/theme.css'].forEach(function(p){" +
-            "document.querySelectorAll('link[href*=\"'+p+'\"]').forEach(function(l){l.href=p+'?r='+r})});" +
-            "try{dispatchEvent(new Event('deft:theme'));dispatchEvent(new Event('fl:theme'))}catch(x){}}" +
+            "if(m==='deft:theme'){var r=Date.now(),p='/_deft/v1/theme.css';" +
+            "document.querySelectorAll('link[href*=\"'+p+'\"]').forEach(function(l){l.href=p+'?r='+r});" +
+            "try{dispatchEvent(new Event('deft:theme'))}catch(x){}}" +
             "else if(m==='deft:reload'){location.reload()}});" +
             "(function(){var p=self.jsBridge;addEventListener('pagehide',function(){try{p&&p.postMessage('$BYE')}catch(x){}})})();"
 
@@ -180,11 +176,10 @@ object WidgetRouting {
      * The document-start script of a widget frame: the bridge client and the debug hook. Never in the canvas's own
      * document, and never in a document of the canvas origin inside a frame (about:blank, srcdoc, blob: children
      * inherit it), so the canvas cannot get the client or read the nonce out of a frame it creates.
-     * `fl-in-widget` is for apps on the pre-rename /_fl/v1 runtime, whose CSS keeps the old class name.
      */
     fun frameScript(client: String, canvasOrigin: String, nonce: String): String {
         val canvas = canonical(canvasOrigin) ?: "null"
-        return "if(self!==top&&location.origin!=='$canvas'&&location.origin!=='null'){document.documentElement.classList.add('deft-in-widget','fl-in-widget');$FRAME_MESSAGES_JS${prefixHook(nonce)}\n$client\n${WebViewFindings.HOOK_JS}\n}"
+        return "if(self!==top&&location.origin!=='$canvas'&&location.origin!=='null'){document.documentElement.classList.add('deft-in-widget');$FRAME_MESSAGES_JS${prefixHook(nonce)}\n$client\n${WebViewFindings.HOOK_JS}\n}"
     }
 
     private const val MAX_PATH = 1024

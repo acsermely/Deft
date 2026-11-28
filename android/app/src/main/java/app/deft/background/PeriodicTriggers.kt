@@ -18,8 +18,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+// DEVICE-UNCHECKED (background triggers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an SMS auto-reply sample works with the app closed; boot, periodic and charging triggers fire.
+// Remove this note once checked.
 /**
- * PARITY D2: the `periodic:N` trigger. One unique WorkManager periodic work per app, named
+ * The `periodic:N` trigger. One unique WorkManager periodic work per app, named
  * after its webAppId ([workName]), exists exactly while the app declares `background` with a
  * `periodic:N` trigger and holds the grant. [sync] is called when the app is installed or its
  * consent written, when its manifest changes, when the `background` grant changes and at every
@@ -75,7 +78,7 @@ object PeriodicTriggers {
     }
 }
 
-/** PARITY D2: one `periodic` trigger for [KEY_WEB_APP_ID]. */
+/** One `periodic` trigger for [KEY_WEB_APP_ID]. */
 class PeriodicTriggerWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val webAppId = inputData.getString(KEY_WEB_APP_ID) ?: return Result.success()

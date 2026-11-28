@@ -12,10 +12,10 @@ data class BridgeRequest(
     val origin: String,
     val method: String,
     val args: JsonObject,
-    /** PARITY D1: the call comes from a background run, not from the app on screen. */
+    /** The call comes from a background run, not from the app on screen. */
     val background: Boolean = false,
     /**
-     * PARITY G11: for a [background] call, the grant that page runs under (`background` for a run,
+     * For a [background] call, the grant that page runs under (`background` for a run,
      * `wallpaper`, `ime` for the keyboard page); null for the app on screen.
      */
     val runCapability: app.deft.catalog.Capability? = null,
@@ -32,10 +32,10 @@ enum class RunContext {
     /** The app on screen, or a background run / wallpaper / keyboard page under the grant in [BridgeRequest.runCapability]. */
     RUN,
 
-    /** W2: one `<deft-widget>` frame of the home canvas. */
+    /** One `<deft-widget>` frame of the home canvas. */
     WIDGET,
 
-    /** W5: an agent tool run (the agent screen is in front, confirm-each actions still ask). */
+    /** An agent tool run (the agent screen is in front, confirm-each actions still ask). */
     TOOL,
 }
 
@@ -66,7 +66,7 @@ object BridgeErrors {
     /** `net.fetch`: the request itself failed (no connection, TLS error, timeout, response over the cap). */
     const val NETWORK_ERROR = "network_error"
 
-    /** PARITY D1: a background run asked for something that shows the user a screen or a prompt. */
+    /** A background run asked for something that shows the user a screen or a prompt. */
     const val NEEDS_FOREGROUND = "needs_foreground"
 
     /**

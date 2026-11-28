@@ -13,7 +13,7 @@
 # Do not install more than one sample from a single hostname (path prefixes
 # share one origin and one grant neighborhood).
 
-name = "freedom-samples"
+name = "deft-samples"
 main = "workers/samples.js"
 compatibility_date = "2026-09-06"
 workers_dev = true

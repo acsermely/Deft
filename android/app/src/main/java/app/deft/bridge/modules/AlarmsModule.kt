@@ -57,7 +57,7 @@ class AlarmsModule(
         )
         repo.insertAlarm(row)
         val exact = AlarmScheduler.schedule(context, row)
-        // PARITY D1: a background run never opens the settings screen; the alarm is inexact then.
+        // A background run never opens the settings screen; the alarm is inexact then.
         if (!exact && !request.background) {
             AlarmScheduler.requestExactAlarmAccess(context)
         }

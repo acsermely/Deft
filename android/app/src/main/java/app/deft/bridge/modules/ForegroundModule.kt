@@ -16,8 +16,11 @@ import app.deft.bridge.BridgeRequest
 import app.deft.bridge.HostSurfaces
 import app.deft.bridge.jsonArg
 
+// DEVICE-UNCHECKED (typed foreground services): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a workout sample records a GPS track with the screen off, notification visible.
+// Remove this note once checked.
 /**
- * `fgs.*` (PARITY D3): keep the app's page running with a notification after the user leaves it.
+ * `fgs.*`: keep the app's page running with a notification after the user leaves it.
  * `fgs.start` works only while the app is on screen (and never from a background run, see
  * `BackgroundPolicy.UI_METHODS`): Android 14 starts location and microphone services only from the
  * foreground, and the notification must belong to something the user just used.

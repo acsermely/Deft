@@ -14,7 +14,10 @@ import app.deft.special.SystemAccess
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-/** `dnd.*` (PARITY F5b): Do Not Disturb, only while the app is on screen. */
+// DEVICE-UNCHECKED (audio control and Do Not Disturb): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an alarm sample raises the alarm volume; DND read/set works after policy access.
+// Remove this note once checked.
+/** `dnd.*`: Do Not Disturb, only while the app is on screen. */
 class DndModule(private val context: Context) : BridgeModule {
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {
         HostSurfaces.forRequest(request)
@@ -51,7 +54,7 @@ class DndModule(private val context: Context) : BridgeModule {
     }
 
     /**
-     * Opens the system screen once (PARITY W7: the deepest one for this app); the user turns the launcher's access on
+     * Opens the system screen once (the deepest one for this app); the user turns the launcher's access on
      * there. The call waits for the user to come back to the app and then answers with the state read again, so the
      * app learns the result without polling.
      */

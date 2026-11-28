@@ -116,8 +116,8 @@ object StorageMigration {
             val raw = runCatching { file.readText() }.getOrNull() ?: return@forEach
             runCatching {
                 val old = org.json.JSONObject(raw)
-                // Only old-format manifests: they carry requiredCapabilities and no fl version.
-                if (!old.has("requiredCapabilities") || old.has("deft") || old.has("fl")) return@forEach
+                // Only old-format manifests: they carry requiredCapabilities and no "deft" version key.
+                if (!old.has("requiredCapabilities") || old.has("deft")) return@forEach
                 val parsed = Json { ignoreUnknownKeys = true }
                     .decodeFromString(WebAppManifest.serializer(), raw)
                 val name = (parsed.name ?: parsed.short_name ?: folder.name).take(30)

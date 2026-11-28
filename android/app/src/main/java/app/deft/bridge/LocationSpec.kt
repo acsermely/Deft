@@ -11,7 +11,7 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.longOrNull
 
 /**
- * PARITY G5: `location.*` argument rules, the stored geofence format, event payloads and the
+ * `location.*` argument rules, the stored geofence format, event payloads and the
  * GPS/network fix filter. Pure, unit tested; the Android side is `location.BackgroundLocation`,
  * `location.Geofences` and `bridge.modules.LocationModule`.
  */

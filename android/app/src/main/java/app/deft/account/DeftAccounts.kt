@@ -11,8 +11,11 @@ import app.deft.catalog.isGranted
 import app.deft.data.AppRepository
 import app.deft.data.InstalledWebApp
 
+// DEVICE-UNCHECKED (accounts and sync): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an app registers its own account and a sync job runs.
+// Remove this note once checked.
 /**
- * PARITY G10: the launcher's own Android accounts, one type for all apps
+ * The launcher's own Android accounts, one type for all apps
  * (`<applicationId>.account`, so the debug build has its own). No passwords or tokens are
  * stored; an app keeps its own sign-in data in its storage. See [AccountsSpec] for the rules.
  */

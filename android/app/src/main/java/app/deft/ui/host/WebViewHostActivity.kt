@@ -70,7 +70,11 @@ import app.deft.data.originMatches
 import app.deft.data.canonicalOrigin
 import app.deft.webview.DeftNavigation
 import app.deft.webview.DeftWebViewConfig
+import app.deft.webview.CspFlag
 import app.deft.webview.CspPolicy
+import app.deft.data.NetworkLog
+import app.deft.data.NetworkLogWriter
+import app.deft.workspace.AssetPacks
 import app.deft.webview.EmbedScriptPolicy
 import app.deft.webview.LocalOriginPathHandler
 import app.deft.webview.MyAppDebugLog
@@ -97,7 +101,7 @@ class WebViewHostActivity : ComponentActivity() {
     private var paymentsApplied: Boolean? = null
     @Volatile private var localAssets: WebViewAssetLoader? = null
 
-    /** PARITY G1: the CSP inputs [localAssets] serves, and how to rebuild it when they change. */
+    /** The CSP inputs [localAssets] serves, and how to rebuild it when they change. */
     private var servedPolicy: CspPolicy? = null
     private var assetsFor: ((CspPolicy) -> WebViewAssetLoader)? = null
     private var connectivity: ConnectivityManager? = null
@@ -108,10 +112,10 @@ class WebViewHostActivity : ComponentActivity() {
     private var pendingCaptureUri: android.net.Uri? = null
     private var fullscreenView: View? = null
     private var fullscreenCallback: WebChromeClient.CustomViewCallback? = null
-    /** PARITY D5: the shape to use when the app leaves the screen; null when auto mode is off. */
+    /** The shape to use when the app leaves the screen; null when auto mode is off. */
     private var autoPipRatio: app.deft.bridge.PipRatio? = null
 
-    /** PARITY A1: `<input type="file">`, including `capture` via the system camera app. */
+    /** `<input type="file">`, including `capture` via the system camera app. */
     private val fileChooser = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
     ) { result ->
@@ -169,7 +173,7 @@ class WebViewHostActivity : ComponentActivity() {
         }
     }
 
-    /** PARITY A4: element/video fullscreen from the Fullscreen API. */
+    /** Element/video fullscreen from the Fullscreen API. */
     private fun enterFullscreen(view: View, callback: WebChromeClient.CustomViewCallback?) {
         if (fullscreenView != null) {
             callback?.onCustomViewHidden()
@@ -216,7 +220,7 @@ class WebViewHostActivity : ComponentActivity() {
         androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions(),
     ) { _ -> permissionAsk.onResult(this) }
 
-    /** PARITY A5/A8 and the orientation half of A4, reached through [HostSurfaces]. */
+    /** The orientation half of fullscreen, reached through [HostSurfaces]. */
     private val hostSurface = object : HostSurface {
         override suspend fun requestPermissions(permissions: List<String>): RuntimePermissions.Answer? {
             if (destroyed || !lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || isInPictureInPictureMode) {
@@ -230,6 +234,13 @@ class WebViewHostActivity : ComponentActivity() {
                 return false
             }
             return runCatching { startActivity(intent) }.isSuccess
+        }
+
+        override fun passkeyActivity(): android.app.Activity? {
+            if (destroyed || !lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || isInPictureInPictureMode) {
+                return null
+            }
+            return this@WebViewHostActivity
         }
 
         override fun keepScreenOn(on: Boolean) {
@@ -296,7 +307,7 @@ class WebViewHostActivity : ComponentActivity() {
     private var networkWatched = false
 
     /**
-     * PARITY D3: when the app's foreground service ends while it is off screen, do what onStop
+     * When the app's foreground service ends while it is off screen, do what onStop
      * skipped. The page goes back to "hidden" too.
      */
     private val fgsListener = AppForegroundService.Listener { webAppId, active ->
@@ -308,7 +319,7 @@ class WebViewHostActivity : ComponentActivity() {
     private fun keepsRunning(): Boolean = app?.id?.let { AppForegroundService.isActive(it) } == true
 
     /**
-     * PARITY D3: while the app keeps running with a foreground service, its page must not learn
+     * While the app keeps running with a foreground service, its page must not learn
      * it was hidden: Chromium stops geolocation (and throttles the page) for hidden pages, which
      * would defeat a `location` service. The real visibility is passed on once the service ends.
      */
@@ -370,26 +381,30 @@ class WebViewHostActivity : ComponentActivity() {
     }
 
     /**
-     * Spec 10.10 and PARITY H4: missing libraries and newly declared network origins are confirmed
+     * Missing libraries and newly declared network origins are confirmed
      * on the consent screen, which reopens this app afterwards. Returns false when this activity
      * handed over to it.
      */
     private suspend fun ensureDependencies(installed: InstalledWebApp): Boolean {
         val slug = installed.workspaceSlug
         val missing = withContext(Dispatchers.IO) { AppDeps.missing(this@WebViewHostActivity, installed.id, slug) }
+        // Declared asset packs not downloaded yet are confirmed (with their size) on the same screen.
+        val packs = withContext(Dispatchers.IO) {
+            runCatching { AssetPacks.pendingFor(this@WebViewHostActivity, installed.id, slug) }.getOrDefault(emptyList())
+        }
         val newOrigins = withContext(Dispatchers.IO) {
             DeftApp.instance.repository.unconsentedNetwork(installed.id, slug)
         }
-        // PARITY G14: newly declared embed origins are approved (or refused) on the same screen.
+        // Newly declared embed origins are approved (or refused) on the same screen.
         val newEmbeds = withContext(Dispatchers.IO) {
             DeftApp.instance.repository.unconsentedEmbeds(installed.id, slug)
         }
-        // W5: newly declared (or changed) agent tools are listed on the same screen; one this device cannot run does not ask.
+        // Newly declared (or changed) agent tools are listed on the same screen; one this device cannot run does not ask.
         val newTools = withContext(Dispatchers.IO) {
             runCatching { DeftApp.instance.repository.unconsentedTools(installed.id, slug) }.getOrDefault(emptyList())
                 .filter { !it.isolate || ToolRunner.isolateSupported() }
         }
-        if (missing.isEmpty() && newOrigins.isEmpty() && newEmbeds.isEmpty() && newTools.isEmpty()) return true
+        if (missing.isEmpty() && packs.isEmpty() && newOrigins.isEmpty() && newEmbeds.isEmpty() && newTools.isEmpty()) return true
         val consent = if (slug != null) {
             ConsentActivity.workspaceIntent(
                 this, slug, installed.name, installed.startUrl, installed.origin, installed.manifestUrl,
@@ -451,7 +466,7 @@ class WebViewHostActivity : ComponentActivity() {
                         "(function(){try{return !!(window.__deftOnBack&&window.__deftOnBack());}catch(e){return false;}})()",
                     ) { raw ->
                         if (raw == "true") return@evaluateJavascript
-                        // PARITY D3: leaving an app that keeps running keeps its page; finishing would end it.
+                        // Leaving an app that keeps running keeps its page; finishing would end it.
                         // Only after the page did not handle Back.
                         if (keepsRunning()) {
                             moveTaskToBack(true)
@@ -465,7 +480,7 @@ class WebViewHostActivity : ComponentActivity() {
             },
         )
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
-        // Native taps only; page code cannot synthesize these (spec 8.4, confirm-each).
+        // Native taps only; page code cannot synthesize these (confirm-each).
         // Genuine taps are tracked in dispatchTouchEvent, so fullscreen content counts too.
         DeftWebViewConfig.apply(
             view,
@@ -489,6 +504,7 @@ class WebViewHostActivity : ComponentActivity() {
                     policy = p,
                     overlay = OverlayStore.dir(this, installed.id),
                     depStore = DepStore.root(this),
+                    packsRoot = AssetPacks.root(this, installed.id),
                 )
             }
             servedPolicy = policy
@@ -520,12 +536,22 @@ class WebViewHostActivity : ComponentActivity() {
                     }
                     return response
                 }
+                // Every remote request the CSP let through is logged (origin and host only).
+                // With "Block network" on the CSP has no remote origin; anything still arriving here is refused.
+                val blocked = servedPolicy?.flags?.contains(CspFlag.BLOCKED) == true
+                val url = request.url
+                val kind = NetworkLog.kindOf(request.isForMainFrame, request.requestHeaders?.get("Accept"), url.path)
+                val row = NetworkLog.entry(installed.id, url.toString(), kind, allowed = !blocked, at = System.currentTimeMillis())
+                NetworkLogWriter.record(row)
+                if (blocked && row != null) {
+                    return WebResourceResponse("text/plain", "utf-8", 403, "Forbidden", emptyMap(), java.io.ByteArrayInputStream(ByteArray(0)))
+                }
                 return null
             }
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url.toString()
-                // PARITY G14: frames of approved embeds (payment form, 3-D Secure) are governed by the CSP.
+                // Frames of approved embeds (payment form, 3-D Secure) are governed by the CSP.
                 val embedsActive = servedPolicy?.embedOrigins?.isNotEmpty() == true
                 if (DeftNavigation.allowSubframe(url, request.isForMainFrame, embedsActive)) return false
                 when (val decision = DeftNavigation.decide(url, installed.origin)) {
@@ -620,6 +646,12 @@ class WebViewHostActivity : ComponentActivity() {
                 if (BuildConfig.DEBUG && consoleMessage != null) {
                     Log.i("DeftConsole", "${installed.id} ${consoleMessage.messageLevel()} ${consoleMessage.message().orEmpty().take(500)}")
                 }
+                // Requests the CSP stopped never reach shouldInterceptRequest; their console line is the record.
+                if (consoleMessage?.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+                    NetworkLogWriter.record(
+                        NetworkLog.fromCspConsole(installed.id, consoleMessage.message().orEmpty(), System.currentTimeMillis()),
+                    )
+                }
                 val slug = debugSlug ?: return false
                 val finding = consoleMessage?.let { WebViewFindings.fromConsole(it) } ?: return false
                 MyAppDebugLog.append(slug, finding)
@@ -683,7 +715,7 @@ class WebViewHostActivity : ComponentActivity() {
     }
 
     /**
-     * Opened from a notification tap or an "open" action (PARITY C2): queue `notify.action` so the
+     * Opened from a notification tap or an "open" action: queue `notify.action` so the
      * page gets it as soon as it subscribes. Only for this activity's own app.
      */
     private fun queueNotifyEvent(intent: Intent?) {
@@ -699,7 +731,7 @@ class WebViewHostActivity : ComponentActivity() {
 
     /**
      * Every real touch on this app's window, whatever view it lands on (page or fullscreen
-     * content). Page code cannot synthesize these (spec 8.4, PARITY H1/A7).
+     * content). Page code cannot synthesize these.
      */
     override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
         app?.id?.let { id -> UserGesture.track(window.decorView, ev, id) }
@@ -723,21 +755,21 @@ class WebViewHostActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         connectivity = getSystemService(ConnectivityManager::class.java)
-        // PARITY D3: still registered when the app kept running off screen.
+        // Still registered when the app kept running off screen.
         if (!networkWatched) {
             networkWatched = runCatching { connectivity?.registerDefaultNetworkCallback(networkCallback) }.isSuccess
         }
         applyNetwork()
     }
 
-    /** PARITY D5: the Home press before Android 12, when auto mode is on. */
+    /** The Home press before Android 12, when auto mode is on. */
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         val ratio = autoPipRatio ?: return
         if (android.os.Build.VERSION.SDK_INT < 31) hostSurface.enterPip(ratio)
     }
 
-    /** PARITY D5: tell the page when the small window opens or closes. */
+    /** Tell the page when the small window opens or closes. */
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: android.content.res.Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         val id = app?.id ?: return
@@ -760,7 +792,7 @@ class WebViewHostActivity : ComponentActivity() {
     }
 
     override fun onStop() {
-        // PARITY D3: an app that keeps running with a foreground service keeps all of this until
+        // An app that keeps running with a foreground service keeps all of this until
         // the service ends (see fgsListener).
         if (!keepsRunning()) leaveScreen()
         super.onStop()
@@ -780,7 +812,7 @@ class WebViewHostActivity : ComponentActivity() {
         WebViewHostRuntime.hostResumed()
         applyNetwork()
         val installed = app ?: return
-        // PARITY E3: back from a sign-in page without a redirect means the user closed it.
+        // Back from a sign-in page without a redirect means the user closed it.
         AuthModule.hostResumed(installed.id)
         HostSurfaces.register(installed.id, hostSurface)
         enableNfcReader()
@@ -822,7 +854,7 @@ class WebViewHostActivity : ComponentActivity() {
     }
 
     /**
-     * PARITY G1: a network grant or server changed on the dashboard while the app was open.
+     * A network grant or server changed on the dashboard while the app was open.
      * A CSP belongs to a loaded document, so serve the new one and reload; a narrower policy
      * must not wait for the next launch. True when it reloaded the page.
      */
@@ -835,7 +867,7 @@ class WebViewHostActivity : ComponentActivity() {
         if (destroyed || policy == served) return false
         servedPolicy = policy
         localAssets = build(policy)
-        // PARITY G14: the Trusted Types default policy carries the approved embed list.
+        // The Trusted Types default policy carries the approved embed list.
         if (policy.embedOrigins != served.embedOrigins) {
             webView?.let { registerDocumentStartScript(it, installed, policy.embedOrigins) }
         }
@@ -870,7 +902,7 @@ class WebViewHostActivity : ComponentActivity() {
         documentStartScript = null
         val origins = setOf(installed.origin)
         val withHook = true
-        // PARITY G14: after the hook, so `fl` is created first; empty without approved embeds.
+        // After the hook, so `fl` is created first; empty without approved embeds.
         val embedPolicy = EmbedScriptPolicy.js(embedOrigins)
         val source = (if (withHook) js + "\n" + WebViewFindings.HOOK_JS else js) + embedPolicy
         val injected = injectDocumentStart(view, source, origins)
@@ -1034,7 +1066,7 @@ class WebViewHostActivity : ComponentActivity() {
         // A permission request still waiting on this screen is refused now, not left to its timeout.
         permissionAsk.cancel()
         AppForegroundService.removeListener(fgsListener)
-        // PARITY D3: the service holds this page; closing the app (e.g. from Recents) ends it.
+        // The service holds this page; closing the app (e.g. from Recents) ends it.
         // A configuration change that recreates the activity is not closing it.
         if (!isChangingConfigurations) {
             app?.id?.let { AppForegroundService.stop(this, it, AppForegroundService.REASON_CLOSED) }
@@ -1043,7 +1075,7 @@ class WebViewHostActivity : ComponentActivity() {
             runCatching { connectivity?.unregisterNetworkCallback(networkCallback) }
             networkWatched = false
         }
-        // PARITY F9: the secure flag stays set while paused so Recents shows a blank card; it ends with the activity.
+        // The secure flag stays set while paused so Recents shows a blank card; it ends with the activity.
         window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
         if (android.os.Build.VERSION.SDK_INT >= 31) runCatching { window.setHideOverlayWindows(false) }
         pendingFileCallback?.onReceiveValue(null)
@@ -1084,7 +1116,7 @@ class WebViewHostActivity : ComponentActivity() {
 
         fun intent(context: Context, webAppId: String, url: String? = null): Intent {
             val launch = Intent(context, WebViewHostActivity::class.java).apply {
-                data = Uri.parse("freedomlauncher://webapp/$webAppId")
+                data = Uri.parse("deft://webapp/$webAppId")
                 putExtra(EXTRA_WEB_APP_ID, webAppId)
                 if (url != null) putExtra(EXTRA_URL, url)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)

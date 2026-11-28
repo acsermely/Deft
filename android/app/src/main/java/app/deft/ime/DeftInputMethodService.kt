@@ -45,8 +45,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * PARITY G11 `ime`: Deft's keyboard, showing the manifest `keyboard.page` of the one
+ * Deft's keyboard, showing the manifest `keyboard.page` of the one
  * web app holding the `ime` grant. Disabled in the manifest; [app.deft.roles.RoleComponents]
  * enables it only while an app holds the grant, so revoking it makes Android switch to another keyboard.
  *
@@ -125,7 +128,7 @@ class DeftInputMethodService : InputMethodService() {
         action = ImeSpec.actionName(info.imeOptions)
         multiline = ImeSpec.inputTypeName(info.inputType) == "multiline"
         if (ImeSpec.isPassword(info.inputType)) {
-            // PARITY G11: the page sees nothing of a password field, not even that one is focused.
+            // The page sees nothing of a password field, not even that one is focused.
             webSession = false
             pendingStart = null
             showNative(NativeKeyboard.Reason.PASSWORD, ImeSpec.isNumberPassword(info.inputType))
@@ -292,7 +295,7 @@ class DeftInputMethodService : InputMethodService() {
     /** Whether [webAppId]'s keyboard page is the one shown here. */
     fun showsPageOf(webAppId: String): Boolean = holderId == webAppId && bridge != null
 
-    /** PARITY G12: hands a clipboard event to the keyboard page, only while it listens (never queued). */
+    /** Hands a clipboard event to the keyboard page, only while it listens (never queued). */
     fun deliver(webAppId: String, event: String, payloadJson: String) {
         val sink = bridge ?: return
         if (holderId != webAppId || !sink.hasSubscriber(event)) return
@@ -425,7 +428,7 @@ class DeftInputMethodService : InputMethodService() {
         bridge = null
         runCatching { script?.remove() }
         script = null
-        // PARITY G12: the keyboard page's clipboard watch ends with the page.
+        // The keyboard page's clipboard watch ends with the page.
         if (id != null) ClipboardModule.stopIme(id)
         if (view != null) {
             if (shownInRuntime) {
@@ -469,7 +472,7 @@ class DeftInputMethodService : InputMethodService() {
 
         /**
          * Whether Deft's keyboard is the phone's keyboard now (turned on and chosen).
-         * Android 10+ lets this keyboard read the clipboard then (PARITY G12 IME mode).
+         * Android 10+ lets this keyboard read the clipboard then (IME mode).
          */
         fun isCurrent(context: Context): Boolean = runCatching {
             val setting = Settings.Secure.getString(context.contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD)

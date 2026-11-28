@@ -38,6 +38,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.webkit.ScriptHandler
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import app.deft.DeftApp
 import app.deft.bridge.GrantedPrefixes
 import app.deft.config.ColorTokens
@@ -65,6 +68,7 @@ fun HomeCanvas(
     revision: Int,
     tokens: ColorTokens,
     modifier: Modifier = Modifier,
+    chromeClearance: Int = 0,
     peekEnabled: Boolean = true,
     paused: Boolean = false,
     visible: Boolean = true,
@@ -113,6 +117,21 @@ fun HomeCanvas(
             }
     }
     val themedHolder = remember(store) { arrayOfNulls<ColorTokens>(1) }
+    // The real chrome height as --chrome-clearance: a document-start script for the next load, plus a live set now.
+    val clearanceState = rememberUpdatedState(chromeClearance)
+    val clearanceScript = remember(store) { arrayOfNulls<ScriptHandler>(1) }
+    LaunchedEffect(viewRef, chromeClearance) {
+        val view = viewRef ?: return@LaunchedEffect
+        if (chromeClearance <= 0) return@LaunchedEffect
+        val js = ChromeClearance.js(chromeClearance)
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+            clearanceScript[0]?.let { runCatching { it.remove() } }
+            clearanceScript[0] = runCatching {
+                WebViewCompat.addDocumentStartJavaScript(view, js, setOf(HomeCanvasStore.ORIGIN))
+            }.getOrNull()
+        }
+        view.evaluateJavascript(js, null)
+    }
     val peekEnabledState = rememberUpdatedState(peekEnabled)
     val pausedState = rememberUpdatedState(paused)
     val onPeekDeltaState = rememberUpdatedState(onPeekDelta)
@@ -223,6 +242,7 @@ fun HomeCanvas(
                     webViewClient = canvasClient(
                         widgetServer,
                         tokens,
+                        clearance = { clearanceState.value },
                         setup = { request ->
                             // A tap on a "set up" placeholder: only a placed widget app that needs setup, only after a real touch.
                             val target = WidgetRouting.setupTarget(
@@ -293,6 +313,8 @@ fun HomeCanvas(
             onRelease = { view ->
                 routerHolder[0]?.detach()
                 routerHolder[0] = null
+                // The handler belongs to this view; the next generation registers its own.
+                clearanceScript[0] = null
                 if (viewRef === view) viewRef = null
                 WebViewHostRuntime.ownerPaused(view, view)
                 (view.parent as? android.view.ViewGroup)?.removeView(view)
@@ -406,6 +428,7 @@ private fun setupIntent(context: android.content.Context, target: InstalledWebAp
 private fun canvasClient(
     widgets: CanvasWidgetServer,
     tokens: ColorTokens,
+    clearance: () -> Int,
     setup: (WebResourceRequest) -> Boolean,
     onGone: (WebView) -> Unit,
 ) = object : WebViewClient() {
@@ -450,6 +473,8 @@ private fun canvasClient(
 
     override fun onPageFinished(view: WebView, url: String?) {
         view.applyDeftTheme(tokens)
+        // Fallback for WebViews without document-start scripts; a no-op repeat otherwise.
+        clearance().takeIf { it > 0 }?.let { view.evaluateJavascript(ChromeClearance.js(it), null) }
     }
 
     override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
@@ -468,9 +493,9 @@ private const val CRASH_LOOP_MS = 5_000L
 private const val REST_ANIMATIONS_JS =
     "(function(){try{var l=window.__deftRested=window.__deftRested||[];document.getAnimations().forEach(function(a){" +
         "var t=a.effect&&a.effect.getComputedTiming&&a.effect.getComputedTiming();if(a.playState==='running'&&t&&t.iterations===Infinity){a.pause();l.push(a);}});}catch(e){}" +
-        "try{document.querySelectorAll('deft-widget iframe,fl-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:rest','*');f.contentWindow.postMessage('fl:rest','*');});}catch(e){}})();"
+        "try{document.querySelectorAll('deft-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:rest','*');});}catch(e){}})();"
 
 private const val RESUME_ANIMATIONS_JS =
     "(function(){try{var l=window.__deftRested;window.__deftRested=null;if(l)l.forEach(function(a){" +
         "if(a.playState==='paused')a.play();});}catch(e){}" +
-        "try{document.querySelectorAll('deft-widget iframe,fl-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:resume','*');f.contentWindow.postMessage('fl:resume','*');});}catch(e){}})();"
+        "try{document.querySelectorAll('deft-widget iframe').forEach(function(f){f.contentWindow.postMessage('deft:resume','*');});}catch(e){}})();"

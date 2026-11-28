@@ -113,6 +113,7 @@ fun InstalledAppCard(
                         )
                     }
                 }
+                NetworkSection(appId = app.id)
                 if (Capability.NETWORK_USER in caps) {
                     ServersSection(
                         appId = app.id,
@@ -185,7 +186,7 @@ private fun GrantRow(
 }
 
 /**
- * PARITY P3: servers the user lets this app reach (`network.user`), for example a home server.
+ * Servers the user lets this app reach (`network.user`), for example a home server.
  * Same address rule as manifest origins; they count as consented origins in the app's CSP.
  */
 @Composable
@@ -247,7 +248,7 @@ private fun ServersSection(appId: String, granted: Boolean) {
 }
 
 /**
- * W5: the agent tools the app declares, with one switch "Let the agent use this app's tools". Off takes effect at the
+ * The agent tools the app declares, with one switch "Let the agent use this app's tools". Off takes effect at the
  * agent's next request (it re-reads this setting before every one) and a call already offered is refused when it runs.
  */
 @Composable
@@ -292,7 +293,7 @@ private fun AgentToolsSection(appId: String, slug: String) {
 }
 
 /**
- * PARITY G14: the sites listed in the manifest `embeds`, each allowed or not on its own. Only
+ * The sites listed in the manifest `embeds`, each allowed or not on its own. Only
  * allowed sites (and only while "Code from other sites" is allowed) reach the app's CSP.
  */
 @Composable
@@ -345,7 +346,7 @@ private fun EmbedsSection(appId: String, slug: String?, granted: Boolean) {
 }
 
 /**
- * PARITY E1: "Always" choices from the "Open with" picker that name this app. "Ask again" clears
+ * "Always" choices from the "Open with" picker that name this app. "Ask again" clears
  * one, so the picker shows the list next time.
  */
 @Composable
@@ -371,7 +372,7 @@ private fun OpenWithSection(appId: String) {
 }
 
 /**
- * PARITY D1: the app's last background runs, from the audit log. The "Run in the background"
+ * The app's last background runs, from the audit log. The "Run in the background"
  * grant above is the kill switch; "Run now" starts one run by hand (trigger `manual`).
  */
 @Composable
@@ -429,7 +430,7 @@ private fun backgroundRunLine(row: app.deft.data.UsageLogEntity): String {
     return "$time · $trigger · $result$duration"
 }
 
-/** PARITY G0: special access is never a one-tap Allow here; "Review" opens the grant sheet. */
+/** Special access is never a one-tap Allow here; "Review" opens the grant sheet. */
 @Composable
 private fun SpecialGrantRow(
     appId: String,

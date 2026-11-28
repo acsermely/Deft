@@ -6,7 +6,7 @@ import java.security.MessageDigest
 import java.util.UUID
 
 /**
- * Files shared into a web app (PARITY H6).
+ * Files shared into a web app.
  *
  * A share's `content://` streams are copied once into a private per-app inbox, because the
  * sender's URI grant does not outlive [ShareToActivity]. The inbox is not a `files.*` root: the

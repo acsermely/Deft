@@ -15,12 +15,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * PARITY G11: entry point for the role components. Has no screen; each [RoleComponent] alias in
+ * Entry point for the role components. Has no screen; each [RoleComponent] alias in
  * AndroidManifest.xml points here and is enabled only while a web app holds the role's grant.
  *
  * Browser role: a tapped http/https link goes to the one app holding `role.browser`, as data:
- * event `intents.viewReceived {type: "url", url, items: []}` (same delivery as "Open with", PARITY E1),
+ * event `intents.viewReceived {type: "url", url, items: []}` (same delivery as "Open with", ),
  * then the app opens on its own page. The app's WebView is never navigated to the link; the
  * same-origin rule stays.
  *

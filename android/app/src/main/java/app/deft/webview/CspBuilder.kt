@@ -2,19 +2,29 @@ package app.deft.webview
 
 import app.deft.registry.EmbedSuffixes
 
+// DEVICE-UNCHECKED (per-app CSP for open network, remote images, WASM and approved embeds): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an RSS sample fetches any feed with remote images; a WASM sample runs; Stripe test checkout with 3-D Secure completes.
+// Remove this note once checked.
 /**
  * Switches that widen one app's Content-Security-Policy. Each one is a grant the user gave;
  * the host passes only flags whose capability is declared **and** granted.
  */
 enum class CspFlag {
-    /** PARITY P1 `network.open`: any HTTPS / WSS origin for fetch, XHR, WebSocket, EventSource, images, media. */
+    /** `network.open`: any HTTPS / WSS origin for fetch, XHR, WebSocket, EventSource, images, media. */
     OPEN_NETWORK,
 
     /** No network at all (`connect-src 'none'`, or `'self'` with placed widgets; `worker-src 'none'`); the Home canvas. Wins over [OPEN_NETWORK]. */
     NO_NETWORK,
 
-    /** PARITY G2 `wasm`: `'wasm-unsafe-eval'` in script-src, so the app may compile its shipped `.wasm` files. */
+    /** `wasm`: `'wasm-unsafe-eval'` in script-src, so the app may compile its shipped `.wasm` files. */
     WASM,
+
+    /**
+     * The user's "Block network" switch on the dashboard. No remote origin
+     * at all (consented, user servers, `network.open`, embeds); same-origin fetches and workers keep
+     * working. Wins over [OPEN_NETWORK].
+     */
+    BLOCKED,
 }
 
 /** What one app's CSP is built from. Compared by value: a change means the page must reload. */
@@ -23,13 +33,13 @@ data class CspPolicy(
     val connectOrigins: List<String> = emptyList(),
     val flags: Set<CspFlag> = emptySet(),
     /**
-     * PARITY G14 `web.embed`: third-party origins the user approved one by one (manifest `embeds`).
+     * `web.embed`: third-party origins the user approved one by one (manifest `embeds`).
      * The host fills this only when `web.embed` is declared **and** granted.
      */
     val embedOrigins: List<String> = emptyList(),
-    /** W1: exact my-app origins the Home canvas may frame (`frame-src`): the widget apps it places, nothing wider. */
+    /** Exact my-app origins the Home canvas may frame (`frame-src`): the widget apps it places, nothing wider. */
     val frameOrigins: List<String> = emptyList(),
-    /** W1: exact my-app origins allowed to frame this document (`frame-ancestors`); empty keeps 'none'. */
+    /** Exact my-app origins allowed to frame this document (`frame-ancestors`); empty keeps 'none'. */
     val frameAncestors: List<String> = emptyList(),
 ) {
     companion object {
@@ -46,13 +56,13 @@ object CspBuilder {
     private val SAFE_ORIGIN = Regex("^https://[a-z0-9.-]+(?::[0-9]{1,5})?$")
 
     /**
-     * PARITY G14: like [SAFE_ORIGIN], plus an optional `*.` as the whole leftmost label, and at
+     * Like [SAFE_ORIGIN], plus an optional `*.` as the whole leftmost label, and at
      * least two labels after it (a bare `*.com` is dropped) that are not a public suffix
      * (`*.github.io`, `*.co.uk` are dropped, [EmbedSuffixes]). Anything else is dropped.
      */
     private val SAFE_EMBED = Regex("^https://(?:\\*\\.)?[a-z0-9-]+(?:\\.[a-z0-9-]+)+(?::[0-9]{1,5})?$")
 
-    /** W1: a frame origin is one exact my-app origin (`https://<label>.app.deft.internal`), never a wildcard. */
+    /** A frame origin is one exact my-app origin (`https://<label>.app.deft.internal`), never a wildcard. */
     private val SAFE_FRAME = Regex("^https://[a-z0-9-]+\\.app\\.deft\\.internal$")
 
     private fun safeEmbed(origin: String): Boolean {
@@ -82,16 +92,18 @@ object CspBuilder {
         frameAncestors: List<String> = emptyList(),
     ): String {
         val offline = CspFlag.NO_NETWORK in flags
-        val open = !offline && CspFlag.OPEN_NETWORK in flags
-        val origins = if (offline || open) emptyList() else connectOrigins.filter { SAFE_ORIGIN.matches(it) }.distinct()
-        // G14: approved embed origins; none at all for an offline document.
-        val embeds = if (offline) emptyList() else safeEmbeds(embedOrigins)
-        // P2: images and media follow connect-src (consented origins, or https: with network.open).
+        // The "Block network" switch drops every remote origin but keeps 'self'.
+        val blocked = CspFlag.BLOCKED in flags
+        val open = !offline && !blocked && CspFlag.OPEN_NETWORK in flags
+        val origins = if (offline || blocked || open) emptyList() else connectOrigins.filter { SAFE_ORIGIN.matches(it) }.distinct()
+        // Approved embed origins; none at all for an offline or blocked document.
+        val embeds = if (offline || blocked) emptyList() else safeEmbeds(embedOrigins)
+        // Images and media follow connect-src (consented origins, or https: with network.open).
         val remote = when {
             open -> listOf("https:")
             else -> origins
         }
-        // G14: embeds widen script, frame, connect and img; with network.open, https: already covers the last two.
+        // Embeds widen script, frame, connect and img; with network.open, https: already covers the last two.
         val embedRemote = if (open) emptyList() else embeds.filter { it !in origins }
         val frames = embeds + frameOrigins.filter { SAFE_FRAME.matches(it) }.distinct()
         // The Home canvas with placed widgets reads its own `/_deft/v1/widgets.json`: same-origin only, and the
@@ -108,7 +120,7 @@ object CspBuilder {
         val img = (listOf("'self'", "data:", "blob:") + remote + embedRemote).joinToString(" ")
         val media = (listOf("'self'", "blob:", "mediastream:") + remote).joinToString(" ")
         val frame = if (frames.isEmpty()) "'none'" else frames.joinToString(" ")
-        // G14: Stripe.js loads more scripts at run time (a Trusted Types script-URL sink). The host
+        // Stripe.js loads more scripts at run time (a Trusted Types script-URL sink). The host
         // creates a `default` policy that passes only approved embed origins (EmbedScriptPolicy);
         // the CSP must allow that one extra policy name. Trusted Types stays enforced.
         val trusted = if (embeds.isEmpty()) "deft" else "deft default"
@@ -124,7 +136,7 @@ object CspBuilder {
 }
 
 /**
- * PARITY G14: the Trusted Types `default` policy for an app with approved embed origins, added to
+ * The Trusted Types `default` policy for an app with approved embed origins, added to
  * the host's document-start script (app origin only, before any page script, so page code cannot
  * create its own `default`). It answers only `createScriptURL`, and only for `https:` URLs on an
  * approved origin (`*.` matches any subdomain, as in CSP). Every other string is refused, so HTML

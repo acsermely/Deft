@@ -32,9 +32,12 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 
-/** `media.*` (PARITY F6): photos, videos and audio on the phone, only while the app is on screen. The session methods (PARITY D4) go to [MediaSessionModule]. */
+// DEVICE-UNCHECKED (media library queries): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a gallery sample lists all photos with thumbnails.
+// Remove this note once checked.
+/** `media.*`: photos, videos and audio on the phone, only while the app is on screen. The session methods go to [MediaSessionModule]. */
 class MediaModule(private val context: Context) : BridgeModule {
-    /** PARITY D4: the media session shares the `media` prefix and works off screen too. */
+    /** The media session shares the `media` prefix and works off screen too. */
     private val session = MediaSessionModule(context)
 
     override suspend fun invoke(request: BridgeRequest): BridgeOutcome {

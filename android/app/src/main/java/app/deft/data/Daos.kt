@@ -70,7 +70,7 @@ interface GrantDao {
     @Query("SELECT * FROM grants WHERE level != 'DENIED'")
     suspend fun allGranted(): List<GrantEntity>
 
-    /** PARITY G0: "Keep" on the review reminder restarts the unused clock. */
+    /** "Keep" on the review reminder restarts the unused clock. */
     @Query("UPDATE grants SET grantedAt = :at WHERE webAppId = :webAppId AND capability = :capability")
     suspend fun touch(webAppId: String, capability: String, at: Long)
 }
@@ -91,14 +91,14 @@ interface NetworkConsentDao {
     @Query("DELETE FROM network_consent WHERE webAppId = :webAppId AND source = 'manifest'")
     suspend fun deleteManifestRows(webAppId: String)
 
-    /** PARITY P3: servers the user typed on the dashboard, oldest first. */
+    /** Servers the user typed on the dashboard, oldest first. */
     @Query("SELECT origin FROM network_consent WHERE webAppId = :webAppId AND source = 'user' ORDER BY rowid")
     suspend fun userFor(webAppId: String): List<String>
 
     @Query("DELETE FROM network_consent WHERE webAppId = :webAppId AND origin = :origin AND source = 'user'")
     suspend fun deleteUser(webAppId: String, origin: String)
 
-    /** PARITY G14: embed decisions ([EmbedConsent.SOURCE_APPROVED] / [EmbedConsent.SOURCE_REFUSED]). */
+    /** Embed decisions ([EmbedConsent.SOURCE_APPROVED] / [EmbedConsent.SOURCE_REFUSED]). */
     @Query("SELECT origin FROM network_consent WHERE webAppId = :webAppId AND source = :source ORDER BY rowid")
     suspend fun bySource(webAppId: String, source: String): List<String>
 
@@ -114,15 +114,15 @@ interface UsageLogDao {
     @Insert
     suspend fun insert(row: UsageLogEntity)
 
-    /** PARITY G0: last successful use of a capability by an app, for the special-access review. */
+    /** Last successful use of a capability by an app, for the special-access review. */
     @Query("SELECT MAX(timestamp) FROM usage_log WHERE webAppId = :webAppId AND capability = :capability AND outcome = 'ok'")
     suspend fun lastOk(webAppId: String, capability: String): Long?
 
-    /** PARITY D1: the app's recent rows for one method, e.g. `background.run`. */
+    /** The app's recent rows for one method, e.g. `background.run`. */
     @Query("SELECT * FROM usage_log WHERE webAppId = :webAppId AND method = :method ORDER BY timestamp DESC LIMIT :limit")
     fun observeForMethod(webAppId: String, method: String, limit: Int): Flow<List<UsageLogEntity>>
 
-    /** PARITY D1: start times are not stored, so the hourly limit counts finished runs. */
+    /** Start times are not stored, so the hourly limit counts finished runs. */
     @Query("SELECT timestamp FROM usage_log WHERE webAppId = :webAppId AND method = :method AND timestamp >= :since AND outcome IN (:outcomes)")
     suspend fun timestampsSince(webAppId: String, method: String, since: Long, outcomes: List<String>): List<Long>
 }

@@ -17,11 +17,58 @@ const APPS = {
   "three-tps": "Three TPS — Fireball Duel",
 };
 
+/**
+ * Passkey device check: app.acsermely.hu is the test website (rpId) for the passkey-check sample.
+ * assetlinks.json lets the debug launcher use its passkeys (the passkey provider checks it);
+ * deft.json lists the app origin ids the launcher may let use them (the launcher checks it).
+ * Only the directory host serves them; the origin id is BundledApps.originId("passkey-check").
+ */
+const PASSKEY_HOST = "app.acsermely.hu";
+const WELL_KNOWN = {
+  "/.well-known/assetlinks.json": [
+    {
+      relation: ["delegate_permission/common.get_login_creds"],
+      target: {
+        namespace: "android_app",
+        package_name: "app.deft.debug",
+        sha256_cert_fingerprints: [
+          "88:8A:42:24:45:3B:0D:E5:33:2E:FF:25:71:9F:9F:79:D4:53:81:C0:28:FE:80:3A:7E:BB:B9:F1:82:B5:7E:20",
+        ],
+      },
+    },
+  ],
+  "/.well-known/deft.json": { passkeys: { origins: ["83041ce2c4cc82a0"] } },
+};
+
+/**
+ * Hash-pinned WebAssembly dependencies for samples/wasm-dep, served on the directory
+ * host. The bytes are a sample's own file, so the hash in that manifest matches what is served.
+ */
+const DEPS = {
+  "/deps/add@1.0.0.wasm": "/wasm-add/add.wasm",
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname.includes("..")) {
       return new Response("Bad path", { status: 400 });
+    }
+
+    if (url.hostname.toLowerCase() === PASSKEY_HOST && url.pathname in WELL_KNOWN) {
+      return new Response(JSON.stringify(WELL_KNOWN[url.pathname]), {
+        headers: { "content-type": "application/json", "cache-control": "public, max-age=300" },
+      });
+    }
+
+    if (url.hostname.toLowerCase() === PASSKEY_HOST && url.pathname in DEPS) {
+      const assetUrl = new URL(url);
+      assetUrl.pathname = DEPS[url.pathname];
+      const res = await env.ASSETS.fetch(new Request(assetUrl.toString(), request));
+      if (!res.ok) return res;
+      return new Response(res.body, {
+        headers: { "content-type": "application/wasm", "cache-control": "public, max-age=31536000, immutable" },
+      });
     }
 
     // Shared design-system runtime, served at the same path on every app host.

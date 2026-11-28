@@ -15,8 +15,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * `admin.*` (PARITY G11, SPECIAL exclusive `device.admin`): lock the screen through the launcher's
+ * `admin.*` (SPECIAL exclusive `device.admin`): lock the screen through the launcher's
  * device admin, which can do nothing else (no wipe). Only the holder of group `device-admin` gets
  * here (the grant check in `BridgeService.invoke`; checked again). Works from the app on screen and
  * from background runs (lock on a trigger, such as leaving a place); at most one lock every

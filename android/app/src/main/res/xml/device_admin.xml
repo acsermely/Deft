@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- PARITY G11: device.admin. Lock the screen only. Never add wipe-data, password, encryption or
-     camera policies here: wipe is refused by design (UNIMPLEMENTED.md); RoleSpecTest checks this file. -->
+<!-- device.admin. Lock the screen only. Never add wipe-data, password, encryption or
+     camera policies here: wipe is refused by design; RoleSpecTest checks this file. -->
 <device-admin>
     <uses-policies>
         <force-lock />

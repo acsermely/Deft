@@ -28,8 +28,11 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
+// DEVICE-UNCHECKED (media session): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a podcast sample keeps playing and is controllable from the lock screen and a headset.
+// Remove this note once checked.
 /**
- * `media.setMetadata`, `media.setState`, `media.setActions`, `media.release` (PARITY D4): the
+ * `media.setMetadata`, `media.setState`, `media.setActions`, `media.release`: the
  * app's media session for lock-screen, headset and Bluetooth controls. Works only while the app's
  * foreground service of type `mediaPlayback` runs, on screen or not. Reached through
  * [MediaModule], which owns the `media` prefix.

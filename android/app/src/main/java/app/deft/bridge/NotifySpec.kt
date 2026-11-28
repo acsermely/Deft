@@ -8,7 +8,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 
 /**
- * Parsed `notify.post` / `notify.createChannel` arguments (PARITY C1/C2), free of Android types so
+ * Parsed `notify.post` / `notify.createChannel` arguments, free of Android types so
  * the rules can be unit-tested. [OriginNotifications] turns these into real notifications.
  */
 object NotifySpec {

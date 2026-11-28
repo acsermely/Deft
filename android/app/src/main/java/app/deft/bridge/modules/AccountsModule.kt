@@ -17,8 +17,11 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
+// DEVICE-UNCHECKED (accounts and sync): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an app registers its own account and a sync job runs.
+// Remove this note once checked.
 /**
- * `accounts.*` (PARITY G10).
+ * `accounts.*`.
  *
  * - `accounts.own` (medium): the app's own accounts under the launcher's account type, shown in
  *   system Settings as "<name> · <App name>", with a sync adapter that wakes the app's background

@@ -270,6 +270,7 @@ class HomeCanvasStore(private val root: File) {
                 "a58c511d00794cc2b4738ae8ff72cfd08dcfdf85f98afda7ed53601239d7c2dc",
                 "9b5f5d705d02bdc551ec57fa9ac2f4de6aa232b5c0abc693a508ae1a087012d3",
                 "b8323e610f946b77d1d2f11c7c548d7f8b5b74b133955db5651dfcf0f4300bf4", // Deft 0.2.0: big clock at the bottom
+                "945ec744009ecee6bce332378d7b786427a0f70ba8b857a7aacb5168c2ae7e2a", // fixed 240px clearance plus env() inset
             ),
             HomeCanvasDefaults.MAIN to setOf("86a34428561659cca3ace6afcdf7e613cc9a8431db1bce06c022a8aafe4778a5"),
         )

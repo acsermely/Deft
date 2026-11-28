@@ -4,7 +4,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 
 /**
- * Origin ids for apps served at `https://<origin-id>.app.deft.internal` (PARITY H2, spec 8.3).
+ * Origin ids for apps served at `https://<origin-id>.app.deft.internal`.
  *
  * The slug is the human name; the origin id is not. It decides the app's origin, storage and
  * WebView profile, so it is fixed once per app row and never chosen by the app:

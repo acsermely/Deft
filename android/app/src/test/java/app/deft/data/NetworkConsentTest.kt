@@ -86,7 +86,7 @@ class NetworkConsentTest {
         assertEquals(listOf(a), NetworkConsent.served(listOf(a), listOf(a), userGranted = true))
     }
 
-    // PARITY G14: embed origins are approved one by one.
+    // Embed origins are approved one by one.
     private val s = "https://js.stripe.com"
     private val p = "https://*.paypal.com"
 

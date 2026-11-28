@@ -42,7 +42,7 @@ data class InstalledWebApp(
     val originId: String? = null,
 )
 
-/** PARITY G0: outcome of granting a special-access capability from the dashboard sheet. */
+/** Outcome of granting a special-access capability from the dashboard sheet. */
 sealed interface SpecialGrantResult {
     data object Granted : SpecialGrantResult
     /** Another app holds the exclusive group; it must be removed there first. */
@@ -164,9 +164,9 @@ class AppRepository(private val db: AppDatabase) {
     private fun afterRevoke(webAppId: String, cap: Capability) {
         if (cap.id.startsWith("bluetooth.")) BridgeService.instanceOrNull()?.releaseBluetooth(webAppId)
         if (cap.id.startsWith("net.")) BridgeService.instanceOrNull()?.releaseNetwork(webAppId)
-        // PARITY D1: the grant toggle is the kill switch; a run in progress ends now.
+        // The grant toggle is the kill switch; a run in progress ends now.
         if (cap == Capability.BACKGROUND) BridgeService.instanceOrNull()?.cancelBackground(webAppId)
-        // PARITY D6: revoking `push` unregisters the app's push endpoint.
+        // Revoking `push` unregisters the app's push endpoint.
         if (cap == Capability.PUSH) {
             runCatching { app.deft.push.PushRegistry.unregister(DeftApp.instance, webAppId) }
         }
@@ -177,9 +177,9 @@ class AppRepository(private val db: AppDatabase) {
     }
 
     /**
-     * PARITY D3: a running `fgs.start` ends when `foreground` or the grant its type needs is gone.
-     * PARITY G5: background location watches and geofences end when `location` or
-     * `location.background` is gone. PARITY G10: accounts go with `accounts.own`.
+     * A running `fgs.start` ends when `foreground` or the grant its type needs is gone.
+     * Background location watches and geofences end when `location` or
+     * `location.background` is gone. Accounts go with `accounts.own`.
      * Review: the live listeners in [app.deft.bridge.RevokeStops] and the `nfc.hce` AIDs too.
      */
     private suspend fun recheckForeground(webAppId: String) {
@@ -189,15 +189,15 @@ class AppRepository(private val db: AppDatabase) {
         runCatching {
             app.deft.location.BackgroundLocation.recheckGrants(DeftApp.instance, this, webAppId)
         }
-        // PARITY G10: without `accounts.own` the app's accounts (and their syncs) are removed.
+        // Without `accounts.own` the app's accounts (and their syncs) are removed.
         runCatching {
             app.deft.account.DeftAccounts.recheckGrants(DeftApp.instance, this, webAppId)
         }
         // Review: clipboard watch, sensors, listening and the torch end with their grant.
         runCatching { app.deft.bridge.RevokeStops.recheck(webAppId) }
-        // Review (PARITY B3): with no `nfc.hce` holder, its AIDs go, as B4 does for payment AIDs.
+        // With no `nfc.hce` holder, its AIDs go, as they do for payment AIDs.
         if (hceHolderId() == null) runCatching { app.deft.nfc.DeftHostApduService.clearAids(DeftApp.instance) }
-        // Review (PARITY B4): the same for payment AIDs now, not only in the later RoleComponents sync.
+        // Review: the same for payment AIDs now, not only in the later RoleComponents sync.
         if (paymentHolderId() == null) runCatching { app.deft.nfc.DeftPaymentApduService.clearAids(DeftApp.instance) }
     }
 
@@ -206,7 +206,7 @@ class AppRepository(private val db: AppDatabase) {
         val grants = db.grants().forApp(webAppId).associate { it.capability to it.level }
         return manifest.filter { cap ->
             val level = grants[cap.id]
-            // PARITY G0: special caps stay DENIED until the dashboard sheet; only a missing row asks.
+            // Special caps stay DENIED until the dashboard sheet; only a missing row asks.
             if (cap.risk == Risk.SPECIAL) return@filter level == null
             level == null || level == GrantLevel.DENIED.name
         }
@@ -238,7 +238,7 @@ class AppRepository(private val db: AppDatabase) {
         val parsed = store.readManifest(slug)
         val id = MyAppsStore.webAppId(slug)
         val existing = db.webApps().get(id) ?: db.webApps().bySlug(slug)
-        // PARITY H2: the origin id is fixed once per row and is not the slug. Existing rows keep
+        // The origin id is fixed once per row and is not the slug. Existing rows keep
         // theirs (changing it would drop the app's storage); new rows get a random id, or the
         // spec hash when the folder holds a signed package.
         val originId = existing?.originId ?: store.pinnedKey(slug)
@@ -270,9 +270,9 @@ class AppRepository(private val db: AppDatabase) {
         db.webApps().upsert(entity)
         // Review: a capability dropped from the manifest loses its grant (and what it started).
         revokeCapsNotRequired(entity.id, parsed.capabilities)
-        // PARITY D2: the manifest may have gained, changed or lost `periodic:N`.
+        // The manifest may have gained, changed or lost `periodic:N`.
         syncPeriodic(entity.id)
-        // PARITY E1: the manifest may have gained, changed or lost `handles`.
+        // The manifest may have gained, changed or lost `handles`.
         syncHandlers()
         return entity.toModel()
     }
@@ -382,7 +382,24 @@ class AppRepository(private val db: AppDatabase) {
     private fun manifestNetwork(webAppId: String, workspaceSlug: String?): List<String> =
         servedManifest(webAppId, workspaceSlug)?.network ?: emptyList()
 
-    /** PARITY H3: the merged manifest (overlay wins), the same one the host serves; null when unreadable. */
+    /**
+     * [ConsentBinding.hash] of the manifest the host serves for this app (overlay wins),
+     * or null when there is none on disk. The consent screen records it and checks it on Allow.
+     */
+    fun servedManifestHash(webAppId: String, workspaceSlug: String?): String? {
+        val dir = when {
+            workspaceSlug != null -> DeftApp.instance.myApps.projectDir(workspaceSlug)
+            else -> {
+                val id = BundledApps.idFromWebAppId(webAppId) ?: return null
+                BundledApps.dir(DeftApp.instance, id)
+            }
+        }
+        val file = app.deft.workspace.MergedAppTree.of(DeftApp.instance, dir, webAppId).manifestFile()
+        if (!file.isFile) return null
+        return runCatching { ConsentBinding.hash(file.readBytes()) }.getOrNull()
+    }
+
+    /** The merged manifest (overlay wins), the same one the host serves; null when unreadable. */
     private fun servedManifest(webAppId: String, workspaceSlug: String?): app.deft.registry.DeftManifest? {
         val dir = when {
             workspaceSlug != null -> DeftApp.instance.myApps.projectDir(workspaceSlug)
@@ -396,45 +413,57 @@ class AppRepository(private val db: AppDatabase) {
         return runCatching { DeftManifestParser.parse(file.readText()) }.getOrNull()
     }
 
-    /** PARITY D1: the manifest `background` the host serves, or null (URL apps have none). */
+    /** The manifest `background` the host serves, or null (URL apps have none). */
     fun backgroundFor(app: InstalledWebApp): app.deft.registry.DeftBackground? =
         servedManifest(app.id, app.workspaceSlug)?.background
 
-    /** PARITY G11: the manifest `wallpaper` the host serves, or null (URL apps have none). */
+    /** The manifest `wallpaper` the host serves, or null (URL apps have none). */
     fun wallpaperFor(app: InstalledWebApp): app.deft.registry.DeftWallpaper? =
         servedManifest(app.id, app.workspaceSlug)?.wallpaper
 
-    /** PARITY G11: the manifest `keyboard` the host serves, or null (URL apps have none). */
+    /** The manifest `keyboard` the host serves, or null (URL apps have none). */
     fun keyboardFor(app: InstalledWebApp): app.deft.registry.DeftKeyboard? =
         servedManifest(app.id, app.workspaceSlug)?.keyboard
 
-    /** W1: the manifest `widget` the host serves, or null (URL apps have none). */
+    /** The manifest `widget` the host serves, or null (URL apps have none). */
     fun widgetFor(app: InstalledWebApp): app.deft.registry.DeftWidget? =
         servedManifest(app.id, app.workspaceSlug)?.widget
 
-    /** W5: the manifest `tools` the host serves (all declared, consented or not), or empty (URL apps have none). */
+    /** The manifest `tools` the host serves (all declared, consented or not), or empty (URL apps have none). */
     fun toolsFor(app: InstalledWebApp): List<app.deft.registry.DeftTool> =
         servedManifest(app.id, app.workspaceSlug)?.tools.orEmpty()
 
-    /** PARITY E1: the manifest `handles` the host serves, or null (URL apps have none). */
+    /** The manifest `handles` the host serves, or null (URL apps have none). */
     fun handlesFor(app: InstalledWebApp): app.deft.registry.DeftHandles? =
         servedManifest(app.id, app.workspaceSlug)?.handles
 
-    /** PARITY G11: re-evaluates which role components are enabled, off the caller's thread. */
+    /** Re-evaluates which role components are enabled, off the caller's thread. */
     fun syncRoles() {
         runCatching { app.deft.roles.RoleComponents.syncSoon(DeftApp.instance) }
     }
 
-    /** PARITY E1: re-evaluates which "Open with" aliases are enabled, off the caller's thread. */
+    /**
+     * Manifest `passkeys.rpIds`, but only when the manifest also declares `webauthn`. Read from the served
+     * manifest on every call, like [handlesFor]; the website's own opt-in list is what binds an rpId to the app.
+     */
+    fun passkeyRpIdsFor(app: InstalledWebApp): List<String> = passkeyRpIdsFor(app.id, app.workspaceSlug)
+
+    fun passkeyRpIdsFor(webAppId: String, workspaceSlug: String?): List<String> {
+        val parsed = servedManifest(webAppId, workspaceSlug) ?: return emptyList()
+        if (parsed.capabilities.none { it.first == Capability.WEBAUTHN }) return emptyList()
+        return parsed.passkeyRpIds
+    }
+
+    /** Re-evaluates which "Open with" aliases are enabled, off the caller's thread. */
     fun syncHandlers() {
         runCatching { app.deft.ui.handlers.HandlerAliases.syncSoon(DeftApp.instance) }
     }
 
-    /** PARITY D1: the app's last background runs, newest first, for the dashboard. */
+    /** The app's last background runs, newest first, for the dashboard. */
     fun observeBackgroundRuns(webAppId: String, limit: Int = 10): Flow<List<UsageLogEntity>> =
         db.usageLog().observeForMethod(webAppId, app.deft.background.BackgroundRunner.AUDIT_METHOD, limit)
 
-    /** PARITY D1: when the app's runs since [since] ended, to seed the hourly limit after a restart. */
+    /** When the app's runs since [since] ended, to seed the hourly limit after a restart. */
     suspend fun backgroundRunTimes(webAppId: String, since: Long): List<Long> =
         db.usageLog().timestampsSince(
             webAppId,
@@ -444,7 +473,7 @@ class AppRepository(private val db: AppDatabase) {
         )
 
     /**
-     * PARITY G14: manifest `embeds`, but only when the manifest also declares `web.embed`;
+     * Manifest `embeds`, but only when the manifest also declares `web.embed`;
      * without it there is nothing to ask about or serve.
      */
     private fun manifestEmbeds(webAppId: String, workspaceSlug: String?): List<String> {
@@ -476,7 +505,7 @@ class AppRepository(private val db: AppDatabase) {
         }
     }
 
-    /** PARITY G14: declared embed origins nobody decided on yet; non-empty means the consent screen must run. */
+    /** Declared embed origins nobody decided on yet; non-empty means the consent screen must run. */
     suspend fun unconsentedEmbeds(webAppId: String, workspaceSlug: String?): List<String> =
         resolveEmbeds(webAppId, workspaceSlug).pending
 
@@ -495,14 +524,14 @@ class AppRepository(private val db: AppDatabase) {
         )
     }
 
-    /** PARITY G14: every declared embed origin with whether the user approved it (dashboard). */
+    /** Every declared embed origin with whether the user approved it (dashboard). */
     suspend fun embedChoices(webAppId: String, workspaceSlug: String?): List<Pair<String, Boolean>> {
         val declared = manifestEmbeds(webAppId, workspaceSlug)
         val approved = resolveEmbeds(webAppId, workspaceSlug).approved.toSet()
         return declared.distinct().map { it to (it in approved) }
     }
 
-    /** PARITY G14: the dashboard switch for one declared embed origin. */
+    /** The dashboard switch for one declared embed origin. */
     suspend fun setEmbedApproved(webAppId: String, workspaceSlug: String?, origin: String, allow: Boolean) {
         val dao = db.networkConsent()
         storeEmbeds(
@@ -518,7 +547,7 @@ class AppRepository(private val db: AppDatabase) {
     }
 
     /**
-     * W5: the tools the user consented to are rows `name@fingerprint` in `network_consent` under
+     * The tools the user consented to are rows `name@fingerprint` in `network_consent` under
      * [AgentToolConsent.SOURCE_TOOL] (no schema change), so an edited tool is asked again. One row under
      * [AgentToolConsent.SOURCE_OFF] means the dashboard switch is off: the agent sees none of the app's tools.
      */
@@ -535,13 +564,13 @@ class AppRepository(private val db: AppDatabase) {
         return tools.map { it.withCode(app.deft.registry.DeftToolCode.hash(it, files, manifest?.dependencies.orEmpty())) }
     }
 
-    /** W5: declared tools the user has not consented to yet (new or changed); non-empty means the consent screen must run. */
+    /** Declared tools the user has not consented to yet (new or changed); non-empty means the consent screen must run. */
     suspend fun unconsentedTools(webAppId: String, workspaceSlug: String?): List<app.deft.registry.DeftTool> {
         val consented = db.networkConsent().bySource(webAppId, AgentToolConsent.SOURCE_TOOL).toSet()
         return declaredTools(webAppId, workspaceSlug).filter { it.consentKey() !in consented }
     }
 
-    /** W5: called when the user taps Allow on a consent screen that listed [shown]; consent for tools no longer declared is dropped. */
+    /** Called when the user taps Allow on a consent screen that listed [shown]; consent for tools no longer declared is dropped. */
     suspend fun recordToolConsent(webAppId: String, workspaceSlug: String?, shown: List<app.deft.registry.DeftTool>) {
         val dao = db.networkConsent()
         val before = dao.bySource(webAppId, AgentToolConsent.SOURCE_TOOL).toSet()
@@ -555,7 +584,7 @@ class AppRepository(private val db: AppDatabase) {
         }
     }
 
-    /** W5: the dashboard switch "Let the agent use this app's tools". */
+    /** The dashboard switch "Let the agent use this app's tools". */
     suspend fun toolsEnabled(webAppId: String): Boolean =
         db.networkConsent().bySource(webAppId, AgentToolConsent.SOURCE_OFF).isEmpty()
 
@@ -567,20 +596,20 @@ class AppRepository(private val db: AppDatabase) {
         }
     }
 
-    /** W5: tools declared by the app's served manifest and consented to, as the agent may call them; empty while the switch is off. */
+    /** Tools declared by the app's served manifest and consented to, as the agent may call them; empty while the switch is off. */
     suspend fun agentToolsFor(app: InstalledWebApp): List<app.deft.registry.DeftTool> {
         if (app.workspaceSlug == null || !toolsEnabled(app.id)) return emptyList()
         val consented = db.networkConsent().bySource(app.id, AgentToolConsent.SOURCE_TOOL).toSet()
         return declaredTools(app.id, app.workspaceSlug).filter { it.consentKey() in consented }
     }
 
-    /** W5: every declared tool with whether the user consented, for the dashboard. */
+    /** Every declared tool with whether the user consented, for the dashboard. */
     suspend fun toolChoices(webAppId: String, workspaceSlug: String?): List<Pair<app.deft.registry.DeftTool, Boolean>> {
         val consented = db.networkConsent().bySource(webAppId, AgentToolConsent.SOURCE_TOOL).toSet()
         return declaredTools(webAppId, workspaceSlug).map { it to (it.consentKey() in consented) }
     }
 
-    /** PARITY G14: approved embed origins, only while `web.embed` is declared **and** granted. */
+    /** Approved embed origins, only while `web.embed` is declared **and** granted. */
     private suspend fun embedsFor(app: InstalledWebApp): List<String> {
         if (!declaredAndGranted(app.id, Capability.WEB_EMBED)) return emptyList()
         return resolveEmbeds(app.id, app.workspaceSlug).approved
@@ -597,15 +626,14 @@ class AppRepository(private val db: AppDatabase) {
 
     private suspend fun storeNetworkConsent(webAppId: String, rows: List<String>) {
         db.withTransaction {
-            // Only consent-screen rows; servers the user typed (PARITY P3) are kept.
+            // Only consent-screen rows; servers the user typed are kept.
             db.networkConsent().deleteManifestRows(webAppId)
             db.networkConsent().insertAll(rows.map { NetworkConsentEntity(webAppId, it, NetworkConsent.SOURCE_MANIFEST) })
         }
     }
 
     /**
-     * `connect-src` origins: declared in the manifest **and** allowed on the consent screen
-     * (PARITY H4), then servers the user added when `network.user` is declared and granted (P3).
+     * `connect-src` origins: declared in the manifest **and** allowed on the consent screen, then servers the user added when `network.user` is declared and granted.
      */
     suspend fun networkFor(app: InstalledWebApp): List<String> {
         val consented = resolveNetwork(app.id, app.workspaceSlug).served
@@ -615,26 +643,33 @@ class AppRepository(private val db: AppDatabase) {
     }
 
     /**
-     * PARITY G1: everything the app's CSP is built from. `network.open` counts only when the
+     * Everything the app's CSP is built from. `network.open` counts only when the
      * app declares it **and** the user granted it.
      */
     suspend fun cspPolicyFor(app: InstalledWebApp): CspPolicy {
         val open = declaredAndGranted(app.id, Capability.NETWORK_OPEN)
-        // PARITY G2: 'wasm-unsafe-eval' only for an app that declares and holds the grant.
+        // 'wasm-unsafe-eval' only for an app that declares and holds the grant.
         val wasm = declaredAndGranted(app.id, Capability.WASM)
+        // The dashboard's "Block network" switch drops every remote origin.
+        if (networkBlocked(app.id)) {
+            return CspPolicy(flags = buildSet {
+                add(CspFlag.BLOCKED)
+                if (wasm) add(CspFlag.WASM)
+            })
+        }
         return CspPolicy(
             connectOrigins = networkFor(app),
             flags = buildSet {
                 if (open) add(CspFlag.OPEN_NETWORK)
                 if (wasm) add(CspFlag.WASM)
             },
-            // PARITY G14: approved embed origins only with web.embed declared and granted.
+            // Approved embed origins only with web.embed declared and granted.
             embedOrigins = embedsFor(app),
         )
     }
 
     /**
-     * PARITY G4: sockets to servers outside the local network need `net.sockets` **and**
+     * Sockets to servers outside the local network need `net.sockets` **and**
      * `network.open`, each declared and granted, the same rule as [cspPolicyFor].
      */
     suspend fun internetSocketsAllowed(webAppId: String): Boolean =
@@ -646,10 +681,25 @@ class AppRepository(private val db: AppDatabase) {
         return cap in row.requiredCapabilities && grantLevel(webAppId, cap).isGranted()
     }
 
-    /** PARITY P3: servers the user added for this app on the dashboard. */
+    /** The per-app network log. */
+    val networkLog: NetworkLogStore by lazy { NetworkLogStore(db.networkLog()) }
+
+    /** The dashboard's "Block network" switch; on means no remote request and no `net.*` call. */
+    suspend fun networkBlocked(webAppId: String): Boolean =
+        db.networkConsent().bySource(webAppId, NetworkLog.SOURCE_BLOCK).isNotEmpty()
+
+    suspend fun setNetworkBlocked(webAppId: String, blocked: Boolean) {
+        val dao = db.networkConsent()
+        db.withTransaction {
+            dao.deleteSource(webAppId, NetworkLog.SOURCE_BLOCK)
+            if (blocked) dao.insertAll(listOf(NetworkConsentEntity(webAppId, NetworkLog.BLOCK_MARK, NetworkLog.SOURCE_BLOCK)))
+        }
+    }
+
+    /** Servers the user added for this app on the dashboard. */
     suspend fun userServers(webAppId: String): List<String> = db.networkConsent().userFor(webAppId)
 
-    /** PARITY P3: adds a server; returns a plain error for the dashboard, or null when added. */
+    /** Adds a server; returns a plain error for the dashboard, or null when added. */
     suspend fun addUserServer(webAppId: String, input: String): String? {
         val origin = NetworkConsent.userOrigin(input)
             ?: return "Use an address like https://example.com or https://example.com:8443"
@@ -702,7 +752,7 @@ class AppRepository(private val db: AppDatabase) {
         for (cap in shown) {
             when {
                 cap !in chosen -> grants[cap] = GrantLevel.DENIED
-                // A ticked box plus Allow is the grant; there is no second prompt (spec 8.4).
+                // A ticked box plus Allow is the grant; there is no second prompt.
                 else -> grants[cap] = cap.defaultGrant
             }
         }
@@ -733,7 +783,7 @@ class AppRepository(private val db: AppDatabase) {
 
     private suspend fun writeGrants(webAppId: String, grants: Map<Capability, GrantLevel>) {
         for ((cap, level) in grants) {
-            // PARITY G0: install and the consent screen never grant special access. A new row is
+            // Install and the consent screen never grant special access. A new row is
             // DENIED ("asks later"); an existing row (granted from the dashboard) is left alone.
             if (cap.risk == Risk.SPECIAL) {
                 if (db.grants().get(webAppId, cap.id) == null) {
@@ -780,12 +830,12 @@ class AppRepository(private val db: AppDatabase) {
         }
         // Review: the old holder's queued SMS / call events must not reach it later, and what it
         // started with the group (listeners, services) ends. Runs before the new holder's row is
-        // written, so the `nfc.hce` AIDs go too (PARITY B3).
+        // written, so the `nfc.hce` AIDs go too.
         for (id in displaced) {
             purgeDisallowedEvents(id)
             recheckForeground(id)
         }
-        // Review (PARITY B3): the old holder's AIDs must not reach the new holder.
+        // Review: the old holder's AIDs must not reach the new holder.
         if (displaced.isNotEmpty() && group == Capability.NFC_HCE.exclusiveGroup) {
             runCatching { app.deft.nfc.DeftHostApduService.clearAids(DeftApp.instance) }
         }
@@ -796,10 +846,10 @@ class AppRepository(private val db: AppDatabase) {
 
     suspend fun smsHolderId(): String? = holderOfGroup("sms")
 
-    /** PARITY B3: the one app granted NFC card emulation. */
+    /** The one app granted NFC card emulation. */
     suspend fun hceHolderId(): String? = holderOfGroup("nfc.hce")
 
-    /** PARITY B4: the one app granted payment card emulation. */
+    /** The one app granted payment card emulation. */
     private suspend fun paymentHolderId(): String? = Capability.NFC_HCE_PAYMENT.exclusiveGroup?.let { holderOfGroup(it) }
 
     suspend fun replaceTelephonyHolder(newHolderId: String) = replaceGroupHolder("calls", newHolderId)
@@ -815,7 +865,7 @@ class AppRepository(private val db: AppDatabase) {
 
     suspend fun grantsForApp(webAppId: String) = db.grants().forApp(webAppId)
 
-    /** PARITY G3: folder names of installed apps whose `storage.large` grant is on. */
+    /** Folder names of installed apps whose `storage.large` grant is on. */
     suspend fun largeStorageSlugs(): Set<String> = allApps()
         .filter { app -> app.workspaceSlug != null && grantLevel(app.id, Capability.STORAGE_LARGE).isGranted() }
         .mapNotNull { it.workspaceSlug }
@@ -826,7 +876,7 @@ class AppRepository(private val db: AppDatabase) {
         return runCatching { GrantLevel.valueOf(row.level) }.getOrDefault(GrantLevel.DENIED)
     }
 
-    /** PARITY G0: true when the user turned this special grant off (not "asks later" from the consent screen). */
+    /** True when the user turned this special grant off (not "asks later" from the consent screen). */
     suspend fun specialDeniedByUser(webAppId: String, capability: Capability): Boolean =
         db.grants().get(webAppId, capability.id)?.deniedByUser == true
 
@@ -881,7 +931,7 @@ class AppRepository(private val db: AppDatabase) {
      * [byUser] is false only for the 90-day auto-revoke: that removal is not the user's denial, so the app may ask again.
      */
     suspend fun setGrant(webAppId: String, capability: Capability, level: GrantLevel, byUser: Boolean = true) {
-        // PARITY G0: special access is granted only through [grantSpecial], from the launcher's own sheet after the screen lock.
+        // Special access is granted only through [grantSpecial], from the launcher's own sheet after the screen lock.
         if (capability.risk == Risk.SPECIAL && level.isGranted()) return
         if (level.isGranted()) {
             capability.exclusiveGroup?.let { replaceGroupHolder(it, webAppId) }
@@ -898,18 +948,18 @@ class AppRepository(private val db: AppDatabase) {
         if (level == GrantLevel.DENIED) {
             afterRevoke(webAppId, capability)
             purgeDisallowedEvents(webAppId)
-            // PARITY D3: revoking `foreground` (or the type's own grant) stops the service.
+            // Revoking `foreground` (or the type's own grant) stops the service.
             recheckForeground(webAppId)
         }
         if (capability == Capability.BACKGROUND) syncPeriodic(webAppId)
-        // PARITY E1: files only reach an app that can read its share inbox.
+        // Files only reach an app that can read its share inbox.
         if (capability == Capability.SHARE_RECEIVE) syncHandlers()
-        // PARITY G11: a role's launcher component goes off with its last holder.
+        // A role's launcher component goes off with its last holder.
         if (capability.risk == Risk.SPECIAL) syncRoles()
     }
 
     /**
-     * PARITY D2: schedules or cancels the app's `periodic:N` work to match its manifest and its
+     * Schedules or cancels the app's `periodic:N` work to match its manifest and its
      * `background` grant. Never fails the caller (WorkManager may be missing in tests).
      */
     suspend fun syncPeriodic(webAppId: String) {
@@ -923,13 +973,13 @@ class AppRepository(private val db: AppDatabase) {
     }
 
     /**
-     * PARITY G0: the one app holding a special exclusive group, or null. Unlike the SMS role,
+     * The one app holding a special exclusive group, or null. Unlike the SMS role,
      * a special group is never taken over: [grantSpecial] refuses while someone holds it.
      */
     suspend fun specialHolder(group: String): String? = holderOfGroup(group)
 
     /**
-     * PARITY G0: the only way a special capability becomes granted. Called by
+     * The only way a special capability becomes granted. Called by
      * `SpecialGrantActivity` after the user confirmed with the screen lock.
      */
     suspend fun grantSpecial(webAppId: String, capability: Capability): SpecialGrantResult {
@@ -951,14 +1001,14 @@ class AppRepository(private val db: AppDatabase) {
         return result
     }
 
-    /** PARITY G0: granted special rows, for the daily review. */
+    /** Granted special rows, for the daily review. */
     suspend fun grantedSpecial(): List<GrantEntity> =
         db.grants().allGranted().filter { Capability.fromId(it.capability)?.risk == Risk.SPECIAL }
 
-    /** PARITY G0: last successful bridge or web use of [capability] by the app, or null. */
+    /** Last successful bridge or web use of [capability] by the app, or null. */
     suspend fun lastUsed(webAppId: String, capability: String): Long? = db.usageLog().lastOk(webAppId, capability)
 
-    /** PARITY G0: "Keep" on the review reminder. */
+    /** "Keep" on the review reminder. */
     suspend fun keepGrant(webAppId: String, capability: Capability) {
         db.grants().touch(webAppId, capability.id, System.currentTimeMillis())
     }
@@ -1032,16 +1082,16 @@ class AppRepository(private val db: AppDatabase) {
         }
         BridgeService.instanceOrNull()?.releaseBluetooth(id)
         BridgeService.instanceOrNull()?.releaseNetwork(id)
-        // PARITY D1: before the profile is deleted; a running background page still uses it.
+        // Before the profile is deleted; a running background page still uses it.
         BridgeService.instanceOrNull()?.cancelBackground(id)
         app.deft.background.PeriodicTriggers.cancel(ctx, id)
-        // PARITY D6: the distributor stops accepting messages for the app.
+        // The distributor stops accepting messages for the app.
         runCatching { app.deft.push.PushRegistry.unregister(ctx, id) }
         runCatching { app.deft.special.SpecialUse.stopAll(ctx, id) }
         runCatching { app.deft.background.AppForegroundService.stop(ctx, id, null) }
-        // PARITY G5: background location watches and geofences (proximity alerts) go.
+        // Background location watches and geofences (proximity alerts) go.
         runCatching { app.deft.location.BackgroundLocation.forgetApp(ctx, id) }
-        // PARITY G10: the app's accounts in system Settings go, with their syncs.
+        // The app's accounts in system Settings go, with their syncs.
         runCatching { app.deft.account.DeftAccounts.forgetOwner(ctx, row?.originId ?: id) }
         // Review: the app's Keystore keys go with it, unless another installed row shares its origin id.
         val owner = row?.originId ?: id
@@ -1058,6 +1108,9 @@ class AppRepository(private val db: AppDatabase) {
         db.recentLaunches().deleteWeb(id)
         db.alarms().deleteForApp(id)
         db.grants().deleteForApp(id)
+        db.networkLog().deleteForApp(id)
+        // The app's downloaded asset packs go with it.
+        runCatching { app.deft.workspace.AssetPacks.root(ctx, id).deleteRecursively() }
         // Review: live listeners end with the app; with no `nfc.hce` holder left its AIDs go too.
         runCatching { app.deft.bridge.RevokeStops.recheck(id) }
         if (hceHolderId() == null) runCatching { app.deft.nfc.DeftHostApduService.clearAids(ctx) }

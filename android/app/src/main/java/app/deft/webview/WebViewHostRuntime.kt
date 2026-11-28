@@ -17,7 +17,7 @@ object WebViewHostRuntime {
     private val views = IdentityHashMap<WebView, Unit>()
     private val gate = WebViewHostPauseGate()
 
-    /** PARITY G11: live wallpaper views that are hidden but not yet paused (see [wallpaperHidden]). */
+    /** Live wallpaper views that are hidden but not yet paused (see [wallpaperHidden]). */
     private val hiddenWallpapers = IdentityHashMap<WebView, Unit>()
 
     fun attach(view: WebView) {
@@ -52,7 +52,7 @@ object WebViewHostRuntime {
     }
 
     /**
-     * PARITY D1: a background run needs JS timers and parsing, which [WebView.pauseTimers] stops
+     * A background run needs JS timers and parsing, which [WebView.pauseTimers] stops
      * for the whole process. [view] is the run's off-screen WebView (not tracked here).
      */
     fun backgroundStarted(view: WebView) {
@@ -60,14 +60,14 @@ object WebViewHostRuntime {
         if (action == WebViewHostPauseGate.Action.RESUME_TIMERS) view.resumeTimers()
     }
 
-    /** PARITY D1: the run's WebView is still alive here; destroy it afterwards. */
+    /** The run's WebView is still alive here; destroy it afterwards. */
     fun backgroundEnded(view: WebView) {
         val action = synchronized(lock) { gate.backgroundEnded() }
         if (action == WebViewHostPauseGate.Action.PAUSE_TIMERS) view.pauseTimers()
     }
 
     /**
-     * PARITY D3: an app keeps running with a foreground service. Its page must not be paused when
+     * An app keeps running with a foreground service. Its page must not be paused when
      * its activity stops; [WebView.onPause] on any view would also end geolocation for it (see the
      * class comment), so every host view stays resumed until the last such service ends. Main thread.
      */
@@ -76,7 +76,7 @@ object WebViewHostRuntime {
         if (action == WebViewHostPauseGate.Action.RESUME_ALL) applyResume()
     }
 
-    /** PARITY D3: the service ended; pause as if the last host had just left (when none is in front). */
+    /** The service ended; pause as if the last host had just left (when none is in front). */
     fun fgsEnded() {
         val action = synchronized(lock) { gate.fgsEnded() }
         when (action) {
@@ -87,7 +87,7 @@ object WebViewHostRuntime {
     }
 
     /**
-     * PARITY G11: the live wallpaper became visible. Its page runs like a background run (timers
+     * The live wallpaper became visible. Its page runs like a background run (timers
      * on even with no host in front). [view] is not tracked with the host views. Main thread.
      */
     fun wallpaperShown(view: WebView) {
@@ -100,7 +100,7 @@ object WebViewHostRuntime {
     }
 
     /**
-     * PARITY G11: the live wallpaper was hidden (an app covers it, or the screen went off). The
+     * The live wallpaper was hidden (an app covers it, or the screen went off). The
      * view is paused now only when no host view runs: [WebView.onPause] would end geolocation for
      * the app in front (see the class comment). Otherwise it is paused together with the host
      * views when the last host leaves; until then the caller keeps it hidden. Main thread.
@@ -133,7 +133,7 @@ object WebViewHostRuntime {
         if (action == WebViewHostPauseGate.Action.PAUSE_TIMERS) view.pauseTimers()
     }
 
-    /** PARITY G11: the wallpaper view is being destroyed (after [wallpaperHidden]). */
+    /** The wallpaper view is being destroyed (after [wallpaperHidden]). */
     fun wallpaperGone(view: WebView) {
         synchronized(lock) { hiddenWallpapers.remove(view) }
     }
@@ -151,7 +151,7 @@ object WebViewHostRuntime {
     private fun applyPause(keepTimers: Boolean = false) {
         val list = snapshot()
         for (view in list) view.onPause()
-        // PARITY G11: hidden live wallpapers waited for this moment to pause.
+        // Hidden live wallpapers waited for this moment to pause.
         val wallpapers = synchronized(lock) { hiddenWallpapers.keys.toList().also { hiddenWallpapers.clear() } }
         for (view in wallpapers) view.onPause()
         if (!keepTimers) list.firstOrNull()?.pauseTimers()
@@ -160,8 +160,8 @@ object WebViewHostRuntime {
 
 /**
  * Pure counter so inverted activity-lifecycle order cannot pause timers while a host is visible.
- * PARITY D1: background runs keep the process-wide timers running while no host is resumed.
- * PARITY D3: while any app keeps running with a foreground service, nothing is paused.
+ * Background runs keep the process-wide timers running while no host is resumed.
+ * While any app keeps running with a foreground service, nothing is paused.
  * Launcher WebViews outside the hosts ("owners": home canvas, agent preview, verifier, lint)
  * keep the timers running while resumed, like background runs.
  */
@@ -172,7 +172,7 @@ class WebViewHostPauseGate {
     var backgroundRuns: Int = 0
         private set
 
-    /** PARITY D3: apps running with a foreground service. */
+    /** Apps running with a foreground service. */
     var foregroundServices: Int = 0
         private set
 
@@ -186,7 +186,7 @@ class WebViewHostPauseGate {
     /** Timers run without host views: a background run or a resumed owner view. */
     private val timersWithoutHosts: Boolean get() = backgroundRuns > 0 || owners.isNotEmpty()
 
-    /** Host views and timers run: a host is in front or an app keeps running (PARITY D3). */
+    /** Host views and timers run: a host is in front or an app keeps running. */
     val keepsViewsRunning: Boolean get() = resumedHosts > 0 || foregroundServices > 0
 
     fun resume(): Action {
@@ -227,7 +227,7 @@ class WebViewHostPauseGate {
     private fun timersIfIdle(): Action =
         if (!keepsViewsRunning && !timersWithoutHosts) Action.PAUSE_TIMERS else Action.NONE
 
-    /** PARITY D3: normally called while the app is in front, so usually NONE. */
+    /** Normally called while the app is in front, so usually NONE. */
     fun fgsStarted(): Action {
         val wasRunning = keepsViewsRunning
         foregroundServices++

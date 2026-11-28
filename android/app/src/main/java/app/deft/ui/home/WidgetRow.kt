@@ -25,8 +25,8 @@ import app.deft.ui.host.WebViewHostActivity
 import app.deft.widgets.WidgetStore
 
 /**
- * PARITY C4: web app widget cards above the dock. Nothing is drawn when no app has one.
- * W1: cards of [hiddenApps] (apps the home canvas already shows as an `deft-widget`) are left out.
+ * Web app widget cards above the dock. Nothing is drawn when no app has one.
+ * Cards of [hiddenApps] (apps the home canvas already shows as an `deft-widget`) are left out.
  */
 @Composable
 fun WidgetRow(hiddenApps: Set<String> = emptySet(), modifier: Modifier = Modifier) {

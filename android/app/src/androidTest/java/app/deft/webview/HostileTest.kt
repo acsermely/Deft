@@ -189,7 +189,7 @@ class HostileTest {
         }
     }
 
-    /** PARITY G0: install and the consent screen write special access as DENIED, whatever they ask for. */
+    /** Install and the consent screen write special access as DENIED, whatever they ask for. */
     @Test
     fun specialCannotBeGrantedFromConsent() {
         val store = DeftApp.instance.myApps
@@ -246,7 +246,7 @@ class HostileTest {
     }
 
     /**
-     * PARITY G0: a special grant the user turned off is remembered, so a bridge call only asks again for
+     * A special grant the user turned off is remembered, so a bridge call only asks again for
      * "asks later" rows. Only the sheet's screen lock (grantSpecial) grants, and it clears the remembered denial.
      */
     @Test
@@ -293,7 +293,7 @@ class HostileTest {
     }
 
     /**
-     * PARITY G1: `network.open` widens the CSP only when the app declares it and the user granted
+     * `network.open` widens the CSP only when the app declares it and the user granted
      * it; a denied box, a revoke, or a stray grant row for an undeclared capability serve no `https:`.
      */
     @Test
@@ -378,7 +378,78 @@ class HostileTest {
     }
 
     /**
-     * PARITY G14: only embed origins the user ticked reach the CSP, only while `web.embed` is
+     * With "Block network" on, an app cannot reach even an origin it
+     * declares and the user allowed; `net.*` refuses too, and turning it off restores the policy.
+     */
+    @Test
+    fun blockedAppCannotFetchDeclaredOrigin() {
+        val store = DeftApp.instance.myApps
+        val repo = DeftApp.instance.repository
+        val slug = "hostile-net-block"
+        val declared = "https://example.com"
+        val dir = store.projectDir(slug).also { it.deleteRecursively(); it.mkdirs() }
+        File(dir, "index.html").writeText("<!doctype html><html><body></body></html>")
+        File(dir, "manifest.json").writeText(
+            """{"deft":1,"id":"$slug","name":"$slug","version":"0.1.0","profile":"myapp",""" +
+                """"start_url":"./index.html","capabilities":[],"network":["$declared"]}""",
+        )
+        var appId: String? = null
+        var blocked: CspPolicy? = null
+        try {
+            runBlocking {
+                val app = repo.applyWorkspaceConsent(slug, emptyList(), emptyList()).also { appId = it.id }
+                repo.recordNetworkConsent(app.id, slug, listOf(declared))
+                val allowed = repo.cspPolicyFor(app)
+                assertTrue(allowed.toString(), declared in allowed.connectOrigins)
+
+                repo.setNetworkBlocked(app.id, true)
+                blocked = repo.cspPolicyFor(app)
+                assertTrue(CspFlag.BLOCKED in blocked!!.flags)
+                val csp = CspBuilder.build(blocked!!)
+                assertFalse(csp, csp.contains(declared))
+                assertTrue(csp, csp.contains("connect-src 'self';"))
+
+                repo.setNetworkBlocked(app.id, false)
+                assertEquals(allowed, repo.cspPolicyFor(app))
+            }
+            val probe = loadPage(
+                host = "hostile-net-block.app.deft.internal",
+                html = """<!doctype html><html><head>
+                    <script type="module" src="./main.js"></script>
+                    </head><body></body></html>""",
+                extra = mapOf(
+                    "main.js" to """
+                        window.__deftFetch = 'pending';
+                        fetch('$declared/').then(function(){
+                          window.__deftFetch = 'ok';
+                        }).catch(function(e){
+                          window.__deftFetch = 'blocked:' + (e && e.name);
+                        });
+                    """.trimIndent(),
+                ),
+                expr = "String(window.__deftFetch)",
+                policy = blocked!!,
+            )
+            assertTrue(
+                "a blocked app must not fetch its declared origin: $probe",
+                probe.contains("blocked") || probe.contains("pending") || probe.contains("TypeError"),
+            )
+        } finally {
+            runBlocking {
+                val db = DeftApp.instance.database
+                appId?.let { id ->
+                    db.grants().deleteForApp(id)
+                    db.networkConsent().deleteForApp(id)
+                    db.networkLog().deleteForApp(id)
+                    db.webApps().delete(id)
+                }
+            }
+            runCatching { store.projectDir(slug).deleteRecursively() }
+        }
+    }
+
+    /**
+     * Only embed origins the user ticked reach the CSP, only while `web.embed` is
      * granted; a script from an unticked origin is blocked by `script-src`, and the Trusted Types
      * default policy hands out script URLs for approved origins only.
      */
@@ -468,7 +539,7 @@ class HostileTest {
         }
     }
 
-    /** PARITY G0: a special exclusive group is refused, not taken over, while another app holds it. */
+    /** A special exclusive group is refused, not taken over, while another app holds it. */
     @Test
     fun secondOriginCannotTakeExclusiveSpecial() {
         val repo = DeftApp.instance.repository

@@ -7,7 +7,7 @@ import app.deft.bridge.BridgePicks
 import java.io.File
 
 /**
- * System "Save as" for `files.saveAs` and `<a download>` (PARITY A2). The bytes wait in a private
+ * System "Save as" for `files.saveAs` and `<a download>`. The bytes wait in a private
  * cache file; the user picks where they go, and only that one document is written.
  */
 class SaveAsActivity : ComponentActivity() {

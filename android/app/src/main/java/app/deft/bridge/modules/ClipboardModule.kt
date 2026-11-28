@@ -24,12 +24,15 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (clipboard watch): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a clipboard manager sample records copies while focused or as the IME.
+// Remove this note once checked.
 /**
- * `clipboard.*`. `readText` (PARITY A7, `navigator.clipboard.readText`) works only within a few
+ * `clipboard.*`. `readText` (`navigator.clipboard.readText`) works only within a few
  * seconds of a genuine tap in the app, so a page cannot poll the clipboard in the background.
- * `watchStart` / `watchStop` (PARITY G12) report each new copy while the app is on screen.
+ * `watchStart` / `watchStop` report each new copy while the app is on screen.
  *
- * IME mode (PARITY G12 with G11 `ime`): Android 10+ also lets the phone's chosen keyboard read the
+ * IME mode: Android 10+ also lets the phone's chosen keyboard read the
  * clipboard. When the app holds `ime` and the launcher's keyboard is the chosen one, its keyboard
  * page may call `watchStart` too: each new copy then goes to that page only, while it listens,
  * never queued, and only while `clipboard.watch` is still granted. It ends with `watchStop` from
@@ -78,7 +81,7 @@ class ClipboardModule(private val context: Context) : BridgeModule {
         return if (started) BridgeOutcome.Ok() else BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "Clipboard is not available")
     }
 
-    /** PARITY G12 IME mode: from the keyboard page, while the launcher's keyboard is the chosen one. */
+    /** IME mode: from the keyboard page, while the launcher's keyboard is the chosen one. */
     private suspend fun watchStartIme(webAppId: String): BridgeOutcome = withContext(Dispatchers.Main) {
         if (DeftInputMethodService.forPage(webAppId) == null) {
             return@withContext BridgeOutcome.Err(BridgeErrors.UNSUPPORTED, "The keyboard is not showing this app")
@@ -106,7 +109,7 @@ class ClipboardModule(private val context: Context) : BridgeModule {
     companion object {
         private val watchers = ConcurrentHashMap<String, Watcher>()
 
-        /** PARITY G12 IME mode: watches started by the keyboard page, apart from the on-screen ones. */
+        /** IME mode: watches started by the keyboard page, apart from the on-screen ones. */
         private val imeWatchers = ConcurrentHashMap<String, Watcher>()
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -118,7 +121,7 @@ class ClipboardModule(private val context: Context) : BridgeModule {
         }
 
         /**
-         * PARITY G12 IME mode: runs on the main thread. Only to the keyboard page (never queued), and
+         * IME mode: runs on the main thread. Only to the keyboard page (never queued), and
          * only while the launcher's keyboard is still the chosen one and `clipboard.watch` is granted.
          */
         private fun onChangedIme(webAppId: String, cm: ClipboardManager) {
@@ -138,13 +141,13 @@ class ClipboardModule(private val context: Context) : BridgeModule {
             }
         }
 
-        /** PARITY G12 IME mode: the keyboard page's watch ends (watchStop, page closed). Main thread. */
+        /** IME mode: the keyboard page's watch ends (watchStop, page closed). Main thread. */
         fun stopIme(webAppId: String) {
             val watcher = synchronized(imeWatchers) { imeWatchers.remove(webAppId) } ?: return
             watcher.manager.removePrimaryClipChangedListener(watcher.listener)
         }
 
-        /** PARITY G12: leaving the app's screen (or watchStop) removes its clipboard listener. Main thread. */
+        /** Leaving the app's screen (or watchStop) removes its clipboard listener. Main thread. */
         fun stopFor(webAppId: String) {
             val watcher = synchronized(watchers) { watchers.remove(webAppId) } ?: return
             watcher.manager.removePrimaryClipChangedListener(watcher.listener)

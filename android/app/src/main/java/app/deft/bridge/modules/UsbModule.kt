@@ -20,6 +20,9 @@ import kotlinx.serialization.json.buildJsonObject
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (USB transfers (claim/bulk/control/interrupt/release)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: talk to an Arduino or serial adapter over CDC-ACM from a sample.
+// Remove this note once checked.
 class UsbModule(
     private val context: Context,
 ) : BridgeModule {
@@ -96,7 +99,7 @@ class UsbModule(
         return BridgeOutcome.Ok()
     }
 
-    // ---- PARITY B1: WebUSB-style transfers on a device this app opened ----
+    // ---- WebUSB-style transfers on a device this app opened ----
 
     private val claimed = ConcurrentHashMap<String, MutableSet<Int>>()
 

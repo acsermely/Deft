@@ -10,8 +10,11 @@ import app.deft.bridge.A11ySpec
 import java.util.Collections
 import java.util.WeakHashMap
 
+// DEVICE-UNCHECKED (accessibility service): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an automation sample taps a button in another app; grant screens stay unreadable.
+// Remove this note once checked.
 /**
- * PARITY G9: knows when a guarded launcher screen ([A11ySpec.guardedLauncherActivity]: consent,
+ * Knows when a guarded launcher screen ([A11ySpec.guardedLauncherActivity]: consent,
  * confirm, special grant, handler picker, keystore unlock, dashboard, pickers) is started, so
  * the accessibility service can leave every launcher window out and refuse to act while it shows.
  * The service runs in the launcher's process, so this is read directly.

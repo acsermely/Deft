@@ -1,4 +1,4 @@
-// Wallpaper Clock (PARITY G11): draws an analog clock on a 2D canvas. Shared by the app page
+// Wallpaper Clock: draws an analog clock on a 2D canvas. Shared by the app page
 // (preview) and the wallpaper page. Colours come from the launcher theme tokens.
 
 export function themeColors() {

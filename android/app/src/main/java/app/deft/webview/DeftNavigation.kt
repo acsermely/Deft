@@ -27,7 +27,7 @@ object DeftNavigation {
     }
 
     /**
-     * PARITY G14: in an app with approved embed origins, an `https:` navigation inside a frame
+     * In an app with approved embed origins, an `https:` navigation inside a frame
      * (a payment form, its 3-D Secure challenge) is left to the CSP: the app document's
      * `frame-src` lists only approved origins, and frames nested deeper follow their own site's
      * policy. Top-level navigations never pass here and keep [decide].
@@ -44,13 +44,13 @@ object DeftNavigation {
     fun openChooser(context: Context, url: String) {
         val view = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val chooser = Intent.createChooser(view, url).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        // PARITY G11: never back into the launcher's own browser-role entry.
+        // Never back into the launcher's own browser-role entry.
         context.startActivity(app.deft.roles.RoleComponents.excludeSelf(context, chooser))
     }
 
     fun openHttps(context: Context, url: String) {
         val uri = Uri.parse(url)
-        // PARITY G11: while the launcher is the default browser (role.browser), a Custom Tab or a
+        // While the launcher is the default browser (role.browser), a Custom Tab or a
         // plain VIEW would come straight back to the holder app; let the user pick a real browser.
         if (app.deft.roles.RoleComponents.resolvesToSelf(context, Intent(Intent.ACTION_VIEW, uri))) {
             openChooser(context, url)

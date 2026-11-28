@@ -32,8 +32,11 @@ import kotlinx.serialization.json.buildJsonObject
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
+// DEVICE-UNCHECKED (headless background runner): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: a background task runs after the app process is killed and shows in the audit log.
+// Remove this note once checked.
 /**
- * PARITY D1: host-scheduled, budgeted background runs, owned by [BridgeService].
+ * Host-scheduled, budgeted background runs, owned by [BridgeService].
  *
  * [trigger] is the only way in. A trigger runs the app's manifest `background` module when the
  * app declares the `background` capability, holds its grant and declares the trigger (the
@@ -82,8 +85,8 @@ class BackgroundRunner(
     @Volatile private var closed = false
 
     /**
-     * Entry point for triggers (PARITY D2 wires alarms, SMS, calls, notification actions, boot,
-     * network, charging, periodic and push here). [name] is a trigger name as in the manifest
+     * Entry point for triggers (alarms, SMS, calls, notification actions, boot,
+     * network, charging, periodic and push are wired here). [name] is a trigger name as in the manifest
      * (`periodic` for any `periodic:N`); [payloadJson] reaches the module as `payload`.
      */
     fun trigger(webAppId: String, name: String, payloadJson: String) {
@@ -141,7 +144,7 @@ class BackgroundRunner(
         val now = System.currentTimeMillis()
         val urgentMs = BackgroundTriggers.urgentMs(name)
         val trigger = BackgroundTrigger(name, payloadJson, now, urgentMs?.let { now + it })
-        // PARITY F7b fast path: an urgent trigger joins the app's run already going instead of
+        // An urgent trigger joins the app's run already going instead of
         // waiting up to its whole budget behind it, unless that run ends before the trigger's
         // time is up (then it waits for the next run, ahead of the ordinary triggers).
         if (trigger.urgent) {
@@ -345,7 +348,7 @@ class BackgroundRunner(
 
         /**
          * Same files the host serves; URL-installed apps have none and cannot run in the background.
-         * PARITY G11: the live wallpaper serves the same files.
+         * The live wallpaper serves the same files.
          */
         fun servingDir(app: InstalledWebApp): File? {
             val context = DeftApp.instance
@@ -353,7 +356,7 @@ class BackgroundRunner(
                 ?: BundledApps.idFromWebAppId(app.id)?.let { BundledApps.dir(context, it) }
         }
 
-        /** Same rule as the host (`WebViewHostActivity.grantedPrefixesOf`). PARITY G11: also the live wallpaper's. */
+        /** Same rule as the host (`WebViewHostActivity.grantedPrefixesOf`), also the live wallpaper's. */
         suspend fun grantedPrefixesOf(repository: app.deft.data.AppRepository, app: InstalledWebApp): Set<String> =
             GrantedPrefixes.forApp(repository, app)
 
@@ -368,13 +371,13 @@ class BackgroundRunner(
         const val OUTCOME_QUEUE_FULL = "queue_full"
         const val OUTCOME_RATE_LIMITED = "rate_limited"
 
-        /** PARITY F7b: an urgent trigger was delivered into the app's run already going. */
+        /** An urgent trigger was delivered into the app's run already going. */
         const val OUTCOME_JOINED = "joined"
 
-        /** PARITY F7b: an urgent trigger's time was up before a run could start; it was not run. */
+        /** An urgent trigger's time was up before a run could start; it was not run. */
         const val OUTCOME_EXPIRED = "expired"
 
-        /** PARITY D2: Android refused to start the service for the trigger (background start limits). */
+        /** Android refused to start the service for the trigger (background start limits). */
         const val OUTCOME_SERVICE_BLOCKED = "service_blocked"
 
         private val blockedScope = CoroutineScope(
@@ -386,7 +389,7 @@ class BackgroundRunner(
             if (ms != null) put("ms", JsonPrimitive(ms))
         }.toString()
 
-        /** PARITY D2: audit row for a trigger lost because the service could not be started. */
+        /** Audit row for a trigger lost because the service could not be started. */
         fun auditBlocked(webAppId: String, trigger: String) {
             val metadata = auditMetadata(trigger, null)
             blockedScope.launch {

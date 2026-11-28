@@ -14,14 +14,14 @@ import androidx.core.content.ContextCompat
 import app.deft.catalog.Capability
 
 /**
- * PARITY G0: Android's own special-access switches that the launcher must hold before a
+ * Android's own special-access switches that the launcher must hold before a
  * special capability can work. The FL grant is per app; this switch is launcher-wide, so the
  * grant sheet opens the system screen once and reads the state back.
  */
 enum class SystemAccess(
     val label: String,
     val action: String,
-    /** PARITY G11: the Android role this step requests with [RoleManager.createRequestRoleIntent]; [action] is where to undo it. */
+    /** The Android role this step requests with [RoleManager.createRequestRoleIntent]; [action] is where to undo it. */
     val role: String? = null,
 ) {
     ACCESSIBILITY("Accessibility", Settings.ACTION_ACCESSIBILITY_SETTINGS),
@@ -30,47 +30,47 @@ enum class SystemAccess(
     DND_ACCESS("Do Not Disturb access", Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS),
 
     /**
-     * PARITY G5: Android's "Allow all the time" location. A runtime permission, but on Android 11
+     * Android's "Allow all the time" location. A runtime permission, but on Android 11
      * and newer it must be asked on its own, after precise or approximate location, and the
      * request opens the launcher's location settings page. [settingsIntent] with a context is
      * the launcher's app info page, for when Android no longer shows the request.
      */
     BACKGROUND_LOCATION("Location: Allow all the time", Settings.ACTION_APPLICATION_DETAILS_SETTINGS),
 
-    /** PARITY G11: Deft as the phone's default browser (`role.browser`). */
+    /** Deft as the phone's default browser (`role.browser`). */
     ROLE_BROWSER("Default browser", Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS, RoleManager.ROLE_BROWSER),
 
     /**
-     * PARITY G11: Deft as the digital assistant (`role.assistant`). Many phones do not
+     * Deft as the digital assistant (`role.assistant`). Many phones do not
      * let apps request this role; the sheet then sends the user to Default apps.
      */
     ROLE_ASSISTANT("Digital assistant app", Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS, RoleManager.ROLE_ASSISTANT),
 
-    /** PARITY G11: Deft's device admin, lock only (`device.admin`). Undone in Security settings. */
+    /** Deft's device admin, lock only (`device.admin`). Undone in Security settings. */
     DEVICE_ADMIN("Device admin app", Settings.ACTION_SECURITY_SETTINGS),
 
     /**
-     * PARITY G11: Deft's live wallpaper as the phone's wallpaper (`wallpaper`). Android's
+     * Deft's live wallpaper as the phone's wallpaper (`wallpaper`). Android's
      * preview screen sets it; the user picks another wallpaper under Wallpaper ([Intent.ACTION_SET_WALLPAPER]).
      */
     WALLPAPER("Live wallpaper", Intent.ACTION_SET_WALLPAPER),
 
     /**
-     * PARITY G11: Deft's keyboard as the phone's keyboard (`ime`). Two Android steps: turn
+     * Deft's keyboard as the phone's keyboard (`ime`). Two Android steps: turn
      * it on in keyboard settings ([settingsIntent]), then choose it in the system keyboard picker
      * (`InputMethodManager.showInputMethodPicker`). Granted only when it is on and chosen.
      */
     IME("Keyboard", Settings.ACTION_INPUT_METHOD_SETTINGS),
 
     /**
-     * PARITY F7b: Deft screens calls (`calls.screen`). Already true while it is the
+     * Deft screens calls (`calls.screen`). Already true while it is the
      * default phone app (Android binds the dialer's screening service for every call); otherwise
      * Android's call screening role ("Caller ID and spam app") is requested.
      */
     CALL_SCREENING("Caller ID and spam app", Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS, RoleManager.ROLE_CALL_SCREENING),
 
     /**
-     * PARITY B4: Deft's payment card emulation service as the phone's default payment
+     * Deft's payment card emulation service as the phone's default payment
      * app (`nfc.hce.payment`). Android's own question ([requestIntent]); undone under Contactless payments.
      */
     PAYMENT_DEFAULT("Default payment app", Settings.ACTION_NFC_PAYMENT_SETTINGS),
@@ -86,7 +86,7 @@ enum class SystemAccess(
         SpecialAccessFlow.intents(context, this).firstOrNull() ?: Intent(action)
 
     /**
-     * PARITY G11: Android's role request for [role], or null when this is not a role or the phone
+     * Android's role request for [role], or null when this is not a role or the phone
      * does not offer the role (some phones leave roles out).
      */
     fun roleRequestIntent(context: Context): Intent? {
@@ -97,7 +97,7 @@ enum class SystemAccess(
     }
 
     /**
-     * PARITY G11: Android's own request screen, started for a result: the role request, or the
+     * Android's own request screen, started for a result: the role request, or the
      * device admin activation. Null for steps that open a settings screen instead, or when the phone
      * does not offer the role.
      */
@@ -117,12 +117,12 @@ enum class SystemAccess(
         else -> roleRequestIntent(context)
     }
 
-    /** PARITY G11: true when this step is Android's own request screen ([requestIntent]), not a settings switch. */
+    /** True when this step is Android's own request screen ([requestIntent]), not a settings switch. */
     val asksInPlace: Boolean get() = role != null || this == DEVICE_ADMIN || this == WALLPAPER || this == PAYMENT_DEFAULT
 
     fun isGranted(context: Context): Boolean {
         val pkg = context.packageName
-        // PARITY F7b: the default dialer screens calls without the call screening role.
+        // The default dialer screens calls without the call screening role.
         if (this == CALL_SCREENING) {
             val rm = context.getSystemService(RoleManager::class.java) ?: return false
             return rm.isRoleHeld(RoleManager.ROLE_DIALER) || rm.isRoleHeld(RoleManager.ROLE_CALL_SCREENING)
@@ -131,13 +131,13 @@ enum class SystemAccess(
             return context.getSystemService(RoleManager::class.java)?.isRoleHeld(name) == true
         }
         return when (this) {
-            // PARITY G9: the launcher's own service component, not just any service of this package.
+            // The launcher's own service component, not just any service of this package.
             ACCESSIBILITY -> app.deft.bridge.A11ySpec.enabledIn(
                 Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES),
                 pkg,
                 app.deft.a11y.DeftAccessibilityService::class.java.name,
             )
-            // PARITY G8: the launcher's own listener component, not just any listener of this package.
+            // The launcher's own listener component, not just any listener of this package.
             NOTIFICATION_LISTENER -> context.getSystemService(NotificationManager::class.java)
                 ?.isNotificationListenerAccessGranted(
                     app.deft.notifications.DeftNotificationListener.component(context),

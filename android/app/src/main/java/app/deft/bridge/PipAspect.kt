@@ -1,9 +1,9 @@
 package app.deft.bridge
 
-/** PARITY D5: the shape of a picture-in-picture window, width to height. */
+/** The shape of a picture-in-picture window, width to height. */
 data class PipRatio(val width: Int, val height: Int)
 
-/** PARITY D5: `aspect` strings such as `16:9`, kept inside the range Android accepts (1:2.39 to 2.39:1). */
+/** `aspect` strings such as `16:9`, kept inside the range Android accepts (1:2.39 to 2.39:1). */
 object PipAspect {
     private const val MAX_RATIO = 2.39
     private const val MAX_PART = 10000

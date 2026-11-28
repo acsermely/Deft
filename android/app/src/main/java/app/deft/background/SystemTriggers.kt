@@ -13,8 +13,11 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.content.ContextCompat
 
+// DEVICE-UNCHECKED (background triggers): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: an SMS auto-reply sample works with the app closed; boot, periodic and charging triggers fire.
+// Remove this note once checked.
 /**
- * PARITY D2: the `network` and `charging` triggers, watched while [app.deft.bridge.BridgeService]
+ * The `network` and `charging` triggers, watched while [app.deft.bridge.BridgeService]
  * runs. `network` follows the default network and is reported 30 s after it settles, only when
  * `{connected, metered}` changed; `charging` is reported on every plug and unplug. [wake] gets
  * the trigger name and payload and fans it out to the apps that declare it.

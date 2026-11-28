@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * What a bridge module may ask of the visible screen of one app (PARITY A4/A5/A8). The host
+ * What a bridge module may ask of the visible screen of one app. The host
  * activity registers itself while it is in front; modules find it by web app id, so a call from
  * an app that is not on screen does nothing.
  */
@@ -19,19 +19,19 @@ interface HostSurface {
     fun setOrientation(orientation: String): Boolean
     fun print(title: String?): Boolean
 
-    /** PARITY F9: FLAG_SECURE on the app window. */
+    /** FLAG_SECURE on the app window. */
     fun setSecure(on: Boolean)
 
-    /** PARITY F9: false when the platform cannot hide overlays (Android 12 and newer only). */
+    /** False when the platform cannot hide overlays (Android 12 and newer only). */
     fun hideOverlays(on: Boolean): Boolean
 
-    /** PARITY D5: false when the device has no picture-in-picture. */
+    /** False when the device has no picture-in-picture. */
     fun enterPip(ratio: PipRatio): Boolean
 
-    /** PARITY D5: enter picture-in-picture when the user leaves the app; false when unsupported. */
+    /** Enter picture-in-picture when the user leaves the app; false when unsupported. */
     fun setAutoPip(on: Boolean, ratio: PipRatio): Boolean
 
-    /** PARITY B2: read tags while this app is on screen; false when NFC is off or missing. */
+    /** Read tags while this app is on screen; false when NFC is off or missing. */
     fun startNfcScan(onTag: (android.nfc.Tag) -> Unit): Boolean
     fun stopNfcScan()
 
@@ -46,6 +46,12 @@ interface HostSurface {
      * or is in picture-in-picture. The sheet's close is reported through [SpecialAsks], not here. Main thread only.
      */
     fun openSpecialSheet(intent: android.content.Intent): Boolean
+
+    /**
+     * The activity Android's passkey sheet opens over, or null when there is none to use (the agent's
+     * Preview, a screen that is not resumed, picture-in-picture). Main thread only.
+     */
+    fun passkeyActivity(): android.app.Activity? = null
 }
 
 object HostSurfaces {
@@ -102,7 +108,7 @@ object HostSurfaces {
     internal fun visibleTo(surface: HostSurface?, background: Boolean): HostSurface? =
         surface?.takeUnless { background && it.isPreview }
 
-    /** What stops when an app leaves the screen: flashlight (F4), audio output, sensors (F1), listening (F3), clipboard watch (G12). */
+    /** What stops when an app leaves the screen: flashlight, audio output, sensors, listening, clipboard watch. */
     fun leftScreen(webAppId: String, context: android.content.Context) {
         app.deft.bridge.modules.TorchState.offFor(webAppId, context)
         app.deft.bridge.modules.AudioRoute.resetFor(webAppId, context)
@@ -112,7 +118,7 @@ object HostSurfaces {
     }
 
     /**
-     * PARITY W7: for a call that sent the user to an Android screen. Waits until the app's screen is gone (the screen
+     * For a call that sent the user to an Android screen. Waits until the app's screen is gone (the screen
      * opened) and then back in front. True once it is back; false when it never left within [leaveWaitMs] (the
      * screen did not cover it, e.g. split screen) or did not return within [timeoutMs]. The caller re-reads the state.
      */

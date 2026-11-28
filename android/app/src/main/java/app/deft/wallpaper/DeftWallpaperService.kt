@@ -51,8 +51,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// DEVICE-UNCHECKED (extra roles (browser, assistant, IME, wallpaper, device admin)): built and unit-tested, but the developer
+// has not checked it on a real device yet. Check: each role can be granted to one origin and reverted in system settings.
+// Remove this note once checked.
 /**
- * PARITY G11 `wallpaper`: Deft's live wallpaper, showing the manifest `wallpaper.page`
+ * `wallpaper`: Deft's live wallpaper, showing the manifest `wallpaper.page`
  * of the one web app holding the `wallpaper` grant. Disabled in the manifest; [app.deft.roles.RoleComponents]
  * enables it only while an app holds the grant, so revoking it makes Android drop the wallpaper
  * and show its default one.
